@@ -24,6 +24,8 @@
         }
         .btn-steam { background: #2a475e; color: #c7d5e0; }
         .btn-steam:hover { background: #3d6a8e; }
+        .btn-logout { background: #555; color: #ccc; }
+        .btn-logout:hover { background: #777; }
         .btn-sell-skin {
             background: #4ecca3; color: #1a1a2e; padding: 8px 16px;
             border: none; border-radius: 6px; font-weight: bold; cursor: pointer;
@@ -42,6 +44,7 @@
         .skin-name { font-weight: bold; font-size: 14px; margin-bottom: 4px; }
         .skin-market-price { color: #aaa; font-size: 12px; }
         .skin-our-price { font-weight: bold; color: #4ecca3; font-size: 14px; white-space: nowrap; }
+        .user-info { text-align: center; color: #4ecca3; margin-bottom: 15px; font-size: 12px; }
         .status { text-align: center; padding: 20px; color: #aaa; }
         .error { color: #e94560; text-align: center; padding: 20px; }
         .success { color: #4ecca3; text-align: center; padding: 20px; }
@@ -51,7 +54,11 @@
     <div class="logo">🎮 GodMarket</div>
     <div class="subtitle">Продай скины быстро и выгодно</div>
 
+    <div id="userInfo" class="user-info" style="display:none;"></div>
+
     <button class="btn btn-steam" id="loginBtn" onclick="loginSteam()">🔐 Войти через Steam</button>
+    <button class="btn btn-logout" id="logoutBtn" style="display:none;" onclick="logout()">🚪 Выйти</button>
+    <button class="btn" id="refreshBtn" style="display:none; background: #2a475e; color: #c7d5e0;" onclick="refreshInventory()">🔄 Обновить инвентарь</button>
 
     <div id="inventory" style="display:none;">
         <div id="skinsList"></div>
@@ -69,28 +76,80 @@
         let priceCache = {};
         let descriptionsMap = {};
 
+        // Восстанавливаем Steam ID из localStorage
+        const savedSteamId = localStorage.getItem('godmarket_steamid');
+        if (savedSteamId) {
+            userSteamId = savedSteamId;
+            showLoggedIn();
+            loadInventory();
+        }
+
+        function showLoggedIn() {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'block';
+            document.getElementById('refreshBtn').style.display = 'block';
+            document.getElementById('userInfo').style.display = 'block';
+            document.getElementById('userInfo').innerHTML = '🟢 Steam ID: ' + userSteamId;
+        }
+
+        function showLoggedOut() {
+            document.getElementById('loginBtn').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('refreshBtn').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('inventory').style.display = 'none';
+        }
+
         function loginSteam() {
-            const steamId = prompt('Введи свой Steam ID64 (временно):', '7656119XXXXXXXXXX');
+            const steamId = prompt('Введи свой Steam ID64:', userSteamId || '7656119XXXXXXXXXX');
             if (steamId && steamId.length === 17) {
                 userSteamId = steamId;
+                localStorage.setItem('godmarket_steamid', steamId);
+                showLoggedIn();
                 loadInventory();
             } else {
                 alert('Неверный Steam ID. Должен быть 17 цифр.');
             }
         }
 
-        async function getSkinPrice(marketHashName) {
+        function logout() {
+            localStorage.removeItem('godmarket_steamid');
+            userSteamId = null;
+            priceCache = {};
+            descriptionsMap = {};
+            showLoggedOut();
+            document.getElementById('status').style.display = 'block';
+            document.getElementById('status').innerHTML = 'Войди через Steam, чтобы увидеть свои скины';
+            document.getElementById('status').className = 'status';
+        }
+
+        function refreshInventory() {
+            priceCache = {};
+            descriptionsMap = {};
+            loadInventory();
+        }
+
+        async function getSkinPrice(marketHashName, retries = 2) {
             if (priceCache[marketHashName]) return priceCache[marketHashName];
-            try {
-                const response = await fetch(`/api/price?name=${encodeURIComponent(marketHashName)}`);
-                const data = await response.json();
-                if (data && data.lowest_price) {
-                    const price = parseFloat(data.lowest_price.replace(/[^0-9,]/g, '').replace(',', '.'));
-                    priceCache[marketHashName] = price;
-                    return price;
+            
+            for (let attempt = 0; attempt <= retries; attempt++) {
+                try {
+                    const response = await fetch(`/api/price?name=${encodeURIComponent(marketHashName)}`);
+                    const data = await response.json();
+                    if (data && data.lowest_price) {
+                        const price = parseFloat(data.lowest_price.replace(/[^0-9,]/g, '').replace(',', '.'));
+                        priceCache[marketHashName] = price;
+                        return price;
+                    }
+                    if (attempt < retries) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                } catch (e) {
+                    console.error('Ошибка получения цены:', e);
+                    if (attempt < retries) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
                 }
-            } catch (e) {
-                console.error('Ошибка получения цены:', e);
             }
             return null;
         }
@@ -98,6 +157,7 @@
         async function loadInventory() {
             document.getElementById('status').innerHTML = '⏳ Загружаю инвентарь...';
             document.getElementById('status').className = 'status';
+            document.getElementById('status').style.display = 'block';
 
             try {
                 const response = await fetch(`/api/inventory?steamid=${userSteamId}`);
@@ -124,7 +184,6 @@
 
         async function displayInventory(assets) {
             document.getElementById('inventory').style.display = 'block';
-            document.getElementById('loginBtn').style.display = 'none';
 
             const container = document.getElementById('skinsList');
             container.innerHTML = '<div class="status">⏳ Загружаем цены...</div>';
@@ -141,7 +200,8 @@
                     assetId: item.assetid,
                     name: marketHashName,
                     marketPrice: displayPrice,
-                    ourPrice: ourPrice
+                    ourPrice: ourPrice,
+                    hasPrice: marketPrice !== null
                 });
             }
 
@@ -154,8 +214,8 @@
                     <div style="text-align: right;">
                         <div class="skin-our-price">${item.ourPrice !== '—' ? item.ourPrice + ' ₽' : '—'}</div>
                         <button class="btn-sell-skin"
-                                ${item.ourPrice === '—' ? 'disabled' : ''}
-                                onclick="sellSkin('${item.assetId}', '${item.name}', ${item.ourPrice})">
+                                ${!item.hasPrice ? 'disabled' : ''}
+                                onclick="sellSkin('${item.assetId}', '${item.name.replace(/'/g, "\\'")}', ${item.ourPrice === '—' ? 0 : item.ourPrice})">
                             💰 Продать
                         </button>
                     </div>
@@ -180,6 +240,7 @@
                         name: name,
                         price: price
                     }));
+                    document.getElementById('status').style.display = 'block';
                     document.getElementById('status').innerHTML = `✅ Заявка на продажу "${name}" принята!`;
                     document.getElementById('status').className = 'success';
                 }
