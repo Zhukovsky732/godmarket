@@ -42,7 +42,7 @@
         .skin-name { font-weight: bold; font-size: 14px; margin-bottom: 4px; }
         .skin-market-price { color: #aaa; font-size: 12px; }
         .skin-our-price { font-weight: bold; color: #4ecca3; font-size: 14px; white-space: nowrap; }
-        .status { text-align: center; padding: 20px; color: #aaa; font-size: 12px; word-break: break-all; }
+        .status { text-align: center; padding: 20px; color: #aaa; }
         .error { color: #e94560; text-align: center; padding: 20px; }
         .success { color: #4ecca3; text-align: center; padding: 20px; }
     </style>
@@ -65,9 +65,6 @@
         tg.setHeaderColor('#1a1a2e');
         tg.setBackgroundColor('#1a1a2e');
 
-        const API_URL = 'https://attendant-esophagus-expand.ngrok-free.dev';
-        const HEADERS = { 'ngrok-skip-browser-warning': 'true' };
-
         let userSteamId = null;
         let priceCache = {};
         let descriptionsMap = {};
@@ -85,7 +82,7 @@
         async function getSkinPrice(marketHashName) {
             if (priceCache[marketHashName]) return priceCache[marketHashName];
             try {
-                const response = await fetch(`${API_URL}/api/price?name=${encodeURIComponent(marketHashName)}`, { headers: HEADERS });
+                const response = await fetch(`/api/price?name=${encodeURIComponent(marketHashName)}`);
                 const data = await response.json();
                 if (data && data.lowest_price) {
                     const price = parseFloat(data.lowest_price.replace(/[^0-9,]/g, '').replace(',', '.'));
@@ -103,16 +100,8 @@
             document.getElementById('status').className = 'status';
 
             try {
-                const url = `${API_URL}/api/inventory?steamid=${userSteamId}`;
-                const response = await fetch(url, { headers: HEADERS });
-                const rawText = await response.text();
-
-                // Покажем первые 200 символов ответа для отладки
-                document.getElementById('status').innerHTML = '📡 Ответ сервера:<br><small>' + rawText.substring(0, 200) + '</small>';
-                document.getElementById('status').className = 'status';
-
-                // Попробуем распарсить JSON
-                const data = JSON.parse(rawText);
+                const response = await fetch(`/api/inventory?steamid=${userSteamId}`);
+                const data = await response.json();
 
                 if (data.success && data.assets && data.assets.length > 0) {
                     if (data.descriptions) {
@@ -124,7 +113,7 @@
                     await displayInventory(data.assets.slice(0, 10));
                     document.getElementById('status').style.display = 'none';
                 } else {
-                    document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт. (success=' + data.success + ')';
+                    document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт.';
                     document.getElementById('status').className = 'error';
                 }
             } catch (e) {
