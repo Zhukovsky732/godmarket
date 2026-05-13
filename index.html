@@ -66,9 +66,11 @@
         tg.setBackgroundColor('#1a1a2e');
 
         const API_URL = 'https://attendant-esophagus-expand.ngrok-free.dev';
+        const HEADERS = { 'ngrok-skip-browser-warning': 'true' };
 
         let userSteamId = null;
         let priceCache = {};
+        let descriptionsMap = {};
 
         function loginSteam() {
             const steamId = prompt('Введи свой Steam ID64 (временно):', '7656119XXXXXXXXXX');
@@ -83,7 +85,7 @@
         async function getSkinPrice(marketHashName) {
             if (priceCache[marketHashName]) return priceCache[marketHashName];
             try {
-                const response = await fetch(`${API_URL}/api/price?name=${encodeURIComponent(marketHashName)}`);
+                const response = await fetch(`${API_URL}/api/price?name=${encodeURIComponent(marketHashName)}`, { headers: HEADERS });
                 const data = await response.json();
                 if (data && data.lowest_price) {
                     const price = parseFloat(data.lowest_price.replace(/[^0-9,]/g, '').replace(',', '.'));
@@ -101,10 +103,17 @@
             document.getElementById('status').className = 'status';
 
             try {
-                const response = await fetch(`${API_URL}/api/inventory?steamid=${userSteamId}`);
+                const response = await fetch(`${API_URL}/api/inventory?steamid=${userSteamId}`, { headers: HEADERS });
                 const data = await response.json();
 
                 if (data.success && data.assets && data.assets.length > 0) {
+                    // Строим карту описаний: classid_instanceid -> market_hash_name
+                    if (data.descriptions) {
+                        data.descriptions.forEach(desc => {
+                            const key = `${desc.classid}_${desc.instanceid}`;
+                            descriptionsMap[key] = desc.market_hash_name;
+                        });
+                    }
                     await displayInventory(data.assets.slice(0, 10));
                     document.getElementById('status').style.display = 'none';
                 } else {
@@ -126,7 +135,8 @@
 
             const skinItems = [];
             for (const item of assets) {
-                const marketHashName = item.markethashname || `Скин #${item.assetid}`;
+                const key = `${item.classid}_${item.instanceid}`;
+                const marketHashName = descriptionsMap[key] || `Скин #${item.assetid}`;
                 const marketPrice = await getSkinPrice(marketHashName);
                 const ourPrice = marketPrice ? (marketPrice * 0.80).toFixed(2) : '—';
                 const displayPrice = marketPrice ? `${marketPrice.toFixed(2)} ₽` : 'Нет цены';
