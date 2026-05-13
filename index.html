@@ -82,19 +82,13 @@
             }
         }
 
-        // Получаем название скина по assetid из описаний
-        function getSkinName(assetId) {
-            // Пока возвращаем заглушку, потом можно спарсить descriptions
-            return `Скин #${assetId}`;
-        }
-
         // Получаем цену скина из Steam Market
         async function getSkinPrice(marketHashName) {
             if (priceCache[marketHashName]) {
                 return priceCache[marketHashName];
             }
             try {
-                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const proxyUrl = 'https://corsproxy.io/?';
                 const steamUrl = `https://steamcommunity.com/market/priceoverview/?appid=730&currency=5&market_hash_name=${encodeURIComponent(marketHashName)}`;
                 const response = await fetch(proxyUrl + encodeURIComponent(steamUrl));
                 const data = await response.json();
@@ -114,7 +108,7 @@
             document.getElementById('status').className = 'status';
 
             try {
-                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const proxyUrl = 'https://corsproxy.io/?';
                 const steamUrl = `https://steamcommunity.com/inventory/${userSteamId}/730/2?l=english&count=50`;
                 const response = await fetch(proxyUrl + encodeURIComponent(steamUrl));
                 const data = await response.json();
@@ -185,7 +179,6 @@
                 ]
             }, function(btnId) {
                 if (btnId === 'sell') {
-                    // Отправляем данные в бота
                     tg.sendData(JSON.stringify({
                         action: 'sell',
                         steamId: userSteamId,
