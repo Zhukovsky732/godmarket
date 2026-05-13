@@ -72,6 +72,11 @@
         let userInventory = [];
         let priceCache = {};
 
+        // Меняй эту строку, если прокси не работает:
+        // Вариант 1: 'https://thingproxy.freeboard.io/fetch/'
+        // Вариант 2: 'https://api.codetabs.com/v1/proxy?quest='
+        const PROXY_URL = 'https://thingproxy.freeboard.io/fetch/';
+
         function loginSteam() {
             const steamId = prompt('Введи свой Steam ID64 (временно):', '7656119XXXXXXXXXX');
             if (steamId && steamId.length === 17) {
@@ -82,15 +87,11 @@
             }
         }
 
-        // Получаем цену скина из Steam Market
         async function getSkinPrice(marketHashName) {
-            if (priceCache[marketHashName]) {
-                return priceCache[marketHashName];
-            }
+            if (priceCache[marketHashName]) return priceCache[marketHashName];
             try {
-                const proxyUrl = 'https://corsproxy.io/?';
                 const steamUrl = `https://steamcommunity.com/market/priceoverview/?appid=730&currency=5&market_hash_name=${encodeURIComponent(marketHashName)}`;
-                const response = await fetch(proxyUrl + encodeURIComponent(steamUrl));
+                const response = await fetch(PROXY_URL + encodeURIComponent(steamUrl));
                 const data = await response.json();
                 if (data && data.lowest_price) {
                     const price = parseFloat(data.lowest_price.replace(/[^0-9,]/g, '').replace(',', '.'));
@@ -108,9 +109,8 @@
             document.getElementById('status').className = 'status';
 
             try {
-                const proxyUrl = 'https://corsproxy.io/?';
                 const steamUrl = `https://steamcommunity.com/inventory/${userSteamId}/730/2?l=english&count=50`;
-                const response = await fetch(proxyUrl + encodeURIComponent(steamUrl));
+                const response = await fetch(PROXY_URL + encodeURIComponent(steamUrl));
                 const data = await response.json();
 
                 if (data.success && data.assets && data.assets.length > 0) {
