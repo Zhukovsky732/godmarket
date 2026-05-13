@@ -85,13 +85,6 @@
             transition: all 0.2s;
         }
         .skin-item.selected { border-left-color: var(--green); background: #1a2a2a; }
-        .skin-checkbox {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--green);
-            cursor: pointer;
-            flex-shrink: 0;
-        }
         .skin-info { flex: 1; min-width: 0; }
         .skin-name {
             font-weight: 700;
@@ -100,13 +93,42 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .skin-market { color: var(--muted); font-size: 11px; margin-top: 2px; }
+        .skin-count {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 2px;
+        }
         .skin-our {
             font-weight: 700;
             color: var(--green);
             font-size: 14px;
             white-space: nowrap;
             flex-shrink: 0;
+        }
+        .qty-selector {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .qty-btn {
+            background: #2a475e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .qty-value {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--green);
+            min-width: 20px;
+            text-align: center;
         }
         .status {
             text-align: center;
@@ -148,9 +170,10 @@
         tg.setBackgroundColor('#0f0f1a');
 
         let steamId = null;
-        let allSkins = [];
+        let groupedSkins = [];  // [{name, price, assetIds: [], selectedQty: 0}, ...]
         let priceCache = {};
 
+        // Восстановление сессии
         const saved = localStorage.getItem('gm_steamid');
         if (saved) { steamId = saved; showUI(); loadInventory(); }
 
@@ -183,7 +206,7 @@
         function logout() {
             localStorage.removeItem('gm_steamid');
             steamId = null;
-            allSkins = [];
+            groupedSkins = [];
             priceCache = {};
             hideUI();
             document.getElementById('status').style.display = 'block';
@@ -198,8 +221,8 @@
                 const r = await fetch(`${API}/api/price?name=${encodeURIComponent(name)}`, { headers: H });
                 const d = await r.json();
                 if (d.success) {
-                    priceCache[name] = { avg: d.avg_price, buy: d.buy_price };
-                    return priceCache[name];
+                    priceCache[name] = d.buy_price;
+                    return d.buy_price;
                 }
             } catch(e) {}
             return null;
@@ -212,20 +235,32 @@
                 const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H });
                 const d = await r.json();
                 if (d.success && d.assets) {
+                    // Карта описаний
                     const descMap = {};
                     if (d.descriptions) {
                         d.descriptions.forEach(dd => {
                             descMap[`${dd.classid}_${dd.instanceid}`] = dd.market_hash_name;
                         });
                     }
-                    allSkins = d.assets.slice(0, 20).map(a => ({
-                        assetId: a.assetid,
-                        classId: a.classid,
-                        instanceId: a.instanceid,
-                        name: descMap[`${a.classid}_${a.instanceid}`] || `Скин #${a.assetid}`,
-                        price: null
-                    }));
-                    await renderInventory();
+
+                    // Группируем скины по названию
+                    const groupMap = {};
+                    d.assets.forEach(a => {
+                        const name = descMap[`${a.classid}_${a.instanceid}`] || `Скин #${a.assetid}`;
+                        if (!groupMap[name]) {
+                            groupMap[name] = { name, assetIds: [], price: null, selectedQty: 0 };
+                        }
+                        groupMap[name].assetIds.push(a.assetid);
+                    });
+
+                    groupedSkins = Object.values(groupMap);
+
+                    // Загружаем цены
+                    for (const g of groupedSkins) {
+                        g.price = await fetchPrice(g.name);
+                    }
+
+                    renderInventory();
                     document.getElementById('status').style.display = 'none';
                 } else {
                     document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт';
@@ -235,71 +270,73 @@
             }
         }
 
-        async function renderInventory() {
+        function renderInventory() {
             document.getElementById('inventory').style.display = 'block';
             const container = document.getElementById('skinsList');
-            container.innerHTML = '<div class="status">⏳ Считаем цены...</div>';
 
-            for (const skin of allSkins) {
-                if (!skin.price) {
-                    const p = await fetchPrice(skin.name);
-                    skin.price = p ? p.buy : null;
-                    skin.avgPrice = p ? p.avg : null;
-                }
-            }
-
-            container.innerHTML = allSkins.map((s, i) => `
-                <div class="skin-item" id="skin-${i}" onclick="toggleSkin(${i})">
-                    <input type="checkbox" class="skin-checkbox" id="cb-${i}" onclick="event.stopPropagation(); toggleSkin(${i})">
+            container.innerHTML = groupedSkins.map((g, i) => `
+                <div class="skin-item" id="skin-${i}">
                     <div class="skin-info">
-                        <div class="skin-name">${s.name}</div>
-                        <div class="skin-market">Рынок: ${s.avgPrice ? s.avgPrice.toFixed(2) + ' ₽' : '—'}</div>
+                        <div class="skin-name">🎨 ${g.name}</div>
+                        <div class="skin-count">В наличии: ${g.assetIds.length} шт.</div>
+                        <div class="qty-selector">
+                            <button class="qty-btn" onclick="changeQty(${i}, -1)" ${g.selectedQty <= 0 ? 'disabled' : ''}>−</button>
+                            <span class="qty-value">${g.selectedQty}</span>
+                            <button class="qty-btn" onclick="changeQty(${i}, 1)" ${g.selectedQty >= g.assetIds.length ? 'disabled' : ''}>+</button>
+                        </div>
                     </div>
-                    <div class="skin-our">${s.price ? s.price.toFixed(2) + ' ₽' : '—'}</div>
+                    <div style="text-align: right;">
+                        <div class="skin-our">${g.price ? g.price.toFixed(2) + ' ₽' : '—'}</div>
+                        ${g.selectedQty > 0 ? `<div style="color: var(--green); font-size: 11px;">=${(g.price * g.selectedQty).toFixed(2)} ₽</div>` : ''}
+                    </div>
                 </div>
             `).join('');
+
             updateSellButton();
         }
 
-        function toggleSkin(i) {
-            const el = document.getElementById('skin-' + i);
-            const cb = document.getElementById('cb-' + i);
-            el.classList.toggle('selected');
-            cb.checked = el.classList.contains('selected');
-            updateSellButton();
+        function changeQty(i, delta) {
+            const g = groupedSkins[i];
+            g.selectedQty = Math.max(0, Math.min(g.assetIds.length, g.selectedQty + delta));
+            renderInventory();
         }
 
-        function getSelected() {
-            return allSkins.filter((s, i) => {
-                const el = document.getElementById('skin-' + i);
-                return el && el.classList.contains('selected') && s.price !== null;
+        function getSelectedItems() {
+            const result = [];
+            groupedSkins.forEach(g => {
+                if (g.selectedQty > 0 && g.price !== null) {
+                    for (let j = 0; j < g.selectedQty; j++) {
+                        result.push({
+                            assetId: g.assetIds[j],
+                            name: g.name,
+                            price: g.price
+                        });
+                    }
+                }
             });
+            return result;
         }
 
         function updateSellButton() {
-            const sel = getSelected();
+            const sel = getSelectedItems();
             document.getElementById('sellCount').textContent = sel.length;
             document.getElementById('sellBtn').disabled = sel.length === 0;
         }
 
         function sellSelected() {
-            const sel = getSelected();
+            const sel = getSelectedItems();
             if (sel.length === 0) return;
             const total = sel.reduce((sum, s) => sum + s.price, 0).toFixed(2);
             tg.showPopup({
                 title: 'Подтверждение',
                 message: `Продать ${sel.length} скинов за ${total} ₽?`,
                 buttons: [{id: 'ok', type: 'ok', text: 'Продать'}, {type: 'cancel'}]
-            }, async (btn) => {
+            }, (btn) => {
                 if (btn === 'ok') {
                     tg.sendData(JSON.stringify({
                         action: 'sell',
                         steamId: steamId,
-                        skins: sel.map(s => ({
-                            assetId: s.assetId,
-                            name: s.name,
-                            price: s.price
-                        }))
+                        skins: sel
                     }));
                     document.getElementById('status').style.display = 'block';
                     document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
