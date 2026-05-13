@@ -24,8 +24,6 @@
         }
         .btn-steam { background: #2a475e; color: #c7d5e0; }
         .btn-steam:hover { background: #3d6a8e; }
-        .btn-sell { background: #e94560; color: white; }
-        .btn-sell:hover { background: #ff6b81; }
         .btn-sell-skin {
             background: #4ecca3; color: #1a1a2e; padding: 8px 16px;
             border: none; border-radius: 6px; font-weight: bold; cursor: pointer;
@@ -33,7 +31,6 @@
         }
         .btn-sell-skin:hover { background: #3dba8e; }
         .btn-sell-skin:disabled { background: #555; color: #999; cursor: not-allowed; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         #inventory { margin-top: 20px; }
         .skin-item {
             background: #16213e; border-radius: 8px; padding: 12px;
@@ -68,14 +65,10 @@
         tg.setHeaderColor('#1a1a2e');
         tg.setBackgroundColor('#1a1a2e');
 
-        let userSteamId = null;
-        let userInventory = [];
-        let priceCache = {};
+        const API_URL = 'https://attendant-esophagus-expand.ngrok-free.dev';
 
-        // Меняй эту строку, если прокси не работает:
-        // Вариант 1: 'https://thingproxy.freeboard.io/fetch/'
-        // Вариант 2: 'https://api.codetabs.com/v1/proxy?quest='
-        const PROXY_URL = 'https://thingproxy.freeboard.io/fetch/';
+        let userSteamId = null;
+        let priceCache = {};
 
         function loginSteam() {
             const steamId = prompt('Введи свой Steam ID64 (временно):', '7656119XXXXXXXXXX');
@@ -90,8 +83,7 @@
         async function getSkinPrice(marketHashName) {
             if (priceCache[marketHashName]) return priceCache[marketHashName];
             try {
-                const steamUrl = `https://steamcommunity.com/market/priceoverview/?appid=730&currency=5&market_hash_name=${encodeURIComponent(marketHashName)}`;
-                const response = await fetch(PROXY_URL + encodeURIComponent(steamUrl));
+                const response = await fetch(`${API_URL}/api/price?name=${encodeURIComponent(marketHashName)}`);
                 const data = await response.json();
                 if (data && data.lowest_price) {
                     const price = parseFloat(data.lowest_price.replace(/[^0-9,]/g, '').replace(',', '.'));
@@ -109,13 +101,11 @@
             document.getElementById('status').className = 'status';
 
             try {
-                const steamUrl = `https://steamcommunity.com/inventory/${userSteamId}/730/2?l=english&count=50`;
-                const response = await fetch(PROXY_URL + encodeURIComponent(steamUrl));
+                const response = await fetch(`${API_URL}/api/inventory?steamid=${userSteamId}`);
                 const data = await response.json();
 
                 if (data.success && data.assets && data.assets.length > 0) {
-                    userInventory = data.assets;
-                    await displayInventory();
+                    await displayInventory(data.assets.slice(0, 10));
                     document.getElementById('status').style.display = 'none';
                 } else {
                     document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт.';
@@ -127,17 +117,15 @@
             }
         }
 
-        async function displayInventory() {
+        async function displayInventory(assets) {
             document.getElementById('inventory').style.display = 'block';
             document.getElementById('loginBtn').style.display = 'none';
 
             const container = document.getElementById('skinsList');
             container.innerHTML = '<div class="status">⏳ Загружаем цены...</div>';
 
-            const itemsToShow = userInventory.slice(0, 10);
             const skinItems = [];
-
-            for (const item of itemsToShow) {
+            for (const item of assets) {
                 const marketHashName = item.markethashname || `Скин #${item.assetid}`;
                 const marketPrice = await getSkinPrice(marketHashName);
                 const ourPrice = marketPrice ? (marketPrice * 0.80).toFixed(2) : '—';
