@@ -76,7 +76,7 @@
         let priceCache = {};
         let descriptionsMap = {};
 
-        // Восстанавливаем Steam ID из localStorage
+        // Восстанавливаем Steam ID
         const savedSteamId = localStorage.getItem('godmarket_steamid');
         if (savedSteamId) {
             userSteamId = savedSteamId;
@@ -101,7 +101,7 @@
         }
 
         function loginSteam() {
-            const steamId = prompt('Введи свой Steam ID64:', userSteamId || '7656119XXXXXXXXXX');
+            const steamId = prompt('Введи свой Steam ID64:', '7656119XXXXXXXXXX');
             if (steamId && steamId.length === 17) {
                 userSteamId = steamId;
                 localStorage.setItem('godmarket_steamid', steamId);
@@ -145,7 +145,6 @@
                         await new Promise(resolve => setTimeout(resolve, 1000));
                     }
                 } catch (e) {
-                    console.error('Ошибка получения цены:', e);
                     if (attempt < retries) {
                         await new Promise(resolve => setTimeout(resolve, 1000));
                     }
