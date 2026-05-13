@@ -3,245 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GodMarket - Продать скины</title>
+    <title>GodMarket</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --bg: #0f0f1a;
+            --card: #1a1a2e;
+            --accent: #e94560;
+            --green: #4ecca3;
+            --text: #eee;
+            --muted: #888;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #1a1a2e;
-            color: #eee;
-            padding: 20px;
-            max-width: 400px;
+            background: var(--bg);
+            color: var(--text);
+            padding: 16px;
+            max-width: 420px;
             margin: 0 auto;
         }
-        .logo { text-align: center; font-size: 28px; font-weight: bold; margin: 30px 0 10px; color: #e94560; }
-        .subtitle { text-align: center; color: #aaa; margin-bottom: 30px; font-size: 14px; }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+        .logo { font-size: 32px; font-weight: 900; color: var(--accent); letter-spacing: -1px; }
+        .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
         .btn {
-            display: block; width: 100%; padding: 14px; margin: 10px 0;
-            border: none; border-radius: 10px; font-size: 16px; font-weight: bold;
-            cursor: pointer; text-align: center; transition: all 0.3s;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
         }
         .btn-steam { background: #2a475e; color: #c7d5e0; }
-        .btn-steam:hover { background: #3d6a8e; }
-        .btn-logout { background: #555; color: #ccc; }
-        .btn-logout:hover { background: #777; }
-        .btn-sell-skin {
-            background: #4ecca3; color: #1a1a2e; padding: 8px 16px;
-            border: none; border-radius: 6px; font-weight: bold; cursor: pointer;
-            font-size: 14px; transition: all 0.3s;
+        .btn-logout { background: #333; color: #aaa; }
+        .btn-refresh { background: #1e3a5f; color: #8ab4f8; }
+        .btn-sell-all {
+            background: var(--accent);
+            color: white;
+            font-size: 15px;
+            padding: 14px;
+            margin-top: 12px;
+            position: sticky;
+            bottom: 12px;
+            box-shadow: 0 4px 20px rgba(233,69,96,0.4);
         }
-        .btn-sell-skin:hover { background: #3dba8e; }
-        .btn-sell-skin:disabled { background: #555; color: #999; cursor: not-allowed; }
-        #inventory { margin-top: 20px; }
+        .btn-sell-all:disabled { background: #555; box-shadow: none; opacity: 0.6; }
+        .user-info {
+            text-align: center;
+            color: var(--green);
+            font-size: 11px;
+            margin-bottom: 12px;
+            background: rgba(78,204,163,0.1);
+            padding: 6px;
+            border-radius: 8px;
+        }
         .skin-item {
-            background: #16213e; border-radius: 8px; padding: 12px;
-            margin: 8px 0; display: flex; justify-content: space-between;
-            align-items: center; border-left: 4px solid #e94560;
-            gap: 10px;
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid var(--accent);
+            transition: all 0.2s;
         }
-        .skin-info { flex: 1; }
-        .skin-name { font-weight: bold; font-size: 14px; margin-bottom: 4px; }
-        .skin-market-price { color: #aaa; font-size: 12px; }
-        .skin-our-price { font-weight: bold; color: #4ecca3; font-size: 14px; white-space: nowrap; }
-        .user-info { text-align: center; color: #4ecca3; margin-bottom: 15px; font-size: 12px; }
-        .status { text-align: center; padding: 20px; color: #aaa; }
-        .error { color: #e94560; text-align: center; padding: 20px; }
-        .success { color: #4ecca3; text-align: center; padding: 20px; }
+        .skin-item.selected { border-left-color: var(--green); background: #1a2a2a; }
+        .skin-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--green);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .skin-info { flex: 1; min-width: 0; }
+        .skin-name {
+            font-weight: 700;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .skin-market { color: var(--muted); font-size: 11px; margin-top: 2px; }
+        .skin-our {
+            font-weight: 700;
+            color: var(--green);
+            font-size: 14px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .status {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--muted);
+        }
     </style>
 </head>
 <body>
-    <div class="logo">🎮 GodMarket</div>
-    <div class="subtitle">Продай скины быстро и выгодно</div>
+    <div class="header">
+        <div class="logo">🎮 GodMarket</div>
+        <div class="subtitle">Мгновенный выкуп скинов CS2</div>
+    </div>
 
     <div id="userInfo" class="user-info" style="display:none;"></div>
 
-    <button class="btn btn-steam" id="loginBtn" onclick="loginSteam()">🔐 Войти через Steam</button>
-    <button class="btn btn-logout" id="logoutBtn" style="display:none;" onclick="logout()">🚪 Выйти</button>
-    <button class="btn" id="refreshBtn" style="display:none; background: #2a475e; color: #c7d5e0;" onclick="refreshInventory()">🔄 Обновить инвентарь</button>
+    <div class="toolbar">
+        <button class="btn btn-steam" id="loginBtn" onclick="login()">🔐 Steam</button>
+        <button class="btn btn-logout" id="logoutBtn" style="display:none;" onclick="logout()">🚪</button>
+        <button class="btn btn-refresh" id="refreshBtn" style="display:none;" onclick="refresh()">🔄</button>
+    </div>
 
     <div id="inventory" style="display:none;">
         <div id="skinsList"></div>
+        <button class="btn btn-sell-all" id="sellBtn" onclick="sellSelected()" disabled>
+            💰 Продать выбранное (<span id="sellCount">0</span>)
+        </button>
     </div>
 
-    <div id="status" class="status">Войди через Steam, чтобы увидеть свои скины</div>
+    <div id="status" class="status">🔐 Войди через Steam</div>
 
     <script>
+        const API = 'https://attendant-esophagus-expand.ngrok-free.dev';
+        const H = { 'ngrok-skip-browser-warning': 'true' };
+
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.setHeaderColor('#1a1a2e');
-        tg.setBackgroundColor('#1a1a2e');
+        tg.setHeaderColor('#0f0f1a');
+        tg.setBackgroundColor('#0f0f1a');
 
-        let userSteamId = null;
+        let steamId = null;
+        let allSkins = [];
         let priceCache = {};
-        let descriptionsMap = {};
 
-        // Восстанавливаем Steam ID
-        const savedSteamId = localStorage.getItem('godmarket_steamid');
-        if (savedSteamId) {
-            userSteamId = savedSteamId;
-            showLoggedIn();
-            loadInventory();
-        }
+        const saved = localStorage.getItem('gm_steamid');
+        if (saved) { steamId = saved; showUI(); loadInventory(); }
 
-        function showLoggedIn() {
+        function showUI() {
             document.getElementById('loginBtn').style.display = 'none';
-            document.getElementById('logoutBtn').style.display = 'block';
-            document.getElementById('refreshBtn').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'inline-block';
+            document.getElementById('refreshBtn').style.display = 'inline-block';
             document.getElementById('userInfo').style.display = 'block';
-            document.getElementById('userInfo').innerHTML = '🟢 Steam ID: ' + userSteamId;
+            document.getElementById('userInfo').innerHTML = '🟢 ' + steamId;
         }
 
-        function showLoggedOut() {
-            document.getElementById('loginBtn').style.display = 'block';
+        function hideUI() {
+            document.getElementById('loginBtn').style.display = 'inline-block';
             document.getElementById('logoutBtn').style.display = 'none';
             document.getElementById('refreshBtn').style.display = 'none';
             document.getElementById('userInfo').style.display = 'none';
             document.getElementById('inventory').style.display = 'none';
         }
 
-        function loginSteam() {
-            const steamId = prompt('Введи свой Steam ID64:', '7656119XXXXXXXXXX');
-            if (steamId && steamId.length === 17) {
-                userSteamId = steamId;
-                localStorage.setItem('godmarket_steamid', steamId);
-                showLoggedIn();
+        function login() {
+            const id = prompt('Steam ID64:', steamId || '');
+            if (id && id.length === 17) {
+                steamId = id;
+                localStorage.setItem('gm_steamid', id);
+                showUI();
                 loadInventory();
-            } else {
-                alert('Неверный Steam ID. Должен быть 17 цифр.');
             }
         }
 
         function logout() {
-            localStorage.removeItem('godmarket_steamid');
-            userSteamId = null;
+            localStorage.removeItem('gm_steamid');
+            steamId = null;
+            allSkins = [];
             priceCache = {};
-            descriptionsMap = {};
-            showLoggedOut();
+            hideUI();
             document.getElementById('status').style.display = 'block';
-            document.getElementById('status').innerHTML = 'Войди через Steam, чтобы увидеть свои скины';
-            document.getElementById('status').className = 'status';
+            document.getElementById('status').innerHTML = '🔐 Войди через Steam';
         }
 
-        function refreshInventory() {
-            priceCache = {};
-            descriptionsMap = {};
-            loadInventory();
-        }
+        function refresh() { priceCache = {}; loadInventory(); }
 
-        async function getSkinPrice(marketHashName, retries = 2) {
-            if (priceCache[marketHashName]) return priceCache[marketHashName];
-            
-            for (let attempt = 0; attempt <= retries; attempt++) {
-                try {
-                    const response = await fetch(`/api/price?name=${encodeURIComponent(marketHashName)}`);
-                    const data = await response.json();
-                    if (data && data.lowest_price) {
-                        const price = parseFloat(data.lowest_price.replace(/[^0-9,]/g, '').replace(',', '.'));
-                        priceCache[marketHashName] = price;
-                        return price;
-                    }
-                    if (attempt < retries) {
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                    }
-                } catch (e) {
-                    if (attempt < retries) {
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                    }
+        async function fetchPrice(name) {
+            if (priceCache[name]) return priceCache[name];
+            try {
+                const r = await fetch(`${API}/api/price?name=${encodeURIComponent(name)}`, { headers: H });
+                const d = await r.json();
+                if (d.success) {
+                    priceCache[name] = { avg: d.avg_price, buy: d.buy_price };
+                    return priceCache[name];
                 }
-            }
+            } catch(e) {}
             return null;
         }
 
         async function loadInventory() {
-            document.getElementById('status').innerHTML = '⏳ Загружаю инвентарь...';
-            document.getElementById('status').className = 'status';
             document.getElementById('status').style.display = 'block';
-
+            document.getElementById('status').innerHTML = '⏳ Загрузка...';
             try {
-                const response = await fetch(`/api/inventory?steamid=${userSteamId}`);
-                const data = await response.json();
-
-                if (data.success && data.assets && data.assets.length > 0) {
-                    if (data.descriptions) {
-                        data.descriptions.forEach(desc => {
-                            const key = `${desc.classid}_${desc.instanceid}`;
-                            descriptionsMap[key] = desc.market_hash_name;
+                const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H });
+                const d = await r.json();
+                if (d.success && d.assets) {
+                    const descMap = {};
+                    if (d.descriptions) {
+                        d.descriptions.forEach(dd => {
+                            descMap[`${dd.classid}_${dd.instanceid}`] = dd.market_hash_name;
                         });
                     }
-                    await displayInventory(data.assets.slice(0, 10));
+                    allSkins = d.assets.slice(0, 20).map(a => ({
+                        assetId: a.assetid,
+                        classId: a.classid,
+                        instanceId: a.instanceid,
+                        name: descMap[`${a.classid}_${a.instanceid}`] || `Скин #${a.assetid}`,
+                        price: null
+                    }));
+                    await renderInventory();
                     document.getElementById('status').style.display = 'none';
                 } else {
-                    document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт.';
-                    document.getElementById('status').className = 'error';
+                    document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт';
                 }
-            } catch (e) {
-                document.getElementById('status').innerHTML = '❌ Ошибка: ' + e.message;
-                document.getElementById('status').className = 'error';
+            } catch(e) {
+                document.getElementById('status').innerHTML = '❌ Ошибка загрузки';
             }
         }
 
-        async function displayInventory(assets) {
+        async function renderInventory() {
             document.getElementById('inventory').style.display = 'block';
-
             const container = document.getElementById('skinsList');
-            container.innerHTML = '<div class="status">⏳ Загружаем цены...</div>';
+            container.innerHTML = '<div class="status">⏳ Считаем цены...</div>';
 
-            const skinItems = [];
-            for (const item of assets) {
-                const key = `${item.classid}_${item.instanceid}`;
-                const marketHashName = descriptionsMap[key] || `Скин #${item.assetid}`;
-                const marketPrice = await getSkinPrice(marketHashName);
-                const ourPrice = marketPrice ? (marketPrice * 0.80).toFixed(2) : '—';
-                const displayPrice = marketPrice ? `${marketPrice.toFixed(2)} ₽` : 'Нет цены';
-
-                skinItems.push({
-                    assetId: item.assetid,
-                    name: marketHashName,
-                    marketPrice: displayPrice,
-                    ourPrice: ourPrice,
-                    hasPrice: marketPrice !== null
-                });
+            for (const skin of allSkins) {
+                if (!skin.price) {
+                    const p = await fetchPrice(skin.name);
+                    skin.price = p ? p.buy : null;
+                    skin.avgPrice = p ? p.avg : null;
+                }
             }
 
-            container.innerHTML = skinItems.map(item => `
-                <div class="skin-item">
+            container.innerHTML = allSkins.map((s, i) => `
+                <div class="skin-item" id="skin-${i}" onclick="toggleSkin(${i})">
+                    <input type="checkbox" class="skin-checkbox" id="cb-${i}" onclick="event.stopPropagation(); toggleSkin(${i})">
                     <div class="skin-info">
-                        <div class="skin-name">🎨 ${item.name}</div>
-                        <div class="skin-market-price">Рынок: ${item.marketPrice}</div>
+                        <div class="skin-name">${s.name}</div>
+                        <div class="skin-market">Рынок: ${s.avgPrice ? s.avgPrice.toFixed(2) + ' ₽' : '—'}</div>
                     </div>
-                    <div style="text-align: right;">
-                        <div class="skin-our-price">${item.ourPrice !== '—' ? item.ourPrice + ' ₽' : '—'}</div>
-                        <button class="btn-sell-skin"
-                                ${!item.hasPrice ? 'disabled' : ''}
-                                onclick="sellSkin('${item.assetId}', '${item.name.replace(/'/g, "\\'")}', ${item.ourPrice === '—' ? 0 : item.ourPrice})">
-                            💰 Продать
-                        </button>
-                    </div>
+                    <div class="skin-our">${s.price ? s.price.toFixed(2) + ' ₽' : '—'}</div>
                 </div>
             `).join('');
+            updateSellButton();
         }
 
-        function sellSkin(assetId, name, price) {
+        function toggleSkin(i) {
+            const el = document.getElementById('skin-' + i);
+            const cb = document.getElementById('cb-' + i);
+            el.classList.toggle('selected');
+            cb.checked = el.classList.contains('selected');
+            updateSellButton();
+        }
+
+        function getSelected() {
+            return allSkins.filter((s, i) => {
+                const el = document.getElementById('skin-' + i);
+                return el && el.classList.contains('selected') && s.price !== null;
+            });
+        }
+
+        function updateSellButton() {
+            const sel = getSelected();
+            document.getElementById('sellCount').textContent = sel.length;
+            document.getElementById('sellBtn').disabled = sel.length === 0;
+        }
+
+        function sellSelected() {
+            const sel = getSelected();
+            if (sel.length === 0) return;
+            const total = sel.reduce((sum, s) => sum + s.price, 0).toFixed(2);
             tg.showPopup({
-                title: 'Подтверждение продажи',
-                message: `Продать "${name}" за ${price} ₽?`,
-                buttons: [
-                    {id: 'sell', type: 'ok', text: 'Продать'},
-                    {type: 'cancel', text: 'Отмена'}
-                ]
-            }, function(btnId) {
-                if (btnId === 'sell') {
+                title: 'Подтверждение',
+                message: `Продать ${sel.length} скинов за ${total} ₽?`,
+                buttons: [{id: 'ok', type: 'ok', text: 'Продать'}, {type: 'cancel'}]
+            }, async (btn) => {
+                if (btn === 'ok') {
                     tg.sendData(JSON.stringify({
                         action: 'sell',
-                        steamId: userSteamId,
-                        assetId: assetId,
-                        name: name,
-                        price: price
+                        steamId: steamId,
+                        skins: sel.map(s => ({
+                            assetId: s.assetId,
+                            name: s.name,
+                            price: s.price
+                        }))
                     }));
                     document.getElementById('status').style.display = 'block';
-                    document.getElementById('status').innerHTML = `✅ Заявка на продажу "${name}" принята!`;
-                    document.getElementById('status').className = 'success';
+                    document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
+                    document.getElementById('status').style.color = '#4ecca3';
                 }
             });
         }
