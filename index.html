@@ -26,19 +26,28 @@
         .btn-steam:hover { background: #3d6a8e; }
         .btn-sell { background: #e94560; color: white; }
         .btn-sell:hover { background: #ff6b81; }
+        .btn-sell-skin {
+            background: #4ecca3; color: #1a1a2e; padding: 8px 16px;
+            border: none; border-radius: 6px; font-weight: bold; cursor: pointer;
+            font-size: 14px; transition: all 0.3s;
+        }
+        .btn-sell-skin:hover { background: #3dba8e; }
+        .btn-sell-skin:disabled { background: #555; color: #999; cursor: not-allowed; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         #inventory { margin-top: 20px; }
         .skin-item {
             background: #16213e; border-radius: 8px; padding: 12px;
             margin: 8px 0; display: flex; justify-content: space-between;
             align-items: center; border-left: 4px solid #e94560;
+            gap: 10px;
         }
         .skin-info { flex: 1; }
         .skin-name { font-weight: bold; font-size: 14px; margin-bottom: 4px; }
-        .skin-price { color: #aaa; font-size: 12px; }
-        .skin-buy { font-weight: bold; color: #4ecca3; }
+        .skin-market-price { color: #aaa; font-size: 12px; }
+        .skin-our-price { font-weight: bold; color: #4ecca3; font-size: 14px; white-space: nowrap; }
         .status { text-align: center; padding: 20px; color: #aaa; }
         .error { color: #e94560; text-align: center; padding: 20px; }
+        .success { color: #4ecca3; text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
@@ -49,7 +58,6 @@
 
     <div id="inventory" style="display:none;">
         <div id="skinsList"></div>
-        <button class="btn btn-sell" id="sellAllBtn" onclick="sellAll()" style="display:none;">💰 Продать всё</button>
     </div>
 
     <div id="status" class="status">Войди через Steam, чтобы увидеть свои скины</div>
@@ -62,6 +70,7 @@
 
         let userSteamId = null;
         let userInventory = [];
+        let priceCache = {};
 
         function loginSteam() {
             const steamId = prompt('Введи свой Steam ID64 (временно):', '7656119XXXXXXXXXX');
@@ -73,19 +82,46 @@
             }
         }
 
+        // Получаем название скина по assetid из описаний
+        function getSkinName(assetId) {
+            // Пока возвращаем заглушку, потом можно спарсить descriptions
+            return `Скин #${assetId}`;
+        }
+
+        // Получаем цену скина из Steam Market
+        async function getSkinPrice(marketHashName) {
+            if (priceCache[marketHashName]) {
+                return priceCache[marketHashName];
+            }
+            try {
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const steamUrl = `https://steamcommunity.com/market/priceoverview/?appid=730&currency=5&market_hash_name=${encodeURIComponent(marketHashName)}`;
+                const response = await fetch(proxyUrl + encodeURIComponent(steamUrl));
+                const data = await response.json();
+                if (data && data.lowest_price) {
+                    const price = parseFloat(data.lowest_price.replace(/[^0-9,]/g, '').replace(',', '.'));
+                    priceCache[marketHashName] = price;
+                    return price;
+                }
+            } catch (e) {
+                console.error('Ошибка получения цены:', e);
+            }
+            return null;
+        }
+
         async function loadInventory() {
             document.getElementById('status').innerHTML = '⏳ Загружаю инвентарь...';
             document.getElementById('status').className = 'status';
 
             try {
-                // Запрашиваем через наш сервер (избегаем CORS)
-                const url = `/api/inventory?steamid=${userSteamId}`;
-                const response = await fetch(url);
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const steamUrl = `https://steamcommunity.com/inventory/${userSteamId}/730/2?l=english&count=50`;
+                const response = await fetch(proxyUrl + encodeURIComponent(steamUrl));
                 const data = await response.json();
 
                 if (data.success && data.assets && data.assets.length > 0) {
                     userInventory = data.assets;
-                    displayInventory();
+                    await displayInventory();
                     document.getElementById('status').style.display = 'none';
                 } else {
                     document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт.';
@@ -97,32 +133,69 @@
             }
         }
 
-        function displayInventory() {
+        async function displayInventory() {
             document.getElementById('inventory').style.display = 'block';
             document.getElementById('loginBtn').style.display = 'none';
-            document.getElementById('sellAllBtn').style.display = 'block';
 
             const container = document.getElementById('skinsList');
-            container.innerHTML = userInventory.slice(0, 10).map((item, index) => {
-                const marketPrice = (Math.random() * 5000 + 100).toFixed(2);
-                const buyPrice = (marketPrice * 0.80).toFixed(2);
-                return `
-                    <div class="skin-item">
-                        <div class="skin-info">
-                            <div class="skin-name">🎨 Скин #${item.assetid}</div>
-                            <div class="skin-price">Рынок: ${marketPrice} ₽</div>
-                        </div>
-                        <div class="skin-buy">Выкуп: ${buyPrice} ₽</div>
+            container.innerHTML = '<div class="status">⏳ Загружаем цены...</div>';
+
+            const itemsToShow = userInventory.slice(0, 10);
+            const skinItems = [];
+
+            for (const item of itemsToShow) {
+                const marketHashName = item.markethashname || `Скин #${item.assetid}`;
+                const marketPrice = await getSkinPrice(marketHashName);
+                const ourPrice = marketPrice ? (marketPrice * 0.80).toFixed(2) : '—';
+                const displayPrice = marketPrice ? `${marketPrice.toFixed(2)} ₽` : 'Нет цены';
+
+                skinItems.push({
+                    assetId: item.assetid,
+                    name: marketHashName,
+                    marketPrice: displayPrice,
+                    ourPrice: ourPrice
+                });
+            }
+
+            container.innerHTML = skinItems.map(item => `
+                <div class="skin-item">
+                    <div class="skin-info">
+                        <div class="skin-name">🎨 ${item.name}</div>
+                        <div class="skin-market-price">Рынок: ${item.marketPrice}</div>
                     </div>
-                `;
-            }).join('');
+                    <div style="text-align: right;">
+                        <div class="skin-our-price">${item.ourPrice !== '—' ? item.ourPrice + ' ₽' : '—'}</div>
+                        <button class="btn-sell-skin"
+                                ${item.ourPrice === '—' ? 'disabled' : ''}
+                                onclick="sellSkin('${item.assetId}', '${item.name}', ${item.ourPrice})">
+                            💰 Продать
+                        </button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function sellAll() {
+        function sellSkin(assetId, name, price) {
             tg.showPopup({
-                title: 'Продажа скинов',
-                message: 'Эта функция появится позже. Мы работаем над этим!',
-                buttons: [{type: 'ok'}]
+                title: 'Подтверждение продажи',
+                message: `Продать "${name}" за ${price} ₽?`,
+                buttons: [
+                    {id: 'sell', type: 'ok', text: 'Продать'},
+                    {type: 'cancel', text: 'Отмена'}
+                ]
+            }, function(btnId) {
+                if (btnId === 'sell') {
+                    // Отправляем данные в бота
+                    tg.sendData(JSON.stringify({
+                        action: 'sell',
+                        steamId: userSteamId,
+                        assetId: assetId,
+                        name: name,
+                        price: price
+                    }));
+                    document.getElementById('status').innerHTML = `✅ Заявка на продажу "${name}" принята!`;
+                    document.getElementById('status').className = 'success';
+                }
             });
         }
     </script>
