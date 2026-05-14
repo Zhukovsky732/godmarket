@@ -36,7 +36,7 @@
         .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
         .tab {
             flex: 1; padding: 10px; border: none; border-radius: 10px;
-            font-weight: 700; font-size: 13px; cursor: pointer; text-align: center;
+            font-weight: 700; font-size: 12px; cursor: pointer; text-align: center;
             background: #1a1a2e; color: var(--muted); transition: all 0.2s;
         }
         .tab.active { background: var(--accent); color: white; }
@@ -49,6 +49,7 @@
         .btn-steam { background: #2a475e; color: #c7d5e0; }
         .btn-logout { background: #333; color: #aaa; }
         .btn-refresh { background: #1e3a5f; color: #8ab4f8; }
+        .btn-chat { background: #2a475e; color: #c7d5e0; }
         .btn-sell-all {
             background: var(--accent); color: white; font-size: 15px;
             padding: 14px; margin-top: 12px; position: sticky; bottom: 12px;
@@ -144,6 +145,7 @@
         <button class="btn btn-steam" id="loginBtn" onclick="login()">🔐 Steam</button>
         <button class="btn btn-logout" id="logoutBtn" style="display:none;" onclick="logout()">🚪</button>
         <button class="btn btn-refresh" id="refreshBtn" style="display:none;" onclick="refresh()">🔄</button>
+        <button class="btn btn-chat" onclick="openChat()">💬 Поддержка</button>
     </div>
 
     <div id="panelSell" class="panel active">
@@ -172,85 +174,85 @@
             <h2>📄 Условия использования GodMarket</h2>
             <p><i>Последнее обновление: 14 мая 2026 г.</i></p>
             <h3>1. Общие положения</h3>
-            <p>1.1. Сервис GodMarket (далее — «Сервис») осуществляет покупку виртуальных предметов (скинов) для игры Counter-Strike 2 у Пользователей.</p>
-            <p>1.2. Используя Сервис, вы подтверждаете, что ознакомились с Условиями и полностью принимаете их. Если вы не согласны — не используйте Сервис.</p>
-            <p>1.3. Администратор оставляет за собой право в любое время изменить Условия, приостановить или прекратить работу Сервиса.</p>
-            <p>1.4. Сервис использует Steam API для авторизации и получения данных об инвентаре, но не является официальным партнёром Valve Corporation. Все товарные знаки принадлежат их владельцам.</p>
-            <p>1.5. Все цены указаны в российских рублях (₽). Минимальная сумма выкупа — 10 ₽.</p>
-            <h3>2. Кто может использовать Сервис</h3>
-            <p>2.1. Пользователь должен быть совершеннолетним (18+). Лица от 15 до 18 лет — только с согласия законного представителя.</p>
-            <p>2.2. Пользователь гарантирует, что использование Сервиса не нарушает законодательство его страны проживания.</p>
-            <p>2.3. Пользователь гарантирует, что продаваемые предметы принадлежат ему на законных основаниях.</p>
+            <p>1.1. Сервис GodMarket осуществляет покупку виртуальных предметов (скинов) для игры Counter-Strike 2 у Пользователей.</p>
+            <p>1.2. Используя Сервис, вы принимаете Условия. Если не согласны — не используйте.</p>
+            <p>1.3. Администратор вправе изменить Условия, приостановить или прекратить работу Сервиса.</p>
+            <p>1.4. Сервис использует Steam API, но не является партнёром Valve Corporation. Все товарные знаки принадлежат их владельцам.</p>
+            <p>1.5. Все цены в российских рублях (₽). Минимальная сумма выкупа — 10 ₽.</p>
+            <h3>2. Кто может использовать</h3>
+            <p>2.1. Пользователь должен быть совершеннолетним (18+). Лица 15-18 лет — с согласия представителя.</p>
+            <p>2.2. Пользователь гарантирует, что использование Сервиса не нарушает законы его страны.</p>
+            <p>2.3. Продаваемые предметы должны принадлежать Пользователю на законных основаниях.</p>
             <h3>3. Вход через Steam</h3>
-            <p>3.1. Пользователь входит в Сервис через свою учётную запись Steam.</p>
-            <p>3.2. Запрещено использовать чужую учётную запись Steam.</p>
-            <p>3.3. Для совершения сделок требуется мобильный аутентификатор Steam, активированный не менее 7 дней назад.</p>
-            <h3>4. Процесс сделки (Продажа скинов)</h3>
-            <p>4.1. После входа Пользователю показывается список его скинов и цена выкупа за каждый.</p>
-            <p>4.2. Пользователь выбирает скины, указывает способ оплаты и реквизиты, и принимает предложение Администратора.</p>
-            <p>4.3. Пользователь должен принять ТОЛЬКО тот трейд-оффер, который отправлен Сервисом. Принятие любого другого оффера аннулирует сделку.</p>
-            <p>4.4. Выплата производится через 8 (восемь) дней после успешного получения скинов Администратором. Это связано с правилами Steam Trade Protection.</p>
-            <p>4.5. Если в течение 7 дней трейд был отменён через Steam, выплата аннулируется.</p>
+            <p>3.1. Вход через учётную запись Steam.</p>
+            <p>3.2. Запрещено использовать чужую учётную запись.</p>
+            <p>3.3. Требуется мобильный аутентификатор Steam, активированный не менее 7 дней назад.</p>
+            <h3>4. Процесс сделки</h3>
+            <p>4.1. После входа показывается список скинов и цена выкупа.</p>
+            <p>4.2. Пользователь выбирает скины, способ оплаты и реквизиты.</p>
+            <p>4.3. Принимать ТОЛЬКО трейд-оффер от Сервиса.</p>
+            <p>4.4. Выплата — в течение 8 дней после получения скинов (правила Steam Trade Protection).</p>
+            <p>4.5. Если трейд отменён через Steam в течение 7 дней — выплата аннулируется.</p>
+            <p>4.6. Если выплата не произведена за 8 дней, у Сервиса есть ещё 20 дней (до 28-го дня).</p>
+            <p>4.7. Неликвид (менее 20 продаж в месяц) не выкупается.</p>
             <h3>5. Способы оплаты</h3>
-            <p>5.1. СБП (Система быстрых платежей) — только для РФ. Перевод по номеру телефона.</p>
-            <p>5.2. Банковская карта — только для РФ.</p>
-            <p>5.3. USDT (BEP20) — криптовалюта, сеть BEP20.</p>
-            <p>5.4. USDT (TON) — криптовалюта, сеть TON. Комиссия сети: $0.10.</p>
-            <p>5.5. Пользователь несёт ответственность за правильность указанных реквизитов.</p>
-            <h3>6. Ограничение ответственности</h3>
-            <p>6.1. Сервис не несёт ответственности за задержки выплат, вызванные блокировками Steam, банков или платёжных систем.</p>
-            <p>6.2. Сервис не возмещает ущерб за украденные или утерянные предметы.</p>
-            <p>6.3. В случае подозрения на мошенничество или нарушение правил Steam, Администратор вправе отменить сделку и/или заблокировать Пользователя.</p>
-            <p>6.4. Все споры решаются путём переговоров. При недостижении согласия — в соответствии с применимым законодательством.</p>
+            <p>5.1. СБП — только РФ, 11 цифр номера телефона.</p>
+            <p>5.2. Карта — только РФ, 16 цифр номера.</p>
+            <p>5.3. USDT (BEP20).</p>
+            <p>5.4. USDT (TON), комиссия сети $0.10.</p>
+            <h3>6. Ответственность</h3>
+            <p>6.1. Сервис не отвечает за задержки из-за Steam, банков, платёжных систем.</p>
+            <p>6.2. Сервис не возмещает ущерб за украденные/утерянные предметы.</p>
+            <p>6.3. При подозрении на мошенничество — отмена сделки и/или блокировка.</p>
             <h3>7. Контакты</h3>
-            <p>По всем вопросам: <b>godmarketsupport@gmail.com</b></p>
+            <p>godmarketsupport@gmail.com</p>
             <button class="modal-close" onclick="closeModal('terms')">Закрыть</button>
         </div>
     </div>
 
     <div id="modal-privacy" class="modal">
         <div class="modal-content">
-            <h2>🔒 Политика конфиденциальности GodMarket</h2>
-            <p><i>Последнее обновление: 14 мая 2026 г.</i></p>
-            <h3>1. Какие данные мы собираем</h3>
-            <p>1.1. Steam ID — для идентификации пользователя и загрузки инвентаря.</p>
-            <p>1.2. Платёжные реквизиты — номер телефона (СБП), номер карты или крипто-адрес — исключительно для осуществления выплаты.</p>
-            <p>1.3. Данные о сделках — список проданных скинов, суммы, даты.</p>
-            <p>1.4. Автоматически собираемые данные: IP-адрес, тип браузера, время входа (только для статистики и безопасности).</p>
-            <h3>2. Как мы используем данные</h3>
-            <p>2.1. Исключительно для выполнения сделки: обработка заявки, отправка трейд-оффера, осуществление выплаты.</p>
-            <p>2.2. Данные не передаются третьим лицам, за исключением случаев, предусмотренных законом.</p>
-            <p>2.3. Данные о сделках хранятся локально на устройстве Пользователя (localStorage браузера). Сервис не хранит копии реквизитов на своих серверах.</p>
-            <p>2.4. Пользователь может в любой момент удалить свои данные, нажав кнопку «Выйти» в приложении или очистив данные браузера.</p>
-            <h3>3. Хранение данных</h3>
-            <p>3.1. Сервис не хранит пользовательские данные на своих серверах. Вся информация остаётся на устройстве Пользователя.</p>
-            <p>3.2. По вопросам, связанным с данными, пишите на <b>godmarketsupport@gmail.com</b>.</p>
-            <h3>4. Защита данных</h3>
-            <p>4.1. Мы принимаем меры для защиты данных от несанкционированного доступа, изменения или удаления.</p>
-            <p>4.2. Доступ к персональным данным имеет только ограниченный круг уполномоченных лиц.</p>
+            <h2>🔒 Политика конфиденциальности</h2>
+            <p><i>14 мая 2026 г.</i></p>
+            <h3>1. Какие данные собираем</h3>
+            <p>1.1. Steam ID — для загрузки инвентаря.</p>
+            <p>1.2. Платёжные реквизиты — для выплаты.</p>
+            <p>1.3. Данные о сделках.</p>
+            <p>1.4. IP, браузер, время входа — для статистики и безопасности.</p>
+            <h3>2. Использование</h3>
+            <p>2.1. Только для выполнения сделки.</p>
+            <p>2.2. Третьим лицам не передаются (кроме как по закону).</p>
+            <p>2.3. Данные хранятся локально на устройстве (localStorage). Сервер копий не хранит.</p>
+            <p>2.4. Удалить данные можно кнопкой «Выйти» или очисткой браузера.</p>
+            <h3>3. Хранение</h3>
+            <p>3.1. Сервис не хранит данные на своих серверах.</p>
+            <p>3.2. Вопросы: godmarketsupport@gmail.com</p>
+            <h3>4. Защита</h3>
+            <p>4.1. Принимаем меры для защиты данных.</p>
             <h3>5. Контакты</h3>
-            <p>По вопросам конфиденциальности: <b>godmarketsupport@gmail.com</b></p>
+            <p>godmarketsupport@gmail.com</p>
             <button class="modal-close" onclick="closeModal('privacy')">Закрыть</button>
         </div>
     </div>
 
     <div id="modal-refund" class="modal">
         <div class="modal-content">
-            <h2>↩️ Возврат и отмена сделок</h2>
-            <p><i>Последнее обновление: 14 мая 2026 г.</i></p>
-            <h3>1. Отмена сделки пользователем</h3>
-            <p>1.1. Пользователь может отменить сделку до отправки трейд-оффера.</p>
-            <p>1.2. После отправки трейд-оффера сделка считается заключённой.</p>
-            <h3>2. Защита обмена (Steam Trade Protection)</h3>
-            <p>2.1. Согласно правилам Steam, все обмены защищены 7-дневным периодом Trade Protection.</p>
-            <p>2.2. Выплата производится на 8-й день после подтверждения трейд-оффера.</p>
-            <p>2.3. Если в течение 7 дней трейд был отменён через Steam, выплата аннулируется.</p>
-            <h3>3. Chargeback (отмена платежа)</h3>
-            <p>3.1. Если Пользователь инициирует отмену платежа через банк после получения денег, это рассматривается как нарушение добросовестности.</p>
-            <p>3.2. Сервис оставляет за собой право заблокировать Пользователя навсегда и потребовать компенсацию убытков в соответствии с применимым законодательством.</p>
-            <h3>4. Возврат средств</h3>
-            <p>4.1. Если выплата не произведена в течение 10 дней после оговоренного срока (8 дней + 2 дня на обработку), Пользователь вправе потребовать компенсацию, написав на <b>godmarketsupport@gmail.com</b>.</p>
-            <p>4.2. Все споры решаются путём переговоров. При недостижении согласия — в соответствии с применимым законодательством.</p>
+            <h2>↩️ Возврат и отмена</h2>
+            <p><i>14 мая 2026 г.</i></p>
+            <h3>1. Отмена</h3>
+            <p>1.1. Можно отменить до отправки трейд-оффера.</p>
+            <p>1.2. После отправки — сделка заключена.</p>
+            <h3>2. Сроки выплаты</h3>
+            <p>2.1. Стандартный срок — 8 дней.</p>
+            <p>2.2. Дополнительно 20 дней (до 28-го дня), если не успели.</p>
+            <p>2.3. Отмена трейда через Steam в течение 7 дней — выплата аннулируется.</p>
+            <h3>3. Компенсация</h3>
+            <p>3.1. Если прошло 30 дней, а выплаты нет — Пользователь вправе требовать компенсацию и возврат средств.</p>
+            <p>3.2. Писать на godmarketsupport@gmail.com с датой сделки и Steam ID.</p>
+            <p>3.3. Сервис рассматривает требование в течение 5 рабочих дней.</p>
+            <h3>4. Chargeback</h3>
+            <p>4.1. Отмена платежа через банк = нарушение.</p>
+            <p>4.2. Сервис вправе заблокировать Пользователя и требовать компенсацию убытков.</p>
             <button class="modal-close" onclick="closeModal('refund')">Закрыть</button>
         </div>
     </div>
@@ -271,8 +273,8 @@
         if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
         renderDeals();
 
-        function openModal(type) { document.getElementById('modal-' + type).classList.add('open'); }
-        function closeModal(type) { document.getElementById('modal-' + type).classList.remove('open'); }
+        function openModal(t) { document.getElementById('modal-'+t).classList.add('open'); }
+        function closeModal(t) { document.getElementById('modal-'+t).classList.remove('open'); }
 
         function switchTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -305,22 +307,12 @@
 
         function login() {
             const id = prompt('Steam ID64:', steamId || '');
-            if (id && id.length === 17) {
-                steamId = id;
-                localStorage.setItem('gm_steamid', id);
-                showUI();
-                loadInventory();
-                fetchRate();
-            }
+            if (id && id.length === 17) { steamId = id; localStorage.setItem('gm_steamid', id); showUI(); loadInventory(); fetchRate(); }
         }
 
         function logout() {
-            localStorage.removeItem('gm_steamid');
-            steamId = null;
-            groupedSkins = [];
-            priceCache = {};
-            hideUI();
-            document.getElementById('status').style.display = 'block';
+            localStorage.removeItem('gm_steamid'); steamId = null; groupedSkins = []; priceCache = {};
+            hideUI(); document.getElementById('status').style.display = 'block';
             document.getElementById('status').innerHTML = '🔐 Войди через Steam';
         }
 
@@ -330,37 +322,25 @@
             try {
                 const r = await fetch(`${API}/api/price?name=AK-47`, { headers: H });
                 const d = await r.json();
-                if (d.rate) {
-                    localStorage.setItem('gm_rate', d.rate);
-                    document.getElementById('rateInfo').style.display = 'block';
-                    document.getElementById('rateInfo').innerHTML = '💱 Курс: ' + d.rate.toFixed(2) + ' ₽/$';
-                }
+                if (d.rate) { localStorage.setItem('gm_rate', d.rate); document.getElementById('rateInfo').style.display = 'block';
+                    document.getElementById('rateInfo').innerHTML = '💱 Курс: ' + d.rate.toFixed(2) + ' ₽/$'; }
             } catch(e) {}
         }
 
         async function fetchPrice(name) {
             if (priceCache[name]) return priceCache[name];
-            try {
-                const r = await fetch(`${API}/api/price?name=${encodeURIComponent(name)}`, { headers: H });
-                const d = await r.json();
-                if (d.success) { priceCache[name] = d.buy_price; return d.buy_price; }
-            } catch(e) {}
+            try { const r = await fetch(`${API}/api/price?name=${encodeURIComponent(name)}`, { headers: H }); const d = await r.json();
+                if (d.success) { priceCache[name] = d.buy_price; return d.buy_price; } } catch(e) {}
             return null;
         }
 
         async function loadInventory() {
-            document.getElementById('status').style.display = 'block';
-            document.getElementById('status').innerHTML = '⏳ Загрузка...';
+            document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '⏳ Загрузка...';
             try {
-                const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H });
-                const d = await r.json();
+                const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H }); const d = await r.json();
                 if (d.success && d.assets) {
                     const descMap = {};
-                    if (d.descriptions) {
-                        d.descriptions.forEach(dd => {
-                            descMap[`${dd.classid}_${dd.instanceid}`] = dd.market_hash_name;
-                        });
-                    }
+                    if (d.descriptions) d.descriptions.forEach(dd => { descMap[`${dd.classid}_${dd.instanceid}`] = dd.market_hash_name; });
                     const groupMap = {};
                     d.assets.forEach(a => {
                         const name = descMap[`${a.classid}_${a.instanceid}`] || `Скин #${a.assetid}`;
@@ -369,14 +349,9 @@
                     });
                     groupedSkins = Object.values(groupMap);
                     for (const g of groupedSkins) { g.price = await fetchPrice(g.name); }
-                    renderInventory();
-                    document.getElementById('status').style.display = 'none';
-                } else {
-                    document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт';
-                }
-            } catch(e) {
-                document.getElementById('status').innerHTML = '❌ Ошибка загрузки';
-            }
+                    renderInventory(); document.getElementById('status').style.display = 'none';
+                } else { document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт'; }
+            } catch(e) { document.getElementById('status').innerHTML = '❌ Ошибка загрузки'; }
         }
 
         function renderInventory() {
@@ -407,244 +382,130 @@
         }
 
         function getSelectedItems() {
-            const result = [];
-            groupedSkins.forEach(g => {
-                if (g.selectedQty > 0 && g.price !== null) {
-                    for (let j = 0; j < g.selectedQty; j++) {
-                        result.push({ assetId: g.assetIds[j], name: g.name, price: g.price });
-                    }
-                }
-            });
-            return result;
+            const r = []; groupedSkins.forEach(g => { if (g.selectedQty > 0 && g.price !== null) for (let j=0; j<g.selectedQty; j++) r.push({ assetId: g.assetIds[j], name: g.name, price: g.price }); });
+            return r;
         }
 
-        function updateSellButton() {
-            const sel = getSelectedItems();
-            document.getElementById('sellCount').textContent = sel.length;
-            document.getElementById('sellBtn').disabled = sel.length === 0;
-        }
+        function updateSellButton() { const s = getSelectedItems(); document.getElementById('sellCount').textContent = s.length; document.getElementById('sellBtn').disabled = s.length === 0; }
 
         function sellSelected() {
-            const sel = getSelectedItems();
-            if (sel.length === 0) return;
-            const total = sel.reduce((sum, s) => sum + s.price, 0).toFixed(2);
-            const grouped = {};
-            sel.forEach(s => {
-                if (!grouped[s.name]) grouped[s.name] = { name: s.name, count: 0, price: s.price };
-                grouped[s.name].count++;
-            });
-            const skinsSummary = Object.values(grouped).map(g => `${g.name} ×${g.count}`).join('\n');
-            showPaymentMethods(sel, total, skinsSummary);
+            const sel = getSelectedItems(); if (sel.length === 0) return;
+            const total = sel.reduce((s, x) => s + x.price, 0).toFixed(2);
+            const grp = {}; sel.forEach(s => { if (!grp[s.name]) grp[s.name] = { name: s.name, count: 0, price: s.price }; grp[s.name].count++; });
+            showPaymentMethods(sel, total, Object.values(grp).map(g => `${g.name} ×${g.count}`).join('\n'));
         }
 
-        function showPaymentMethods(skins, total, skinsSummary) {
-            const overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:999;display:flex;align-items:center;justify-content:center;';
-            overlay.id = 'paymentOverlay';
-            overlay.innerHTML = `
-                <div style="background:#1a1a2e;border-radius:16px;padding:20px;width:90%;max-width:360px;color:#eee;">
-                    <h3 style="color:#e94560;margin-bottom:8px;">💰 Выберите метод выплаты</h3>
-                    <p style="font-size:13px;color:#aaa;margin-bottom:4px;">Скины: ${skinsSummary.replace(/\n/g, '<br>')}</p>
-                    <p style="font-size:16px;font-weight:700;color:#4ecca3;margin-bottom:16px;">Сумма: ${total} ₽</p>
-                    <button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">📱 СБП</button>
-                    <button onclick="chooseBank('card')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💳 Карта</button>
-                    <button onclick="confirmPayment('usdt-bep20', 'BEP20')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">🪙 USDT (BEP20)</button>
-                    <button onclick="confirmPayment('usdt-ton', 'TON')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💎 USDT (TON)</button>
-                    <button onclick="closePayment()" style="display:block;width:100%;padding:12px;margin:6px 0;background:#333;color:#aaa;border:none;border-radius:8px;font-size:14px;cursor:pointer;">❌ Отмена</button>
-                </div>`;
-            document.body.appendChild(overlay);
-            window._pendingDeal = { skins, total, skinsSummary };
+        function showPaymentMethods(skins, total, summary) {
+            const ov = document.createElement('div');
+            ov.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:999;display:flex;align-items:center;justify-content:center;';
+            ov.id = 'po'; ov.innerHTML = `<div style="background:#1a1a2e;border-radius:16px;padding:20px;width:90%;max-width:360px;color:#eee;">
+                <h3 style="color:#e94560;margin-bottom:8px;">💰 Выберите метод выплаты</h3>
+                <p style="font-size:13px;color:#aaa;margin-bottom:4px;">Скины: ${summary.replace(/\n/g,'<br>')}</p>
+                <p style="font-size:16px;font-weight:700;color:#4ecca3;margin-bottom:16px;">Сумма: ${total} ₽</p>
+                <button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">📱 СБП</button>
+                <button onclick="chooseBank('card')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💳 Карта</button>
+                <button onclick="confirmPayment('usdt-bep20','BEP20')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">🪙 USDT (BEP20)</button>
+                <button onclick="confirmPayment('usdt-ton','TON')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💎 USDT (TON)</button>
+                <button onclick="closePayment()" style="display:block;width:100%;padding:12px;margin:6px 0;background:#333;color:#aaa;border:none;border-radius:8px;font-size:14px;cursor:pointer;">❌ Отмена</button>
+            </div>`; document.body.appendChild(ov); window._pd = { skins, total };
         }
 
-        function closePayment() { const el = document.getElementById('paymentOverlay'); if (el) el.remove(); }
-
-        function chooseBank(method) {
-            closePayment();
-            const deal = window._pendingDeal;
-            if (!deal) return;
-            const methodLabel = method === 'sbp' ? 'СБП' : 'Карта';
-            const banks = ['Сбербанк', 'Т-Банк', 'ВТБ', 'Альфа-Банк', 'Райффайзен', 'Другой'];
-            const overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:999;display:flex;align-items:center;justify-content:center;';
-            overlay.id = 'bankOverlay';
-            overlay.innerHTML = `
-                <div style="background:#1a1a2e;border-radius:16px;padding:20px;width:90%;max-width:360px;color:#eee;">
-                    <h3 style="color:#e94560;margin-bottom:12px;">🏦 Выбери банк (${methodLabel})</h3>
-                    ${banks.map(b => `<button onclick="confirmPayment('${method}', '${b}')" style="display:block;width:100%;padding:10px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">${b}</button>`).join('')}
-                    <button onclick="closeBank()" style="display:block;width:100%;padding:10px;margin:4px 0;background:#333;color:#aaa;border:none;border-radius:8px;font-size:14px;cursor:pointer;">❌ Отмена</button>
-                </div>`;
-            document.body.appendChild(overlay);
+        function closePayment() { const e = document.getElementById('po'); if (e) e.remove(); }
+        function chooseBank(m) {
+            closePayment(); const d = window._pd; if (!d) return;
+            const banks = ['Сбербанк','Т-Банк','ВТБ','Альфа-Банк','Райффайзен','Другой'];
+            const ov = document.createElement('div'); ov.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:999;display:flex;align-items:center;justify-content:center;'; ov.id = 'bo';
+            ov.innerHTML = `<div style="background:#1a1a2e;border-radius:16px;padding:20px;width:90%;max-width:360px;color:#eee;">
+                <h3 style="color:#e94560;margin-bottom:12px;">🏦 Выбери банк (${m==='sbp'?'СБП':'Карта'})</h3>
+                ${banks.map(b => `<button onclick="confirmPayment('${m}','${b}')" style="display:block;width:100%;padding:10px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">${b}</button>`).join('')}
+                <button onclick="closeBank()" style="display:block;width:100%;padding:10px;margin:4px 0;background:#333;color:#aaa;border:none;border-radius:8px;font-size:14px;cursor:pointer;">❌ Отмена</button>
+            </div>`; document.body.appendChild(ov);
         }
+        function closeBank() { const e = document.getElementById('bo'); if (e) e.remove(); }
 
-        function closeBank() { const el = document.getElementById('bankOverlay'); if (el) el.remove(); }
-
-        function confirmPayment(method, networkOrBank) {
-            closePayment();
-            closeBank();
-            const deal = window._pendingDeal;
-            if (!deal) return;
-
-            let methodName, promptText, hint, isCrypto = false, fee = 0, needBankName = false;
-
-            if (method === 'sbp') {
-                methodName = 'СБП (только РФ)';
-                if (networkOrBank === 'Другой') {
-                    needBankName = true;
-                    promptText = 'Введи название банка:';
-                } else {
-                    promptText = `Банк: ${networkOrBank}\n\nВведи номер телефона (11 цифр):`;
-                }
-                hint = `СБП (${networkOrBank}): `;
-            } else if (method === 'card') {
-                methodName = 'Карта (только РФ)';
-                if (networkOrBank === 'Другой') {
-                    needBankName = true;
-                    promptText = 'Введи название банка:';
-                } else {
-                    promptText = `Банк: ${networkOrBank}\n\nВведи номер карты (16 цифр):`;
-                }
-                hint = `Карта (${networkOrBank}): `;
-            } else if (method === 'usdt-bep20') {
-                methodName = 'USDT (BEP20)';
-                isCrypto = true;
-                promptText = 'Введи адрес кошелька USDT (BEP20):';
-                hint = 'USDT (BEP20): ';
-            } else if (method === 'usdt-ton') {
-                methodName = 'USDT (TON)';
-                isCrypto = true;
-                fee = 0.1;
-                promptText = 'Введи адрес кошелька USDT (TON):';
-                hint = 'USDT (TON): ';
-            }
+        function confirmPayment(method, bank) {
+            closePayment(); closeBank(); const d = window._pd; if (!d) return;
+            let mn, pt, hint, isCrypto = false, fee = 0, needBank = false;
+            if (method === 'sbp') { mn = 'СБП (только РФ)'; if (bank === 'Другой') { needBank = true; pt = 'Введи название банка:'; } else { pt = `Банк: ${bank}\n\nВведи номер телефона (11 цифр):`; } hint = `СБП (${bank}): `; }
+            else if (method === 'card') { mn = 'Карта (только РФ)'; if (bank === 'Другой') { needBank = true; pt = 'Введи название банка:'; } else { pt = `Банк: ${bank}\n\nВведи номер карты (16 цифр):`; } hint = `Карта (${bank}): `; }
+            else if (method === 'usdt-bep20') { mn = 'USDT (BEP20)'; isCrypto = true; pt = 'Введи адрес кошелька:'; hint = 'USDT (BEP20): '; }
+            else if (method === 'usdt-ton') { mn = 'USDT (TON)'; isCrypto = true; fee = 0.1; pt = 'Введи адрес кошелька:'; hint = 'USDT (TON): '; }
 
             let detail;
-            if (needBankName) {
-                const bankName = prompt('Другой банк\n\nВведи название банка:', '');
-                if (!bankName || bankName.trim() === '') { alert('Не указан банк.'); return; }
-                networkOrBank = bankName.trim();
-                hint = `${method === 'sbp' ? 'СБП' : 'Карта'} (${networkOrBank}): `;
-                if (method === 'sbp') {
-                    detail = prompt(`СБП (только РФ)\n\nБанк: ${networkOrBank}\n\nВведи номер телефона (ровно 11 цифр):`, '');
-                    if (!detail || !/^\d{11}$/.test(detail.trim())) { alert('Номер телефона должен содержать ровно 11 цифр.'); return; }
-                } else {
-                    detail = prompt(`Карта (только РФ)\n\nБанк: ${networkOrBank}\n\nВведи номер карты (ровно 16 цифр):`, '');
-                    if (!detail || !/^\d{16}$/.test(detail.trim())) { alert('Номер карты должен содержать ровно 16 цифр.'); return; }
-                }
+            if (needBank) {
+                const bn = prompt('Другой банк\n\nВведи название банка:', ''); if (!bn || !bn.trim()) { alert('Не указан банк.'); return; }
+                bank = bn.trim(); hint = `${method==='sbp'?'СБП':'Карта'} (${bank}): `;
+                if (method === 'sbp') { detail = prompt(`СБП (только РФ)\n\nБанк: ${bank}\n\nВведи номер телефона (ровно 11 цифр):`, ''); if (!detail || !/^\d{11}$/.test(detail.trim())) { alert('Номер телефона должен содержать ровно 11 цифр.'); return; } }
+                else { detail = prompt(`Карта (только РФ)\n\nБанк: ${bank}\n\nВведи номер карты (ровно 16 цифр):`, ''); if (!detail || !/^\d{16}$/.test(detail.trim())) { alert('Номер карты должен содержать ровно 16 цифр.'); return; } }
             } else if (!isCrypto) {
-                detail = prompt(`${methodName}\n\n${promptText}`, '');
-                if (!detail || detail.trim() === '') { alert('Не указаны реквизиты.'); return; }
+                detail = prompt(`${mn}\n\n${pt}`, ''); if (!detail || !detail.trim()) { alert('Не указаны реквизиты.'); return; }
                 if (method === 'sbp' && !/^\d{11}$/.test(detail.trim())) { alert('Номер телефона должен содержать ровно 11 цифр.'); return; }
                 if (method === 'card' && !/^\d{16}$/.test(detail.trim())) { alert('Номер карты должен содержать ровно 16 цифр.'); return; }
-            } else {
-                detail = prompt(`${methodName}\n\n${promptText}`, '');
-                if (!detail || detail.trim() === '') { alert('Не указаны реквизиты.'); return; }
-            }
+            } else { detail = prompt(`${mn}\n\n${pt}`, ''); if (!detail || !detail.trim()) { alert('Не указаны реквизиты.'); return; } }
 
-            const fullPayment = hint + detail.trim();
-
-            let usdAmount = '';
-            if (isCrypto) {
-                const rate = parseFloat(localStorage.getItem('gm_rate') || '76');
-                const usd = (parseFloat(deal.total) / rate).toFixed(2);
-                usdAmount = ` (≈ $${usd})`;
-                if (fee > 0) usdAmount += `\nКомиссия сети: $${fee.toFixed(2)}`;
-            }
+            const full = hint + detail.trim();
+            let usd = '';
+            if (isCrypto) { const rate = parseFloat(localStorage.getItem('gm_rate') || '76'); usd = ` (≈ $${(parseFloat(d.total)/rate).toFixed(2)})`; if (fee > 0) usd += `\nКомиссия сети: $${fee.toFixed(2)}`; }
 
             tg.showPopup({
                 title: 'Подтверждение продажи',
-                message: (
-                    `💰 Сумма к получению: ${deal.total} ₽${usdAmount}\n` +
-                    `💳 Способ: ${fullPayment}\n` +
-                    `⏳ Время обработки: 8 дней\n\n` +
-                    `Нажимая «Продать», я соглашаюсь с Правилами сервиса и Политикой конфиденциальности.`
-                ),
+                message: `💰 Сумма к получению: ${d.total} ₽${usd}\n💳 Способ: ${full}\n⏳ Время обработки: 8 дней\n\nНажимая «Продать», я соглашаюсь с Правилами сервиса и Политикой конфиденциальности.`,
                 buttons: [{id: 'ok', type: 'ok', text: '✅ Продать'}, {type: 'cancel', text: '❌ Отмена'}]
             }, (btn) => {
                 if (btn === 'ok') {
-                    const dealObj = {
-                        id: Date.now(),
-                        date: new Date().toISOString(),
-                        payDate: new Date(Date.now() + 8*86400000).toISOString(),
-                        skins: deal.skins,
-                        total: parseFloat(deal.total),
-                        paymentMethod: fullPayment,
-                        steamId: steamId
-                    };
-                    saveDeal(dealObj);
-                    tg.sendData(JSON.stringify({
-                        action: 'sell',
-                        steamId: steamId,
-                        skins: deal.skins,
-                        paymentMethod: fullPayment,
-                        total: parseFloat(deal.total)
-                    }));
-                    document.getElementById('status').style.display = 'block';
-                    document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
-                    document.getElementById('status').style.color = '#4ecca3';
+                    const deal = { id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: full, steamId };
+                    saveDeal(deal);
+                    tg.sendData(JSON.stringify({ action: 'sell', steamId, skins: d.skins, paymentMethod: full, total: parseFloat(d.total) }));
+                    document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = '#4ecca3';
                 }
             });
         }
 
+        function openChat() {
+            const msg = prompt('💬 Напиши сообщение админу:'); if (msg && msg.trim()) {
+                tg.sendData(JSON.stringify({ action: 'chat', message: msg.trim() })); alert('✅ Сообщение отправлено!');
+            }
+        }
+
+        // Сделки
         function getDeals() { try { return JSON.parse(localStorage.getItem('gm_deals') || '[]'); } catch(e) { return []; } }
         function saveDeal(deal) { const deals = getDeals(); deals.unshift(deal); localStorage.setItem('gm_deals', JSON.stringify(deals)); }
-        function formatDate(iso) { return new Date(iso).toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric' }); }
-        function getTimeLeft(payDate) {
-            const diff = new Date(payDate).getTime() - Date.now();
-            if (diff <= 0) return '✅ Можно выплачивать';
-            return `⏳ ${Math.floor(diff/86400000)} дн. ${Math.floor((diff%86400000)/3600000)} ч.`;
+        function getPayDate(iso) {
+            const d = new Date(iso); const ten = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 10, 0, 0);
+            if (d < ten) ten.setDate(ten.getDate() - 1);
+            ten.setDate(ten.getDate() + 8); return ten;
         }
-        function toggleDealDetail(id) { const el = document.getElementById('deal-detail-'+id); if (el) el.classList.toggle('open'); }
-
-        function getStats() {
-            const deals = getDeals();
-            const totalSum = deals.reduce((sum, d) => sum + d.total, 0);
-            const totalCount = deals.length;
-            return { totalSum, totalCount };
-        }
+        function getTimeLeft(pay) { const diff = pay.getTime() - Date.now(); if (diff <= 0) return '✅ Можно выплачивать'; return `⏳ ${Math.floor(diff/86400000)} дн. ${Math.floor((diff%86400000)/3600000)} ч.`; }
+        function formatDate(d) { return d.toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric' }); }
+        function toggleDealDetail(id) { const e = document.getElementById('deal-detail-'+id); if (e) e.classList.toggle('open'); }
+        function getStats() { const deals = getDeals(); return { totalSum: deals.reduce((s,d) => s+d.total, 0), totalCount: deals.length }; }
 
         function renderDeals() {
-            const deals = getDeals();
-            const container = document.getElementById('dealsList');
-            const stats = getStats();
-            let html = '';
-
-            if (deals.length > 0) {
-                html += `
-                    <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: center;">
-                        <div style="display: flex; justify-content: space-around;">
-                            <div>
-                                <div style="font-size: 20px; font-weight: 900; color: #4ecca3;">${stats.totalCount}</div>
-                                <div style="font-size: 11px; color: #888;">заявок</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 20px; font-weight: 900; color: #e94560;">${stats.totalSum.toFixed(0)} ₽</div>
-                                <div style="font-size: 11px; color: #888;">выкуплено</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            if (deals.length === 0) {
-                html += '<div class="empty">У тебя пока нет активных сделок</div>';
-            } else {
-                html += deals.map(d => `
-                    <div class="deal-card" onclick="toggleDealDetail(${d.id})">
-                        <div class="deal-header">
-                            <span class="deal-date">${formatDate(d.date)}</span>
-                            <span class="deal-sum">${d.total.toFixed(2)} ₽</span>
-                        </div>
-                        <div class="deal-skins">${d.skins.length} скинов · ${getTimeLeft(d.payDate)}</div>
-                        <div class="deal-detail" id="deal-detail-${d.id}">
-                            <p><b>Скины:</b> ${d.skins.map(s => s.name).join(', ')}</p>
-                            <p><b>Реквизиты:</b> ${d.paymentMethod}</p>
-                            <p><b>Выплатить до:</b> ${formatDate(d.payDate)}</p>
-                            <p><b>Steam ID:</b> ${d.steamId}</p>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
+            const deals = getDeals(); const container = document.getElementById('dealsList'); const stats = getStats(); let html = '';
+            html += `<div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:12px;padding:16px;margin-bottom:16px;text-align:center;">
+                <div style="font-size:12px;color:#888;margin-bottom:8px;">📊 Статистика GodMarket</div>
+                <div style="display:flex;justify-content:space-around;">
+                    <div><div style="font-size:24px;font-weight:900;color:#4ecca3;">${stats.totalCount}</div><div style="font-size:11px;color:#888;">скинов продано</div></div>
+                    <div><div style="font-size:24px;font-weight:900;color:#e94560;">${stats.totalSum.toFixed(0)} ₽</div><div style="font-size:11px;color:#888;">выкуплено</div></div>
+                </div></div>`;
+            if (steamId) {
+                const userDeals = deals.filter(d => d.steamId === steamId);
+                if (userDeals.length === 0) { html += '<div class="empty">У тебя пока нет активных сделок</div>'; }
+                else {
+                    html += '<div style="font-size:13px;color:#4ecca3;margin-bottom:8px;">📋 Твои активные сделки</div>';
+                    html += userDeals.map(d => {
+                        const pay = getPayDate(d.date);
+                        return `<div class="deal-card" onclick="toggleDealDetail(${d.id})">
+                            <div class="deal-header"><span class="deal-date">${formatDate(new Date(d.date))}</span><span class="deal-sum">${d.total.toFixed(2)} ₽</span></div>
+                            <div class="deal-skins">${d.skins.length} скинов · ${getTimeLeft(pay)}</div>
+                            <div class="deal-detail" id="deal-detail-${d.id}">
+                                <p><b>Скины:</b> ${d.skins.map(s=>s.name).join(', ')}</p>
+                                <p><b>Реквизиты:</b> ${d.paymentMethod}</p>
+                                <p><b>Выплатить до:</b> ${formatDate(pay)}</p>
+                            </div></div>`;
+                    }).join('');
+                }
+            } else { html += '<div class="empty">🔐 Войди через Steam, чтобы увидеть свои сделки</div>'; }
             container.innerHTML = html;
         }
     </script>
