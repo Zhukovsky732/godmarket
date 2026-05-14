@@ -33,10 +33,10 @@
         }
         .logo { font-size: 32px; font-weight: 900; color: var(--accent); letter-spacing: -1px; }
         .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
         .tab {
-            flex: 1; padding: 10px; border: none; border-radius: 10px;
-            font-weight: 700; font-size: 12px; cursor: pointer; text-align: center;
+            flex: 1; padding: 8px 6px; border: none; border-radius: 10px;
+            font-weight: 700; font-size: 11px; cursor: pointer; text-align: center;
             background: #1a1a2e; color: var(--muted); transition: all 0.2s;
         }
         .tab.active { background: var(--accent); color: white; }
@@ -49,7 +49,6 @@
         .btn-steam { background: #2a475e; color: #c7d5e0; }
         .btn-logout { background: #333; color: #aaa; }
         .btn-refresh { background: #1e3a5f; color: #8ab4f8; }
-        .btn-chat { background: #2a475e; color: #c7d5e0; }
         .btn-sell-all {
             background: var(--accent); color: white; font-size: 15px;
             padding: 14px; margin-top: 12px; position: sticky; bottom: 12px;
@@ -125,6 +124,15 @@
             background: #e94560; color: white; border: none; border-radius: 8px;
             font-size: 14px; cursor: pointer; font-weight: 700;
         }
+        .chat-msg {
+            margin: 6px 0; padding: 10px 12px; border-radius: 12px;
+            max-width: 80%; word-wrap: break-word; font-size: 13px;
+        }
+        .chat-msg.user { background: #1e3a5f; color: #eee; margin-left: auto; text-align: right; }
+        .chat-msg.admin { background: #2a2a2a; color: #eee; margin-right: auto; }
+        .chat-time { font-size: 9px; color: #888; margin-top: 4px; }
+        #chatMessages { max-height: 350px; overflow-y: auto; margin-bottom: 12px; padding: 8px; }
+        #chatInput { flex: 1; padding: 10px; border-radius: 8px; border: none; background: #1a1a2e; color: #eee; }
     </style>
 </head>
 <body>
@@ -139,13 +147,13 @@
     <div class="tabs">
         <button class="tab active" id="tabSell" onclick="switchTab('sell')">🛒 Продажа</button>
         <button class="tab" id="tabDeals" onclick="switchTab('deals')">📋 Мои сделки</button>
+        <button class="tab" id="tabChat" onclick="switchTab('chat')">💬 Поддержка</button>
     </div>
 
     <div class="toolbar">
         <button class="btn btn-steam" id="loginBtn" onclick="login()">🔐 Steam</button>
         <button class="btn btn-logout" id="logoutBtn" style="display:none;" onclick="logout()">🚪</button>
         <button class="btn btn-refresh" id="refreshBtn" style="display:none;" onclick="refresh()">🔄</button>
-        <button class="btn btn-chat" onclick="openChat()">💬 Поддержка</button>
     </div>
 
     <div id="panelSell" class="panel active">
@@ -160,6 +168,14 @@
 
     <div id="panelDeals" class="panel">
         <div id="dealsList" class="empty">У тебя пока нет активных сделок</div>
+    </div>
+
+    <div id="panelChat" class="panel">
+        <div id="chatMessages"><div class="empty">Напиши сообщение, и админ ответит здесь</div></div>
+        <div style="display:flex;gap:8px;">
+            <input type="text" id="chatInput" placeholder="Напиши сообщение...">
+            <button onclick="sendChatMessage()" style="padding:10px 16px;background:#e94560;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">▶️</button>
+        </div>
     </div>
 
     <div class="footer">
@@ -272,6 +288,7 @@
         const saved = localStorage.getItem('gm_steamid');
         if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
         renderDeals();
+        renderChat();
 
         function openModal(t) { document.getElementById('modal-'+t).classList.add('open'); }
         function closeModal(t) { document.getElementById('modal-'+t).classList.remove('open'); }
@@ -282,10 +299,14 @@
             if (tab === 'sell') {
                 document.getElementById('tabSell').classList.add('active');
                 document.getElementById('panelSell').classList.add('active');
-            } else {
+            } else if (tab === 'deals') {
                 document.getElementById('tabDeals').classList.add('active');
                 document.getElementById('panelDeals').classList.add('active');
                 renderDeals();
+            } else if (tab === 'chat') {
+                document.getElementById('tabChat').classList.add('active');
+                document.getElementById('panelChat').classList.add('active');
+                renderChat();
             }
         }
 
@@ -461,10 +482,25 @@
             });
         }
 
-        function openChat() {
-            const msg = prompt('💬 Напиши сообщение админу:'); if (msg && msg.trim()) {
-                tg.sendData(JSON.stringify({ action: 'chat', message: msg.trim() })); alert('✅ Сообщение отправлено!');
-            }
+        // Чат
+        function getChatHistory() { try { return JSON.parse(localStorage.getItem('gm_chat') || '[]'); } catch(e) { return []; } }
+        function saveChatMessage(msg) { const h = getChatHistory(); h.push({ ...msg, time: Date.now() }); localStorage.setItem('gm_chat', JSON.stringify(h)); }
+        function renderChat() {
+            const h = getChatHistory(); const c = document.getElementById('chatMessages');
+            if (h.length === 0) { c.innerHTML = '<div class="empty">Напиши сообщение, и админ ответит здесь</div>'; return; }
+            c.innerHTML = h.map(m => `
+                <div class="chat-msg ${m.from}">
+                    <div>${m.text}</div>
+                    <div class="chat-time">${new Date(m.time).toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'})}</div>
+                </div>
+            `).join('');
+            c.scrollTop = c.scrollHeight;
+        }
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput'); const text = input.value.trim();
+            if (!text) return;
+            saveChatMessage({ from: 'user', text }); input.value = ''; renderChat();
+            tg.sendData(JSON.stringify({ action: 'chat', message: text }));
         }
 
         // Сделки
