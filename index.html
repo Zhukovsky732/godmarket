@@ -299,9 +299,20 @@ let priceCache = {};
 let currentSort = 'default';
 let darkTheme = true;
 
-// Проверяем сохранённый Steam ID
-const saved = localStorage.getItem('gm_steamid');
-if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
+// Проверяем OAuth-параметр в URL
+const urlParams = new URLSearchParams(window.location.search);
+const oauthSteamId = urlParams.get('steamid');
+if (oauthSteamId && oauthSteamId.length === 17) {
+    steamId = oauthSteamId;
+    localStorage.setItem('gm_steamid', steamId);
+    window.history.replaceState({}, document.title, '/');
+    showUI();
+    loadInventory();
+    fetchRate();
+} else {
+    const saved = localStorage.getItem('gm_steamid');
+    if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
+}
 
 const savedTheme = localStorage.getItem('gm_theme');
 if (savedTheme === 'light') { darkTheme = false; document.body.classList.add('light-theme'); }
@@ -321,7 +332,8 @@ function closeLoginModal() { document.getElementById('loginModal').style.display
 
 function loginViaSteam() {
     closeLoginModal();
-    window.open(API + '/api/steam/login', '_blank');
+    // Открываем OAuth в том же окне (Mini App)
+    window.location.href = API + '/api/steam/login';
 }
 
 function doLogin() {
