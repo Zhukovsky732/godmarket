@@ -386,9 +386,9 @@ async function loadInventory() {
         const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H }); const d = await r.json();
         if (d.success && d.assets) {
             const descMap = {};
-            if (d.descriptions) { d.descriptions.forEach(dd => { const key = `${dd.classid}_${dd.instanceid}`; const tags = dd.tags || []; descMap[key] = { name: dd.market_hash_name, icon: `https://steamcommunity-a.akamaihd.net/economy/image/${dd.icon_url}`, rarity: tags.find(t => t.category === 'Rarity')?.localized_tag_name || '', wear: tags.find(t => t.category === 'Exterior')?.localized_tag_name || '', isST: dd.market_hash_name.includes('StatTrak') }; }); }
+            if (d.descriptions) { d.descriptions.forEach(dd => { const key = `${dd.classid}_${dd.instanceid}`; const tags = dd.tags || []; descMap[key] = { name: dd.market_hash_name, icon: `https://steamcommunity-a.akamaihd.net/economy/image/${dd.icon_url}`, rarity: tags.find(t => t.category === 'Rarity')?.localized_tag_name || '', wear: tags.find(t => t.category === 'Exterior')?.localized_tag_name || '', type: tags.find(t => t.category === 'Type')?.localized_tag_name || '', isST: dd.market_hash_name.includes('StatTrak') }; }); }
             const groupMap = {};
-            d.assets.forEach(a => { const key = `${a.classid}_${a.instanceid}`; const skinData = descMap[key] || {}; const name = skinData.name || `Скин #${a.assetid}`; if (!groupMap[name]) groupMap[name] = { ...skinData, assetIds: [], price: null, selectedQty: 0 }; groupMap[name].assetIds.push(a.assetid); });
+            d.assets.forEach(a => { const key = `${a.classid}_${a.instanceid}`; const skinData = descMap[key] || {}; if (skinData.type === 'Charm') return; const name = skinData.name || `Скин #${a.assetid}`; if (!groupMap[name]) groupMap[name] = { ...skinData, assetIds: [], price: null, selectedQty: 0 }; groupMap[name].assetIds.push(a.assetid); });
             groupedSkins = Object.values(groupMap);
             for (const g of groupedSkins) { g.price = await fetchPrice(g.name); }
             applyFilters();
@@ -474,6 +474,17 @@ function showCryptoInput(method) {
 }
 function submitCrypto(method) { const addr = document.getElementById('cryptoAddr')?.value?.trim(); if (!addr) { alert('Введи адрес кошелька'); return; } confirmDeal(`💲 ${method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'}: ${addr}`); }
 
+function showConfirmModal(message, onOk) {
+    showPaymentModal(`
+        <h3>Подтверждение продажи</h3>
+        <p style="color:var(--muted);font-size:13px;white-space:pre-line;">${message}</p>
+        <div class="btn-row">
+            <button class="btn-secondary" onclick="closePaymentModal()">❌ Отмена</button>
+            <button class="btn-primary" onclick="closePaymentModal();onOk();">✅ Продать</button>
+        </div>
+    `);
+}
+
 function confirmDeal(fullPayment) {
     const d = window._pd; if (!d) return;
     let usd = ''; if (fullPayment.startsWith('💲')) { const rate = parseFloat(localStorage.getItem('gm_rate') || '76'); usd = ` (≈ $${(parseFloat(d.total)/rate).toFixed(2)})`; }
@@ -488,12 +499,11 @@ function confirmDeal(fullPayment) {
             }
         });
     } else {
-        // В браузере используем confirm, но это лучше, чем prompt
-        if (confirm(message + '\n\nНажмите OK для подтверждения.')) {
+        showConfirmModal(message + '\n\nНажмите «Продать» для подтверждения.', () => {
             saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
             sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) });
             document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = 'var(--green)';
-        }
+        });
     }
 }
 
