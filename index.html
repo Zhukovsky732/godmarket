@@ -10,59 +10,59 @@
     <!-- БЛОК: CSS -->
     <style>
         :root {
-            --bg: #f0f2f5; --card: #ffffff; --accent: #e94560;
-            --green: #2d8a6e; --text: #1a1a2e; --muted: #666;
-            --rarity-blue: #5e98d9; --rarity-purple: #8847ff;
-            --rarity-pink: #d32ce6; --rarity-red: #eb4b4b;
-            --rarity-gold: #ffd700;
-            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --bg: #f5f6fa; --card: #ffffff; --accent: #6c5ce7;
+            --green: #00b894; --text: #2d3436; --muted: #636e72;
+            --rarity-blue: #74b9ff; --rarity-purple: #a29bfe;
+            --rarity-pink: #fd79a8; --rarity-red: #e17055;
+            --rarity-gold: #fdcb6e;
+            --shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
-        .light-theme { --bg: #f0f2f5; --card: #fff; --text: #1a1a2e; --muted: #666; --green: #2d8a6e; }
-        .dark-theme { --bg: #0f0f1a; --card: #1a1a2e; --text: #eee; --muted: #888; --green: #4ecca3; --shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .light-theme { --bg: #f5f6fa; --card: #fff; --text: #2d3436; --muted: #636e72; --green: #00b894; }
+        .dark-theme { --bg: #1a1a2e; --card: #16213e; --text: #dfe6e9; --muted: #b2bec3; --green: #55efc4; --shadow: 0 2px 8px rgba(0,0,0,0.3); }
         .light-theme .skin-our, .light-theme .qty-value, .light-theme .inv-summary,
         .light-theme .deal-sum, .light-theme .user-info { color: var(--green); }
         .dark-theme .skin-our, .dark-theme .qty-value, .dark-theme .inv-summary,
         .dark-theme .deal-sum, .dark-theme .user-info { color: var(--green); }
-        .light-theme .btn-steam { background: #e8edf2; color: #2a475e; }
-        .dark-theme .btn-steam { background: #2a475e; color: #c7d5e0; }
+        .light-theme .btn-steam { background: #dfe6e9; color: #2d3436; }
+        .dark-theme .btn-steam { background: #0c2461; color: #dfe6e9; }
         .light-theme .btn-logout { background: #eee; color: #333; }
-        .dark-theme .btn-logout { background: #333; color: #aaa; }
-        .light-theme .btn-refresh { background: #e8edf2; color: #1e3a5f; }
-        .dark-theme .btn-refresh { background: #1e3a5f; color: #8ab4f8; }
-        .light-theme .btn-sell-all-qty { background: #2d8a6e; color: white; }
-        .dark-theme .btn-sell-all-qty { background: #4ecca3; color: #0f0f1a; }
-        .light-theme .sort-btn { background: #e8edf2; color: #333; }
-        .dark-theme .sort-btn { background: #1a1a2e; color: #888; }
+        .dark-theme .btn-logout { background: #1e3799; color: #dfe6e9; }
+        .light-theme .btn-refresh { background: #dfe6e9; color: #2d3436; }
+        .dark-theme .btn-refresh { background: #0c2461; color: #dfe6e9; }
+        .light-theme .btn-sell-all-qty { background: #00b894; color: white; }
+        .dark-theme .btn-sell-all-qty { background: #55efc4; color: #1a1a2e; }
+        .light-theme .sort-btn { background: #dfe6e9; color: #2d3436; }
+        .dark-theme .sort-btn { background: #0c2461; color: #b2bec3; }
         .light-theme .sort-btn.active { background: var(--accent); color: white; }
         .dark-theme .sort-btn.active { background: var(--accent); color: white; }
-        .light-theme .search-box input { background: #fff; color: #222; border-color: #ddd; }
-        .dark-theme .search-box input { background: #1a1a2e; color: #eee; border-color: #333; }
-        .light-theme .modal-box { background: #fff; color: #222; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
-        .dark-theme .modal-box { background: #1a1a2e; color: #eee; }
-        .light-theme .modal-box input { background: #f5f5f5; color: #222; border-color: #ddd; }
-        .dark-theme .modal-box input { background: #0f0f1a; color: #eee; border-color: #333; }
-        .light-theme .legal-content { background: #fff; color: #222; }
-        .dark-theme .legal-content { background: #1a1a2e; color: #eee; }
-        .light-theme .legal-content p { color: #555; }
-        .dark-theme .legal-content p { color: #aaa; }
-        .light-theme .bottom-nav { background: #fff; border-color: #eee; box-shadow: 0 -2px 8px rgba(0,0,0,0.05); }
-        .dark-theme .bottom-nav { background: #1a1a2e; border-color: #333; }
+        .light-theme .search-box input { background: #fff; color: #2d3436; border-color: #dfe6e9; }
+        .dark-theme .search-box input { background: #0c2461; color: #dfe6e9; border-color: #1e3799; }
+        .light-theme .modal-box { background: #fff; color: #2d3436; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .dark-theme .modal-box { background: #16213e; color: #dfe6e9; }
+        .light-theme .modal-box input { background: #f5f6fa; color: #2d3436; border-color: #dfe6e9; }
+        .dark-theme .modal-box input { background: #0c2461; color: #dfe6e9; border-color: #1e3799; }
+        .light-theme .legal-content { background: #fff; color: #2d3436; }
+        .dark-theme .legal-content { background: #16213e; color: #dfe6e9; }
+        .light-theme .legal-content p { color: #636e72; }
+        .dark-theme .legal-content p { color: #b2bec3; }
+        .light-theme .bottom-nav { background: #fff; border-color: #dfe6e9; box-shadow: 0 -2px 8px rgba(0,0,0,0.05); }
+        .dark-theme .bottom-nav { background: #16213e; border-color: #1e3799; }
         .light-theme .skin-item { background: #fff; box-shadow: var(--shadow); }
-        .dark-theme .skin-item { background: #1a1a2e; }
+        .dark-theme .skin-item { background: #16213e; }
         .light-theme .deal-card { background: #fff; box-shadow: var(--shadow); }
-        .dark-theme .deal-card { background: #1a1a2e; }
-        .light-theme .deal-card:hover { background: #f8f9fa; }
-        .dark-theme .deal-card:hover { background: #1e2a3a; }
-        .light-theme .chat-msg.user { background: #e8edf2; color: #1a1a2e; }
-        .dark-theme .chat-msg.user { background: #1e3a5f; color: #eee; }
-        .light-theme .chat-msg.admin { background: #f0f0f0; color: #1a1a2e; }
-        .dark-theme .chat-msg.admin { background: #2a2a2a; color: #eee; }
-        .light-theme #chatInput { background: #fff; color: #222; border: 1px solid #ddd; }
-        .dark-theme #chatInput { background: #1a1a2e; color: #eee; }
-        .light-theme .skeleton { background: linear-gradient(90deg, #e8edf2 25%, #f0f2f5 50%, #e8edf2 75%); background-size: 200% 100%; }
-        .dark-theme .skeleton { background: linear-gradient(90deg, #1a1a2e 25%, #222 50%, #1a1a2e 75%); background-size: 200% 100%; }
-        .light-theme .footer { border-color: #eee; }
-        .dark-theme .footer { border-color: #333; }
+        .dark-theme .deal-card { background: #16213e; }
+        .light-theme .deal-card:hover { background: #f1f2f6; }
+        .dark-theme .deal-card:hover { background: #1e3799; }
+        .light-theme .chat-msg.user { background: #dfe6e9; color: #2d3436; }
+        .dark-theme .chat-msg.user { background: #0c2461; color: #dfe6e9; }
+        .light-theme .chat-msg.admin { background: #eee; color: #2d3436; }
+        .dark-theme .chat-msg.admin { background: #1e3799; color: #dfe6e9; }
+        .light-theme #chatInput { background: #fff; color: #2d3436; border: 1px solid #dfe6e9; }
+        .dark-theme #chatInput { background: #0c2461; color: #dfe6e9; }
+        .light-theme .skeleton { background: linear-gradient(90deg, #dfe6e9 25%, #f1f2f6 50%, #dfe6e9 75%); background-size: 200% 100%; }
+        .dark-theme .skeleton { background: linear-gradient(90deg, #0c2461 25%, #16213e 50%, #0c2461 75%); background-size: 200% 100%; }
+        .light-theme .footer { border-color: #dfe6e9; }
+        .dark-theme .footer { border-color: #1e3799; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -71,17 +71,17 @@
         }
         @media (min-width: 768px) {
             body { max-width: 900px; padding: 24px 24px 90px 24px; }
-            .skin-item { width: calc(50% - 4px); display: inline-flex; margin: 4px 2px; }
+            .skin-item { width: calc(33.33% - 6px); display: inline-flex; margin: 3px; }
             #skinsList { display: flex; flex-wrap: wrap; }
         }
         .header {
             text-align: center; padding: 20px 0;
-            background: linear-gradient(135deg, #e94560, #ff6b81);
+            background: linear-gradient(135deg, var(--accent), #a29bfe);
             border-radius: 16px; margin-bottom: 16px; color: white;
         }
         .logo { font-size: 32px; font-weight: 900; letter-spacing: -1px; }
         .subtitle { opacity: 0.85; font-size: 13px; margin-top: 4px; }
-        .user-info { text-align: center; color: var(--green); font-size: 11px; margin-bottom: 6px; background: rgba(78,204,163,0.1); padding: 6px; border-radius: 8px; display: none; }
+        .user-info { text-align: center; color: var(--green); font-size: 11px; margin-bottom: 6px; background: rgba(0,184,148,0.1); padding: 6px; border-radius: 8px; display: none; }
         .inv-summary { text-align: center; color: var(--green); font-size: 12px; margin-bottom: 8px; display: none; }
         .rate-info { text-align: center; color: var(--muted); font-size: 10px; margin-bottom: 12px; display: none; }
         .toolbar { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
@@ -89,35 +89,34 @@
         .btn-steam { flex: 1; }
         .btn-share { font-size: 10px; padding: 6px 10px; }
         .btn-sell-all-qty { font-size: 11px; padding: 6px 12px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; margin-left: auto; }
-        .btn-clear { background: #888; color: white; font-size: 11px; padding: 6px 12px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; }
+        .btn-clear { background: #b2bec3; color: white; font-size: 11px; padding: 6px 12px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; }
         .search-box { display: flex; gap: 6px; margin-bottom: 10px; }
-        .search-box input { flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 12px; }
-        .search-box button { padding: 8px 12px; background: #e94560; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; }
+        .search-box input { flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid #dfe6e9; font-size: 12px; }
+        .search-box button { padding: 8px 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; }
         .sort-btns { display: flex; gap: 6px; margin-bottom: 10px; }
         .sort-btn { flex: 1; padding: 6px; border: none; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
         .panel { display: none; }
         .panel.active { display: block; }
-        .skin-item { border-radius: 10px; padding: 10px 12px; margin: 6px 0; display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--rarity-blue); transition: all 0.2s; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .skin-item { border-radius: 10px; padding: 10px 12px; margin: 6px 0; display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--rarity-blue); transition: all 0.2s; }
         .skin-item.rarity-purple { border-left-color: var(--rarity-purple); }
         .skin-item.rarity-pink { border-left-color: var(--rarity-pink); }
         .skin-item.rarity-red { border-left-color: var(--rarity-red); }
         .skin-item.rarity-gold { border-left-color: var(--rarity-gold); }
-        .skin-icon { width: 48px; height: 36px; border-radius: 4px; object-fit: cover; flex-shrink: 0; background: #f0f2f5; }
+        .skin-icon { width: 48px; height: 36px; border-radius: 4px; object-fit: cover; flex-shrink: 0; background: #dfe6e9; }
         .skin-info { flex: 1; min-width: 0; }
         .skin-name { font-weight: 700; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .skin-meta { display: flex; gap: 6px; align-items: center; margin-top: 2px; }
         .skin-count { color: var(--muted); font-size: 10px; }
         .badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
         .badge-st { background: #cf6a32; color: white; }
-        .badge-wear { background: #e8edf2; color: #666; }
-        .dark-theme .badge-wear { background: #333; color: #aaa; }
+        .badge-wear { background: #dfe6e9; color: #636e72; }
+        .dark-theme .badge-wear { background: #1e3799; color: #b2bec3; }
         .skin-our { font-weight: 700; font-size: 13px; white-space: nowrap; flex-shrink: 0; }
-        .skin-spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #ddd; border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 4px; }
+        .skin-spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #dfe6e9; border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 4px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .qty-selector { display: flex; align-items: center; gap: 3px; margin-top: 4px; }
-        .qty-btn { background: #e8edf2; color: #1a1a2e; border: none; border-radius: 4px; width: 22px; height: 22px; font-size: 13px; font-weight: bold; cursor: pointer; line-height: 1; }
-        .dark-theme .qty-btn { background: #2a475e; color: white; }
+        .qty-btn { background: #dfe6e9; color: #2d3436; border: none; border-radius: 4px; width: 22px; height: 22px; font-size: 13px; font-weight: bold; cursor: pointer; line-height: 1; }
+        .dark-theme .qty-btn { background: #0c2461; color: #dfe6e9; }
         .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .qty-value { font-weight: 700; font-size: 13px; color: var(--green); min-width: 16px; text-align: center; }
         .skeleton { border-radius: 8px; }
@@ -126,10 +125,10 @@
         .skeleton-icon { width: 48px; height: 36px; border-radius: 4px; }
         .skeleton-text { flex: 1; height: 14px; }
         .skeleton-price { width: 50px; height: 16px; }
-        .btn-sell-all { background: var(--accent); color: white; font-size: 15px; padding: 14px; margin-top: 12px; width: 100%; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; position: sticky; bottom: 80px; box-shadow: 0 4px 20px rgba(233,69,96,0.4); }
+        .btn-sell-all { background: var(--accent); color: white; font-size: 15px; padding: 14px; margin-top: 12px; width: 100%; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; position: sticky; bottom: 80px; box-shadow: 0 4px 20px rgba(108,92,231,0.4); }
         .btn-sell-all:not(:disabled) { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 4px 20px rgba(233,69,96,0.4); } 50% { box-shadow: 0 4px 30px rgba(233,69,96,0.7); } }
-        .btn-sell-all:disabled { background: #888; box-shadow: none; opacity: 0.6; animation: none; }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 4px 20px rgba(108,92,231,0.4); } 50% { box-shadow: 0 4px 30px rgba(108,92,231,0.7); } }
+        .btn-sell-all:disabled { background: #b2bec3; box-shadow: none; opacity: 0.6; animation: none; }
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; display: flex; padding: 8px 16px; z-index: 100; }
         @media (min-width: 768px) { .bottom-nav { max-width: 900px; } }
         .nav-item { flex: 1; text-align: center; color: var(--muted); font-size: 10px; font-weight: 700; cursor: pointer; padding: 6px 0; border-radius: 8px; transition: all 0.2s; position: relative; }
@@ -138,40 +137,39 @@
         .nav-badge { position: absolute; top: 0; right: 20%; background: var(--accent); color: white; font-size: 9px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; }
         .modal-box { border-radius: 16px; padding: 24px; width: 90%; max-width: 360px; }
-        .modal-box h3 { color: #e94560; margin-bottom: 12px; }
+        .modal-box h3 { color: var(--accent); margin-bottom: 12px; }
         .modal-box input { width: 100%; padding: 12px; border-radius: 8px; font-size: 14px; margin: 6px 0; }
         .modal-box .btn-row { display: flex; gap: 8px; margin-top: 12px; }
         .modal-box .btn-row button { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
-        .btn-primary { background: #e94560; color: white; }
-        .btn-secondary { background: #e8edf2; color: #333; }
-        .dark-theme .btn-secondary { background: #333; color: #aaa; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-secondary { background: #dfe6e9; color: #2d3436; }
+        .dark-theme .btn-secondary { background: #1e3799; color: #b2bec3; }
         .deal-card { border-radius: 12px; padding: 14px; margin: 8px 0; border-left: 4px solid var(--green); cursor: pointer; transition: all 0.2s; }
         .deal-header { display: flex; justify-content: space-between; align-items: center; }
         .deal-date { color: var(--muted); font-size: 11px; }
         .deal-sum { font-weight: 700; font-size: 15px; }
-        .deal-detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; font-size: 12px; color: var(--muted); }
-        .dark-theme .deal-detail { border-color: #333; }
+        .deal-detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dfe6e9; font-size: 12px; color: var(--muted); }
+        .dark-theme .deal-detail { border-color: #1e3799; }
         .deal-detail.open { display: block; }
         .deal-detail b { color: var(--text); }
         .stats-card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: center; box-shadow: var(--shadow); }
         .status { text-align: center; padding: 30px 20px; color: var(--muted); }
         .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
         .footer { text-align: center; margin-top: 30px; padding: 16px; font-size: 10px; color: var(--muted); }
-        .footer a { color: var(--green); text-decoration: none; cursor: pointer; }
+        .footer a { color: var(--accent); text-decoration: none; cursor: pointer; }
         .chat-msg { margin: 6px 0; padding: 10px 12px; border-radius: 12px; max-width: 80%; word-wrap: break-word; font-size: 13px; }
         .chat-msg.user { margin-left: auto; text-align: right; }
         .chat-msg.admin { margin-right: auto; }
         .chat-time { font-size: 9px; color: #888; margin-top: 4px; }
         #chatMessages { max-height: 350px; overflow-y: auto; margin-bottom: 12px; padding: 8px; }
-        #chatInput { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
+        #chatInput { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #dfe6e9; }
         .legal-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 300; overflow-y: auto; padding: 20px; }
         .legal-modal.open { display: flex; align-items: flex-start; justify-content: center; }
         .legal-content { border-radius: 16px; padding: 20px; width: 100%; max-width: 500px; margin-top: 20px; font-size: 13px; }
-        .legal-content h2 { color: #e94560; margin-bottom: 12px; }
-        .legal-content h3 { color: #2d8a6e; margin: 16px 0 8px; }
-        .dark-theme .legal-content h3 { color: #4ecca3; }
+        .legal-content h2 { color: var(--accent); margin-bottom: 12px; }
+        .legal-content h3 { color: var(--green); margin: 16px 0 8px; }
         .legal-content p { line-height: 1.6; margin-bottom: 8px; }
-        .legal-close { display: block; width: 100%; padding: 12px; margin-top: 20px; background: #e94560; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 700; }
+        .legal-close { display: block; width: 100%; padding: 12px; margin-top: 20px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -225,7 +223,7 @@
     <div id="chatMessages"><div class="empty">Напиши сообщение, и админ ответит здесь</div></div>
     <div style="display:flex;gap:8px;">
         <input type="text" id="chatInput" placeholder="Напиши сообщение...">
-        <button onclick="sendChatMessage()" style="padding:10px 16px;background:#e94560;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">▶️</button>
+        <button onclick="sendChatMessage()" style="padding:10px 16px;background:var(--accent);color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">▶️</button>
     </div>
 </div>
 
@@ -249,11 +247,11 @@
 <div class="modal-overlay" id="loginModal" style="display:none;">
     <div class="modal-box" style="text-align:center;">
         <h3>🔐 Вход через Steam</h3>
-        <p style="color:#888;font-size:12px;margin-bottom:16px;">Авторизуйся через Steam, чтобы увидеть свои скины</p>
-        <button onclick="loginViaSteam()" style="display:block;width:100%;padding:14px;background:#2a475e;color:#c7d5e0;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;">🔐 Войти через Steam</button>
-        <p style="color:#666;font-size:10px;margin:12px 0;">— или —</p>
-        <p style="color:#888;font-size:11px;margin-bottom:8px;">Введи Steam ID64 вручную</p>
-        <input type="text" id="loginSteamId" placeholder="7656119XXXXXXXXXX" maxlength="17" inputmode="numeric" pattern="[0-9]*" style="width:100%;padding:12px;border-radius:8px;border:1px solid #ddd;background:#f5f5f5;color:#222;font-size:14px;margin-bottom:8px;">
+        <p style="color:var(--muted);font-size:12px;margin-bottom:16px;">Авторизуйся через Steam, чтобы увидеть свои скины</p>
+        <button onclick="loginViaSteam()" style="display:block;width:100%;padding:14px;background:#0c2461;color:#dfe6e9;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;">🔐 Войти через Steam</button>
+        <p style="color:var(--muted);font-size:10px;margin:12px 0;">— или —</p>
+        <p style="color:var(--muted);font-size:11px;margin-bottom:8px;">Введи Steam ID64 вручную</p>
+        <input type="text" id="loginSteamId" placeholder="7656119XXXXXXXXXX" maxlength="17" inputmode="numeric" pattern="[0-9]*" style="width:100%;padding:12px;border-radius:8px;border:1px solid #dfe6e9;background:#f5f6fa;color:#2d3436;font-size:14px;margin-bottom:8px;">
         <div class="btn-row">
             <button class="btn-secondary" onclick="closeLoginModal()">Отмена</button>
             <button class="btn-primary" onclick="doLogin()">Войти</button>
@@ -267,13 +265,13 @@
 </div>
 
 <!-- БЛОК: LEGAL-TERMS -->
-<div class="legal-modal" id="legal-terms"><div class="legal-content"><h2>📄 Условия использования GodMarket</h2><p><i>14 мая 2026 г.</i></p><h3>1. Общие положения</h3><p>1.1. Сервис GodMarket осуществляет выкуп виртуальных предметов (скинов) для игры Counter-Strike 2 у Пользователей.</p><p>1.2. Используя Сервис, вы принимаете Условия.</p><p>1.3. Администратор вправе изменить Условия.</p><p>1.4. Сервис использует Steam API, но не партнёр Valve.</p><p>1.5. Все цены в рублях. Минимальная сумма выкупа — 10 ₽.</p><h3>2. Кто может использовать</h3><p>2.1. Совершеннолетние (18+).</p><p>2.2. Предметы должны принадлежать Пользователю.</p><h3>3. Вход через Steam</h3><p>3.1. Вход через учётную запись Steam.</p><h3>4. Процесс сделки</h3><p>4.1. Цена формируется на основе рыночных данных.</p><p>4.2. Сервис вправе отказать в выкупе.</p><p>4.3. Выплата — 8 дней. +20 дней. После 30 дней — компенсация.</p><h3>5. Способы оплаты</h3><p>5.1. СБП, Карта (РФ), USDT (BEP20/TON).</p><h3>6. Ответственность</h3><p>6.1. Сервис не отвечает за задержки Steam, банков.</p><h3>7. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('terms')">Закрыть</button></div></div>
+<div class="legal-modal" id="legal-terms"><div class="legal-content"><h2>📄 Условия использования GodMarket</h2><p><i>Последнее обновление: 14 мая 2026 г.</i></p><h3>1. Общие положения</h3><p>1.1. Сервис GodMarket (далее — «Сервис») осуществляет выкуп виртуальных предметов (скинов) для игры Counter-Strike 2 у Пользователей.</p><p>1.2. Используя Сервис, Пользователь подтверждает, что ознакомился с настоящими Условиями и полностью их принимает.</p><p>1.3. Администратор оставляет за собой право в любое время изменять Условия, приостанавливать или прекращать работу Сервиса.</p><p>1.4. Сервис использует Steam API для авторизации и получения данных об инвентаре, но не является официальным партнёром Valve Corporation. Все товарные знаки принадлежат их законным владельцам.</p><p>1.5. Все цены указаны в российских рублях (₽). Сервис оставляет за собой право устанавливать минимальную сумму выкупа.</p><h3>2. Кто может использовать</h3><p>2.1. Пользователь должен быть совершеннолетним (18+). Лица 15–18 лет — с согласия законного представителя.</p><p>2.2. Пользователь гарантирует, что продаваемые предметы принадлежат ему на законных основаниях.</p><p>2.3. Запрещено использование Сервиса для мошенничества, отмывания денег или иной незаконной деятельности.</p><h3>3. Вход через Steam</h3><p>3.1. Пользователь входит через учётную запись Steam. Запрещено использовать чужие учётные записи.</p><p>3.2. Для совершения сделок требуется мобильный аутентификатор Steam, активированный не менее 7 дней назад.</p><h3>4. Процесс сделки</h3><p>4.1. Цена выкупа формируется автоматически на основе анализа рыночных данных.</p><p>4.2. Сервис оставляет за собой право отказать в выкупе любого предмета без объяснения причин.</p><p>4.3. Выплата производится в течение 8 дней после получения скинов (Steam Trade Protection).</p><p>4.4. Дополнительный срок — 20 дней (до 28-го дня). По истечении 30 дней Пользователь вправе требовать компенсацию.</p><p>4.5. Если трейд отменён через Steam — выплата аннулируется.</p><h3>5. Способы оплаты</h3><p>5.1. СБП — перевод по номеру телефона. Только для РФ.</p><p>5.2. Банковская карта — перевод по номеру карты. Только для РФ.</p><p>5.3. USDT (BEP20 и TON) — криптовалюта. Может взиматься комиссия сети.</p><h3>6. Ответственность и риски</h3><p>6.1. Сервис не несёт ответственности за задержки, вызванные блокировками Steam, банков или платёжных систем.</p><p>6.2. Сервис не возмещает ущерб за украденные или утерянные предметы.</p><p>6.3. При подозрении на мошенничество — отмена сделки и/или блокировка.</p><h3>7. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('terms')">Закрыть</button></div></div>
 
 <!-- БЛОК: LEGAL-PRIVACY -->
-<div class="legal-modal" id="legal-privacy"><div class="legal-content"><h2>🔒 Политика конфиденциальности</h2><p><i>14 мая 2026 г.</i></p><h3>1. Данные</h3><p>Steam ID, реквизиты, история сделок, IP.</p><h3>2. Использование</h3><p>Для выполнения сделки.</p><h3>3. Хранение</h3><p>Данные на устройстве (localStorage).</p><h3>4. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('privacy')">Закрыть</button></div></div>
+<div class="legal-modal" id="legal-privacy"><div class="legal-content"><h2>🔒 Политика конфиденциальности GodMarket</h2><p><i>Последнее обновление: 14 мая 2026 г.</i></p><h3>1. Какие данные собираем</h3><p>1.1. Steam ID — для загрузки инвентаря.</p><p>1.2. Платёжные реквизиты — для осуществления выплаты.</p><p>1.3. История сделок — список проданных скинов, суммы, даты.</p><p>1.4. Технические данные: IP-адрес, тип браузера, время входа.</p><h3>2. Как используем</h3><p>2.1. Исключительно для выполнения сделки.</p><p>2.2. Для предотвращения мошенничества и обеспечения безопасности.</p><h3>3. Хранение данных</h3><p>3.1. Данные хранятся локально на устройстве Пользователя (localStorage). Сервер не хранит копии реквизитов.</p><p>3.2. Пользователь может удалить данные кнопкой «Выйти» или очисткой браузера.</p><h3>4. Передача третьим лицам</h3><p>4.1. Данные не передаются, кроме случаев, предусмотренных законом.</p><h3>5. Защита</h3><p>5.1. Сервис принимает разумные меры для защиты данных.</p><h3>6. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('privacy')">Закрыть</button></div></div>
 
 <!-- БЛОК: LEGAL-REFUND -->
-<div class="legal-modal" id="legal-refund"><div class="legal-content"><h2>↩️ Возврат и отмена</h2><p><i>14 мая 2026 г.</i></p><h3>1. Сроки</h3><p>8 дней — стандарт. +20 дней. 30 дней — компенсация.</p><h3>2. Chargeback</h3><p>Блокировка + компенсация.</p><h3>3. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('refund')">Закрыть</button></div></div>
+<div class="legal-modal" id="legal-refund"><div class="legal-content"><h2>↩️ Возврат и отмена сделок GodMarket</h2><p><i>Последнее обновление: 14 мая 2026 г.</i></p><h3>1. Отмена сделки</h3><p>1.1. Пользователь может отменить сделку до отправки трейд-оффера.</p><p>1.2. После отправки трейд-оффера сделка считается заключённой.</p><h3>2. Сроки выплаты</h3><p>2.1. Стандартный срок — 8 дней (Steam Trade Protection).</p><p>2.2. Дополнительно 20 дней (до 28-го дня).</p><p>2.3. После 30 дней — право требовать компенсацию.</p><h3>3. Технические сбои</h3><p>3.1. При сбоях Сервис вправе отменить сделку и вернуть предметы.</p><h3>4. Chargeback</h3><p>4.1. Отмена платежа через банк = блокировка + компенсация убытков.</p><h3>5. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('refund')">Закрыть</button></div></div>
 
 <script>
 // БЛОК: JS-CONFIG
@@ -281,8 +279,8 @@ const API = 'https://attendant-esophagus-expand.ngrok-free.dev';
 const H = { 'ngrok-skip-browser-warning': 'true' };
 const tg = window.Telegram.WebApp;
 tg.expand();
-tg.setHeaderColor('#f0f2f5');
-tg.setBackgroundColor('#f0f2f5');
+tg.setHeaderColor('#f5f6fa');
+tg.setBackgroundColor('#f5f6fa');
 
 let steamId = null;
 let groupedSkins = [];
@@ -430,25 +428,25 @@ function sellSelected() {
     const total = sel.reduce((s, x) => s + x.price, 0).toFixed(2);
     const grp = {}; sel.forEach(s => { if (!grp[s.name]) grp[s.name] = { name: s.name, count: 0, price: s.price }; grp[s.name].count++; });
     const summary = Object.values(grp).map(g => `${g.name} ×${g.count}`).join('<br>');
-    showPaymentModal(`<h3>💰 Выберите метод выплаты</h3><p style="font-size:12px;color:#888;margin-bottom:4px;">Скины:<br>${summary}</p><p style="font-size:16px;font-weight:700;color:#4ecca3;margin-bottom:16px;">Сумма: ${total} ₽</p><p style="font-size:11px;color:#e94560;margin-bottom:12px;">⚠️ Выплата — через 8 дней.</p>
-        <button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">📱 СБП</button>
-        <button onclick="chooseBank('card')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💳 Карта</button>
-        <button onclick="showCryptoInput('usdt-bep20')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💲 USDT (BEP20)</button>
-        <button onclick="showCryptoInput('usdt-ton')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💲 USDT (TON)</button>
-        <button onclick="closePaymentModal()" style="display:block;width:100%;padding:12px;margin:4px 0;background:#333;color:#aaa;border:none;border-radius:8px;font-size:14px;cursor:pointer;">❌ Отмена</button>`);
+    showPaymentModal(`<h3>💰 Выберите метод выплаты</h3><p style="font-size:12px;color:var(--muted);margin-bottom:4px;">Скины:<br>${summary}</p><p style="font-size:16px;font-weight:700;color:var(--green);margin-bottom:16px;">Сумма: ${total} ₽</p><p style="font-size:11px;color:var(--accent);margin-bottom:12px;">⚠️ Выплата — через 8 дней.</p>
+        <button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:8px;font-size:14px;cursor:pointer;">📱 СБП</button>
+        <button onclick="chooseBank('card')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💳 Карта</button>
+        <button onclick="showCryptoInput('usdt-bep20')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💲 USDT (BEP20)</button>
+        <button onclick="showCryptoInput('usdt-ton')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💲 USDT (TON)</button>
+        <button onclick="closePaymentModal()" style="display:block;width:100%;padding:12px;margin:4px 0;background:#b2bec3;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">❌ Отмена</button>`);
     window._pd = { skins: sel, total };
 }
 
 // БЛОК: JS-PAYMENT
 function chooseBank(method) {
     const banks = ['Сбербанк','Т-Банк','ВТБ','Альфа-Банк','Райффайзен','Другой'];
-    showPaymentModal(`<h3>🏦 Выберите банк</h3>${banks.map(b => `<button onclick="showBankInput('${method}','${b}')" style="display:block;width:100%;padding:10px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">${b}</button>`).join('')}<button onclick="sellSelected()" style="display:block;width:100%;padding:10px;margin:4px 0;background:#333;color:#aaa;border:none;border-radius:8px;font-size:14px;cursor:pointer;">⬅ Назад</button>`);
+    showPaymentModal(`<h3>🏦 Выберите банк</h3>${banks.map(b => `<button onclick="showBankInput('${method}','${b}')" style="display:block;width:100%;padding:10px;margin:4px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:8px;font-size:14px;cursor:pointer;">${b}</button>`).join('')}<button onclick="sellSelected()" style="display:block;width:100%;padding:10px;margin:4px 0;background:#b2bec3;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">⬅ Назад</button>`);
 }
 function showBankInput(method, bank) {
     const label = method === 'sbp' ? 'номер телефона (11 цифр)' : 'номер карты (16 цифр)';
     const maxLen = method === 'sbp' ? 11 : 16;
     const title = method === 'sbp' ? '📱 СБП' : '💳 Карта';
-    showPaymentModal(`<h3>${title} — ${bank === 'Другой' ? 'Другой банк' : bank}</h3><p style="color:#888;font-size:11px;margin-bottom:8px;">Только для РФ</p>${bank === 'Другой' ? '<input type="text" id="bankName" placeholder="Название банка" style="margin-bottom:6px;">' : ''}<input type="text" id="bankDetail" placeholder="${label}" maxlength="${maxLen}" inputmode="numeric" pattern="[0-9]*"><div class="btn-row"><button class="btn-secondary" onclick="chooseBank('${method}')">⬅ Назад</button><button class="btn-primary" onclick="submitBank('${method}','${bank}')">Далее</button></div>`);
+    showPaymentModal(`<h3>${title} — ${bank === 'Другой' ? 'Другой банк' : bank}</h3><p style="color:var(--muted);font-size:11px;margin-bottom:8px;">Только для РФ</p>${bank === 'Другой' ? '<input type="text" id="bankName" placeholder="Название банка" style="margin-bottom:6px;">' : ''}<input type="text" id="bankDetail" placeholder="${label}" maxlength="${maxLen}" inputmode="numeric" pattern="[0-9]*"><div class="btn-row"><button class="btn-secondary" onclick="chooseBank('${method}')">⬅ Назад</button><button class="btn-primary" onclick="submitBank('${method}','${bank}')">Далее</button></div>`);
 }
 function submitBank(method, bank) {
     let bankName = bank; if (bank === 'Другой') { bankName = document.getElementById('bankName')?.value?.trim(); if (!bankName) { alert('Введи название банка'); return; } }
@@ -458,7 +456,7 @@ function submitBank(method, bank) {
 }
 function showCryptoInput(method) {
     const label = method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)';
-    const fee = method === 'usdt-ton' ? '<p style="color:#888;font-size:11px;">Может взиматься комиссия сети</p>' : '';
+    const fee = method === 'usdt-ton' ? '<p style="color:var(--muted);font-size:11px;">Может взиматься комиссия сети</p>' : '';
     showPaymentModal(`<h3>💲 ${label}</h3>${fee}<input type="text" id="cryptoAddr" placeholder="Адрес кошелька"><div class="btn-row"><button class="btn-secondary" onclick="sellSelected()">⬅ Назад</button><button class="btn-primary" onclick="submitCrypto('${method}')">Далее</button></div>`);
 }
 function submitCrypto(method) { const addr = document.getElementById('cryptoAddr')?.value?.trim(); if (!addr) { alert('Введи адрес кошелька'); return; } confirmDeal(`💲 ${method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'}: ${addr}`); }
@@ -474,7 +472,7 @@ function confirmDeal(fullPayment) {
         if (btn === 'ok') {
             saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
             tg.sendData(JSON.stringify({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) }));
-            document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = '#4ecca3';
+            document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = 'var(--green)';
         }
     });
 }
@@ -495,7 +493,7 @@ function toggleDealDetail(id) { const e = document.getElementById('deal-detail-'
 function getStats() { const deals = getDeals(); return { totalSum: deals.reduce((s,d) => s+d.total, 0), totalCount: deals.length }; }
 function renderDeals() {
     const deals = getDeals(); const container = document.getElementById('dealsList'); const stats = getStats(); let html = '';
-    html += `<div class="stats-card"><div style="font-size:12px;color:#888;margin-bottom:8px;">📊 Статистика GodMarket</div><div style="display:flex;justify-content:space-around;"><div><div style="font-size:24px;font-weight:900;color:var(--green);">${stats.totalCount}</div><div style="font-size:11px;color:#888;">скинов продано</div></div><div><div style="font-size:24px;font-weight:900;color:var(--accent);">${stats.totalSum.toFixed(0)} ₽</div><div style="font-size:11px;color:#888;">выкуплено</div></div></div></div>`;
+    html += `<div class="stats-card"><div style="font-size:12px;color:var(--muted);margin-bottom:8px;">📊 Статистика GodMarket</div><div style="display:flex;justify-content:space-around;"><div><div style="font-size:24px;font-weight:900;color:var(--green);">${stats.totalCount}</div><div style="font-size:11px;color:var(--muted);">скинов продано</div></div><div><div style="font-size:24px;font-weight:900;color:var(--accent);">${stats.totalSum.toFixed(0)} ₽</div><div style="font-size:11px;color:var(--muted);">выкуплено</div></div></div></div>`;
     if (steamId) {
         const userDeals = deals.filter(d => d.steamId === steamId);
         if (userDeals.length === 0) { html += '<div class="empty">У тебя пока нет активных сделок</div>'; }
