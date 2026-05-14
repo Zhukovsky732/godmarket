@@ -7,29 +7,19 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: #0f0f1a;
-            --card: #1a1a2e;
-            --accent: #e94560;
-            --green: #4ecca3;
-            --text: #eee;
-            --muted: #888;
+            --bg: #0f0f1a; --card: #1a1a2e; --accent: #e94560;
+            --green: #4ecca3; --text: #eee; --muted: #888;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            padding: 16px;
-            max-width: 420px;
-            margin: 0 auto;
-            padding-bottom: 40px;
+            background: var(--bg); color: var(--text); padding: 16px;
+            max-width: 420px; margin: 0 auto; padding-bottom: 40px;
         }
         .header {
-            text-align: center;
-            padding: 20px 0;
+            text-align: center; padding: 20px 0;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            border-radius: 16px;
-            margin-bottom: 16px;
+            border-radius: 16px; margin-bottom: 16px;
         }
         .logo { font-size: 32px; font-weight: 900; color: var(--accent); letter-spacing: -1px; }
         .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
@@ -61,25 +51,30 @@
             padding: 6px; border-radius: 8px;
         }
         .skin-item {
-            background: var(--card); border-radius: 12px; padding: 14px;
-            margin: 8px 0; display: flex; align-items: center; gap: 12px;
+            background: var(--card); border-radius: 12px; padding: 10px 14px;
+            margin: 8px 0; display: flex; align-items: center; gap: 10px;
             border-left: 4px solid var(--accent); transition: all 0.2s;
+        }
+        .skin-icon {
+            width: 48px; height: 36px; border-radius: 4px;
+            object-fit: cover; flex-shrink: 0;
+            background: #111; border: 1px solid #333;
         }
         .skin-info { flex: 1; min-width: 0; }
         .skin-name {
-            font-weight: 700; font-size: 13px;
+            font-weight: 700; font-size: 12px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .skin-count { color: var(--muted); font-size: 11px; margin-top: 2px; }
-        .skin-our { font-weight: 700; color: var(--green); font-size: 14px; white-space: nowrap; flex-shrink: 0; }
-        .qty-selector { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+        .skin-count { color: var(--muted); font-size: 10px; margin-top: 2px; }
+        .skin-our { font-weight: 700; color: var(--green); font-size: 13px; white-space: nowrap; flex-shrink: 0; }
+        .qty-selector { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
         .qty-btn {
             background: #2a475e; color: white; border: none;
-            border-radius: 6px; width: 28px; height: 28px;
-            font-size: 16px; font-weight: bold; cursor: pointer;
+            border-radius: 4px; width: 22px; height: 22px;
+            font-size: 13px; font-weight: bold; cursor: pointer; line-height: 1;
         }
         .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .qty-value { font-weight: 700; font-size: 14px; color: var(--green); min-width: 20px; text-align: center; }
+        .qty-value { font-weight: 700; font-size: 13px; color: var(--green); min-width: 16px; text-align: center; }
         .deal-card {
             background: var(--card); border-radius: 12px; padding: 14px;
             margin: 8px 0; border-left: 4px solid var(--green);
@@ -108,8 +103,7 @@
         .footer a:hover { text-decoration: underline; }
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000;
-            overflow-y: auto; padding: 20px;
+            background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; padding: 20px;
         }
         .modal.open { display: flex; align-items: flex-start; justify-content: center; }
         .modal-content {
@@ -185,93 +179,9 @@
     </div>
 
     <!-- Модальные окна -->
-    <div id="modal-terms" class="modal">
-        <div class="modal-content">
-            <h2>📄 Условия использования GodMarket</h2>
-            <p><i>Последнее обновление: 14 мая 2026 г.</i></p>
-            <h3>1. Общие положения</h3>
-            <p>1.1. Сервис GodMarket осуществляет покупку виртуальных предметов (скинов) для игры Counter-Strike 2 у Пользователей.</p>
-            <p>1.2. Используя Сервис, вы принимаете Условия. Если не согласны — не используйте.</p>
-            <p>1.3. Администратор вправе изменить Условия, приостановить или прекратить работу Сервиса.</p>
-            <p>1.4. Сервис использует Steam API, но не является партнёром Valve Corporation. Все товарные знаки принадлежат их владельцам.</p>
-            <p>1.5. Все цены в российских рублях (₽). Минимальная сумма выкупа — 10 ₽.</p>
-            <h3>2. Кто может использовать</h3>
-            <p>2.1. Пользователь должен быть совершеннолетним (18+). Лица 15-18 лет — с согласия представителя.</p>
-            <p>2.2. Пользователь гарантирует, что использование Сервиса не нарушает законы его страны.</p>
-            <p>2.3. Продаваемые предметы должны принадлежать Пользователю на законных основаниях.</p>
-            <h3>3. Вход через Steam</h3>
-            <p>3.1. Вход через учётную запись Steam.</p>
-            <p>3.2. Запрещено использовать чужую учётную запись.</p>
-            <p>3.3. Требуется мобильный аутентификатор Steam, активированный не менее 7 дней назад.</p>
-            <h3>4. Процесс сделки</h3>
-            <p>4.1. После входа показывается список скинов и цена выкупа.</p>
-            <p>4.2. Пользователь выбирает скины, способ оплаты и реквизиты.</p>
-            <p>4.3. Принимать ТОЛЬКО трейд-оффер от Сервиса.</p>
-            <p>4.4. Выплата — в течение 8 дней после получения скинов (правила Steam Trade Protection).</p>
-            <p>4.5. Если трейд отменён через Steam в течение 7 дней — выплата аннулируется.</p>
-            <p>4.6. Если выплата не произведена за 8 дней, у Сервиса есть ещё 20 дней (до 28-го дня).</p>
-            <p>4.7. Неликвид (менее 20 продаж в месяц) не выкупается.</p>
-            <h3>5. Способы оплаты</h3>
-            <p>5.1. СБП — только РФ, 11 цифр номера телефона.</p>
-            <p>5.2. Карта — только РФ, 16 цифр номера.</p>
-            <p>5.3. USDT (BEP20).</p>
-            <p>5.4. USDT (TON), комиссия сети $0.10.</p>
-            <h3>6. Ответственность</h3>
-            <p>6.1. Сервис не отвечает за задержки из-за Steam, банков, платёжных систем.</p>
-            <p>6.2. Сервис не возмещает ущерб за украденные/утерянные предметы.</p>
-            <p>6.3. При подозрении на мошенничество — отмена сделки и/или блокировка.</p>
-            <h3>7. Контакты</h3>
-            <p>godmarketsupport@gmail.com</p>
-            <button class="modal-close" onclick="closeModal('terms')">Закрыть</button>
-        </div>
-    </div>
-
-    <div id="modal-privacy" class="modal">
-        <div class="modal-content">
-            <h2>🔒 Политика конфиденциальности</h2>
-            <p><i>14 мая 2026 г.</i></p>
-            <h3>1. Какие данные собираем</h3>
-            <p>1.1. Steam ID — для загрузки инвентаря.</p>
-            <p>1.2. Платёжные реквизиты — для выплаты.</p>
-            <p>1.3. Данные о сделках.</p>
-            <p>1.4. IP, браузер, время входа — для статистики и безопасности.</p>
-            <h3>2. Использование</h3>
-            <p>2.1. Только для выполнения сделки.</p>
-            <p>2.2. Третьим лицам не передаются (кроме как по закону).</p>
-            <p>2.3. Данные хранятся локально на устройстве (localStorage). Сервер копий не хранит.</p>
-            <p>2.4. Удалить данные можно кнопкой «Выйти» или очисткой браузера.</p>
-            <h3>3. Хранение</h3>
-            <p>3.1. Сервис не хранит данные на своих серверах.</p>
-            <p>3.2. Вопросы: godmarketsupport@gmail.com</p>
-            <h3>4. Защита</h3>
-            <p>4.1. Принимаем меры для защиты данных.</p>
-            <h3>5. Контакты</h3>
-            <p>godmarketsupport@gmail.com</p>
-            <button class="modal-close" onclick="closeModal('privacy')">Закрыть</button>
-        </div>
-    </div>
-
-    <div id="modal-refund" class="modal">
-        <div class="modal-content">
-            <h2>↩️ Возврат и отмена</h2>
-            <p><i>14 мая 2026 г.</i></p>
-            <h3>1. Отмена</h3>
-            <p>1.1. Можно отменить до отправки трейд-оффера.</p>
-            <p>1.2. После отправки — сделка заключена.</p>
-            <h3>2. Сроки выплаты</h3>
-            <p>2.1. Стандартный срок — 8 дней.</p>
-            <p>2.2. Дополнительно 20 дней (до 28-го дня), если не успели.</p>
-            <p>2.3. Отмена трейда через Steam в течение 7 дней — выплата аннулируется.</p>
-            <h3>3. Компенсация</h3>
-            <p>3.1. Если прошло 30 дней, а выплаты нет — Пользователь вправе требовать компенсацию и возврат средств.</p>
-            <p>3.2. Писать на godmarketsupport@gmail.com с датой сделки и Steam ID.</p>
-            <p>3.3. Сервис рассматривает требование в течение 5 рабочих дней.</p>
-            <h3>4. Chargeback</h3>
-            <p>4.1. Отмена платежа через банк = нарушение.</p>
-            <p>4.2. Сервис вправе заблокировать Пользователя и требовать компенсацию убытков.</p>
-            <button class="modal-close" onclick="closeModal('refund')">Закрыть</button>
-        </div>
-    </div>
+    <div id="modal-terms" class="modal"><div class="modal-content"><h2>📄 Условия использования GodMarket</h2><p><i>14 мая 2026 г.</i></p><h3>1. Общие положения</h3><p>1.1. Сервис GodMarket осуществляет покупку виртуальных предметов (скинов) для игры Counter-Strike 2.</p><p>1.2. Используя Сервис, вы принимаете Условия.</p><p>1.3. Администратор вправе изменить Условия.</p><p>1.4. Сервис использует Steam API, но не является партнёром Valve.</p><p>1.5. Все цены в рублях. Минимальная сумма выкупа — 10 ₽.</p><h3>2. Кто может использовать</h3><p>2.1. Совершеннолетние (18+).</p><p>2.2. Продаваемые предметы должны принадлежать Пользователю.</p><h3>3. Процесс сделки</h3><p>3.1. Выплата — в течение 8 дней.</p><p>3.2. Дополнительно 20 дней (до 28-го дня).</p><p>3.3. После 30 дней — право требовать компенсацию.</p><h3>4. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="modal-close" onclick="closeModal('terms')">Закрыть</button></div></div>
+    <div id="modal-privacy" class="modal"><div class="modal-content"><h2>🔒 Политика конфиденциальности</h2><p><i>14 мая 2026 г.</i></p><h3>1. Данные</h3><p>Steam ID, реквизиты, история сделок.</p><h3>2. Хранение</h3><p>Данные хранятся локально на устройстве (localStorage).</p><p>Вопросы: godmarketsupport@gmail.com</p><button class="modal-close" onclick="closeModal('privacy')">Закрыть</button></div></div>
+    <div id="modal-refund" class="modal"><div class="modal-content"><h2>↩️ Возврат и отмена</h2><p><i>14 мая 2026 г.</i></p><h3>1. Сроки</h3><p>8 дней — стандартный срок. +20 дней — дополнительный. 30 дней — право на компенсацию.</p><p>Контакты: godmarketsupport@gmail.com</p><button class="modal-close" onclick="closeModal('refund')">Закрыть</button></div></div>
 
     <script>
         const API = 'https://attendant-esophagus-expand.ngrok-free.dev';
@@ -284,6 +194,7 @@
         let steamId = null;
         let groupedSkins = [];
         let priceCache = {};
+        let iconCache = {};
 
         const saved = localStorage.getItem('gm_steamid');
         if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
@@ -296,18 +207,9 @@
         function switchTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            if (tab === 'sell') {
-                document.getElementById('tabSell').classList.add('active');
-                document.getElementById('panelSell').classList.add('active');
-            } else if (tab === 'deals') {
-                document.getElementById('tabDeals').classList.add('active');
-                document.getElementById('panelDeals').classList.add('active');
-                renderDeals();
-            } else if (tab === 'chat') {
-                document.getElementById('tabChat').classList.add('active');
-                document.getElementById('panelChat').classList.add('active');
-                renderChat();
-            }
+            if (tab === 'sell') { document.getElementById('tabSell').classList.add('active'); document.getElementById('panelSell').classList.add('active'); }
+            else if (tab === 'deals') { document.getElementById('tabDeals').classList.add('active'); document.getElementById('panelDeals').classList.add('active'); renderDeals(); }
+            else if (tab === 'chat') { document.getElementById('tabChat').classList.add('active'); document.getElementById('panelChat').classList.add('active'); renderChat(); }
         }
 
         function showUI() {
@@ -332,12 +234,12 @@
         }
 
         function logout() {
-            localStorage.removeItem('gm_steamid'); steamId = null; groupedSkins = []; priceCache = {};
+            localStorage.removeItem('gm_steamid'); steamId = null; groupedSkins = []; priceCache = {}; iconCache = {};
             hideUI(); document.getElementById('status').style.display = 'block';
             document.getElementById('status').innerHTML = '🔐 Войди через Steam';
         }
 
-        function refresh() { priceCache = {}; loadInventory(); }
+        function refresh() { priceCache = {}; iconCache = {}; loadInventory(); }
 
         async function fetchRate() {
             try {
@@ -361,11 +263,23 @@
                 const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H }); const d = await r.json();
                 if (d.success && d.assets) {
                     const descMap = {};
-                    if (d.descriptions) d.descriptions.forEach(dd => { descMap[`${dd.classid}_${dd.instanceid}`] = dd.market_hash_name; });
+                    if (d.descriptions) {
+                        d.descriptions.forEach(dd => {
+                            const key = `${dd.classid}_${dd.instanceid}`;
+                            descMap[key] = {
+                                name: dd.market_hash_name,
+                                icon: `https://steamcommunity-a.akamaihd.net/economy/image/${dd.icon_url}`
+                            };
+                            iconCache[key] = descMap[key].icon;
+                        });
+                    }
                     const groupMap = {};
                     d.assets.forEach(a => {
-                        const name = descMap[`${a.classid}_${a.instanceid}`] || `Скин #${a.assetid}`;
-                        if (!groupMap[name]) groupMap[name] = { name, assetIds: [], price: null, selectedQty: 0 };
+                        const key = `${a.classid}_${a.instanceid}`;
+                        const skinData = descMap[key] || {};
+                        const name = skinData.name || `Скин #${a.assetid}`;
+                        const icon = skinData.icon || '';
+                        if (!groupMap[name]) groupMap[name] = { name, icon, assetIds: [], price: null, selectedQty: 0 };
                         groupMap[name].assetIds.push(a.assetid);
                     });
                     groupedSkins = Object.values(groupMap);
@@ -379,8 +293,9 @@
             document.getElementById('inventory').style.display = 'block';
             document.getElementById('skinsList').innerHTML = groupedSkins.map((g, i) => `
                 <div class="skin-item">
+                    ${g.icon ? `<img src="${g.icon}" class="skin-icon" onerror="this.style.display='none'">` : ''}
                     <div class="skin-info">
-                        <div class="skin-name">🎨 ${g.name}</div>
+                        <div class="skin-name">${g.name}</div>
                         <div class="skin-count">В наличии: ${g.assetIds.length} шт.</div>
                         <div class="qty-selector">
                             <button class="qty-btn" onclick="changeQty(${i}, -1)" ${g.selectedQty <= 0 ? 'disabled' : ''}>−</button>
@@ -482,18 +397,12 @@
             });
         }
 
-        // Чат
         function getChatHistory() { try { return JSON.parse(localStorage.getItem('gm_chat') || '[]'); } catch(e) { return []; } }
         function saveChatMessage(msg) { const h = getChatHistory(); h.push({ ...msg, time: Date.now() }); localStorage.setItem('gm_chat', JSON.stringify(h)); }
         function renderChat() {
             const h = getChatHistory(); const c = document.getElementById('chatMessages');
             if (h.length === 0) { c.innerHTML = '<div class="empty">Напиши сообщение, и админ ответит здесь</div>'; return; }
-            c.innerHTML = h.map(m => `
-                <div class="chat-msg ${m.from}">
-                    <div>${m.text}</div>
-                    <div class="chat-time">${new Date(m.time).toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'})}</div>
-                </div>
-            `).join('');
+            c.innerHTML = h.map(m => `<div class="chat-msg ${m.from}"><div>${m.text}</div><div class="chat-time">${new Date(m.time).toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'})}</div></div>`).join('');
             c.scrollTop = c.scrollHeight;
         }
         function sendChatMessage() {
@@ -503,14 +412,9 @@
             tg.sendData(JSON.stringify({ action: 'chat', message: text }));
         }
 
-        // Сделки
         function getDeals() { try { return JSON.parse(localStorage.getItem('gm_deals') || '[]'); } catch(e) { return []; } }
         function saveDeal(deal) { const deals = getDeals(); deals.unshift(deal); localStorage.setItem('gm_deals', JSON.stringify(deals)); }
-        function getPayDate(iso) {
-            const d = new Date(iso); const ten = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 10, 0, 0);
-            if (d < ten) ten.setDate(ten.getDate() - 1);
-            ten.setDate(ten.getDate() + 8); return ten;
-        }
+        function getPayDate(iso) { const d = new Date(iso); const ten = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 10, 0, 0); if (d < ten) ten.setDate(ten.getDate() - 1); ten.setDate(ten.getDate() + 8); return ten; }
         function getTimeLeft(pay) { const diff = pay.getTime() - Date.now(); if (diff <= 0) return '✅ Можно выплачивать'; return `⏳ ${Math.floor(diff/86400000)} дн. ${Math.floor((diff%86400000)/3600000)} ч.`; }
         function formatDate(d) { return d.toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric' }); }
         function toggleDealDetail(id) { const e = document.getElementById('deal-detail-'+id); if (e) e.classList.toggle('open'); }
