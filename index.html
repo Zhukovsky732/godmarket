@@ -339,12 +339,17 @@ function hideUI() {
 }
 function refresh() { priceCache = {}; loadInventory(); }
 function shareBot() {
-    const text = `🎮 Продай скины CS2 быстро и выгодно!\nhttps://t.me/godmarket_bot?start=ref_${steamId}`;
+    const refLink = `https://t.me/godmarket_bot?start=ref_${steamId}`;
     if (isTelegram && tg) {
-        tg.openTelegramLink(`https://t.me/share/url?text=${encodeURIComponent(text)}`);
+        tg.openTelegramLink(`https://t.me/share/url?text=${encodeURIComponent('🎮 Продай скины CS2 быстро и выгодно!\n' + refLink)}`);
     } else {
-        navigator.clipboard.writeText(`https://t.me/godmarket_bot?start=ref_${steamId}`).then(() => { alert('Реферальная ссылка скопирована!'); });
+        navigator.clipboard.writeText(refLink).then(() => {
+            showCopyModal('Реферальная ссылка скопирована!', refLink);
+        });
     }
+}
+function showCopyModal(title, text) {
+    showPaymentModal(`<h3>🔗 ${title}</h3><input type="text" value="${text}" readonly style="width:100%;padding:10px;border-radius:8px;border:1px solid #dfe6e9;background:#f5f6fa;color:#2d3436;font-size:12px;margin-bottom:12px;"><button class="btn-primary" onclick="closePaymentModal()" style="width:100%;padding:12px;">ОК</button>`);
 }
 function showErrorModal(msg) {
     showPaymentModal(`<h3>⚠️ Ошибка</h3><p style="color:var(--muted);font-size:14px;margin-bottom:16px;">${msg}</p><button class="btn-primary" onclick="closePaymentModal()" style="width:100%;padding:12px;">ОК</button>`);
@@ -374,7 +379,7 @@ function applyFilters() {
 async function fetchPrice(name) { if (priceCache[name]) return priceCache[name]; try { const r = await fetch(`${API}/api/price?name=${encodeURIComponent(name)}`, { headers: H }); const d = await r.json(); if (d.success) { priceCache[name] = d.buy_price; return d.buy_price; } } catch(e) {} return null; }
 async function loadInventory() {
     document.getElementById('status').style.display = 'block';
-    document.getElementById('status').innerHTML = '<div class="skeleton-card"><div class="skeleton skeleton-icon"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-price"></div></div>'.repeat(3);
+    document.getElementById('status').innerHTML = `<div style="text-align:center;padding:20px;"><div class="skin-spinner" style="width:32px;height:32px;border-width:3px;margin:0 auto 12px;"></div><div style="color:var(--muted);">Загружаем инвентарь...</div></div>`;
     try {
         const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H }); const d = await r.json();
         if (d.success && d.assets) {
@@ -383,6 +388,7 @@ async function loadInventory() {
             const groupMap = {};
             d.assets.forEach(a => { const key = `${a.classid}_${a.instanceid}`; const skinData = descMap[key] || {}; if (skinData.type === 'Charm') return; const name = skinData.name || `Скин #${a.assetid}`; if (!groupMap[name]) groupMap[name] = { ...skinData, assetIds: [], price: null, selectedQty: 0 }; groupMap[name].assetIds.push(a.assetid); });
             groupedSkins = Object.values(groupMap);
+            document.getElementById('status').innerHTML = `<div style="text-align:center;padding:20px;"><div class="skin-spinner" style="width:32px;height:32px;border-width:3px;margin:0 auto 12px;"></div><div style="color:var(--muted);">Загружаем цены...</div></div>`;
             for (const g of groupedSkins) { g.price = await fetchPrice(g.name); }
             applyFilters();
             updateInvSummary();
@@ -456,12 +462,8 @@ function showBankInput(method, bank) {
 }
 function submitBank(method, bank) {
     let bankName = bank;
-    if (bank === 'Другой') {
-        bankName = document.getElementById('bankName')?.value?.trim();
-        if (!bankName) { showErrorModal('Введи название банка'); return; }
-    }
-    const detail = document.getElementById('bankDetail')?.value?.trim();
-    if (!detail) { showErrorModal('Введи реквизиты'); return; }
+    if (bank === 'Другой') { bankName = document.getElementById('bankName')?.value?.trim(); if (!bankName) { showErrorModal('Введи название банка'); return; } }
+    const detail = document.getElementById('bankDetail')?.value?.trim(); if (!detail) { showErrorModal('Введи реквизиты'); return; }
     const maxLen = method === 'sbp' ? 11 : 16;
     if (!new RegExp(`^\\d{${maxLen}}$`).test(detail)) { showErrorModal(`Должно быть ровно ${maxLen} цифр`); return; }
     confirmDeal(`${method === 'sbp' ? '📱 СБП' : '💳 Карта'} (${bankName}): ${detail}`);
@@ -471,11 +473,7 @@ function showCryptoInput(method) {
     const fee = method === 'usdt-ton' ? '<p style="color:var(--muted);font-size:11px;">Может взиматься комиссия сети</p>' : '';
     showPaymentModal(`<h3>💲 ${label}</h3>${fee}<input type="text" id="cryptoAddr" placeholder="Адрес кошелька"><div class="btn-row"><button class="btn-secondary" onclick="sellSelected()">⬅ Назад</button><button class="btn-primary" onclick="submitCrypto('${method}')">Далее</button></div>`);
 }
-function submitCrypto(method) {
-    const addr = document.getElementById('cryptoAddr')?.value?.trim();
-    if (!addr) { showErrorModal('Введи адрес кошелька'); return; }
-    confirmDeal(`💲 ${method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'}: ${addr}`);
-}
+function submitCrypto(method) { const addr = document.getElementById('cryptoAddr')?.value?.trim(); if (!addr) { showErrorModal('Введи адрес кошелька'); return; } confirmDeal(`💲 ${method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'}: ${addr}`); }
 
 function showConfirmModal(message, onOk) {
     showPaymentModal(`<h3>Подтверждение продажи</h3><p style="color:var(--muted);font-size:13px;white-space:pre-line;">${message}</p><div class="btn-row"><button class="btn-secondary" onclick="closePaymentModal()">❌ Отмена</button><button class="btn-primary" onclick="closePaymentModal();onOk();">✅ Продать</button></div>`);
