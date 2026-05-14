@@ -258,16 +258,16 @@
         <p style="color:#888;font-size:12px;margin-bottom:16px;">Введи свой Steam ID64, чтобы увидеть скины</p>
         <input type="text" id="loginSteamId" placeholder="7656119XXXXXXXXXX" maxlength="17" inputmode="numeric" pattern="[0-9]*" style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#0f0f1a;color:#eee;font-size:14px;margin-bottom:8px;">
         <p style="color:#666;font-size:10px;margin:8px 0;">Где найти Steam ID?</p>
-        <p style="color:#888;font-size:9px;margin-bottom:12px;">В клиенте Steam: Steam → Настройки → Интерфейс → Показать адресную строку. Затем открой свой профиль и скопируй цифры из адреса.</p>
+        <p style="color:#888;font-size:9px;margin-bottom:12px;">Steam → Настройки → Интерфейс → Показать адресную строку. Открой профиль и скопируй цифры из адреса.</p>
         <div class="btn-row">
             <button class="btn-secondary" onclick="closeLoginModal()">Отмена</button>
             <button class="btn-primary" onclick="doLogin()">Войти</button>
         </div>
         <p style="color:#666;font-size:10px;margin:12px 0;">— или —</p>
         <button onclick="loginViaSteam()" style="display:block;width:100%;padding:12px;background:#2a475e;color:#c7d5e0;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:4px;">
-            🔐 Войти через Steam (может не работать)
+            🔐 Войти через Steam OAuth
         </button>
-        <p style="color:#888;font-size:9px;">Если не открывается — используйте ручной ввод.</p>
+        <p style="color:#888;font-size:9px;">Если сайт Steam заблокирован — используйте ручной ввод.</p>
     </div>
 </div>
 
