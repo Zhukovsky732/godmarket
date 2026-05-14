@@ -51,14 +51,6 @@
         .dark-theme .deal-card { background: #16213e; }
         .light-theme .deal-card:hover { background: #f1f2f6; }
         .dark-theme .deal-card:hover { background: #1e3799; }
-        .light-theme .chat-msg.user { background: #dfe6e9; color: #2d3436; }
-        .dark-theme .chat-msg.user { background: #0c2461; color: #dfe6e9; }
-        .light-theme .chat-msg.admin { background: #eee; color: #2d3436; }
-        .dark-theme .chat-msg.admin { background: #1e3799; color: #dfe6e9; }
-        .light-theme #chatInput { background: #fff; color: #2d3436; border: 1px solid #dfe6e9; }
-        .dark-theme #chatInput { background: #0c2461; color: #dfe6e9; }
-        .light-theme .skeleton { background: linear-gradient(90deg, #dfe6e9 25%, #f1f2f6 50%, #dfe6e9 75%); background-size: 200% 100%; }
-        .dark-theme .skeleton { background: linear-gradient(90deg, #0c2461 25%, #16213e 50%, #0c2461 75%); background-size: 200% 100%; }
         .light-theme .footer { border-color: #dfe6e9; }
         .dark-theme .footer { border-color: #1e3799; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -154,12 +146,6 @@
         .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
         .footer { text-align: center; margin-top: 30px; padding: 16px; font-size: 10px; color: var(--muted); }
         .footer a { color: var(--accent); text-decoration: none; cursor: pointer; }
-        .chat-msg { margin: 6px 0; padding: 10px 12px; border-radius: 12px; max-width: 80%; word-wrap: break-word; font-size: 13px; }
-        .chat-msg.user { margin-left: auto; text-align: right; }
-        .chat-msg.admin { margin-right: auto; }
-        .chat-time { font-size: 9px; color: #888; margin-top: 4px; }
-        #chatMessages { max-height: 350px; overflow-y: auto; margin-bottom: 12px; padding: 8px; }
-        #chatInput { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #dfe6e9; }
         .legal-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 300; overflow-y: auto; padding: 20px; }
         .legal-modal.open { display: flex; align-items: flex-start; justify-content: center; }
         .legal-content { border-radius: 16px; padding: 20px; width: 100%; max-width: 500px; margin-top: 20px; font-size: 13px; }
@@ -187,7 +173,7 @@
     <button class="btn btn-steam" id="loginBtn" onclick="showLoginModal()">🔐 Steam</button>
     <button class="btn btn-tool" id="logoutBtn" style="display:none;" onclick="logout()">🚪 Выйти</button>
     <button class="btn btn-tool" id="refreshBtn" style="display:none;" onclick="refresh()">🔄 Обновить</button>
-    <button class="btn btn-tool" id="shareBtn" style="display:none;" onclick="shareBot()">📤</button>
+    <button class="btn btn-tool" id="shareBtn" style="display:none;" onclick="shareBot()">🔗 Ссылка</button>
     <button class="btn btn-sell-all-qty" id="sellAllQtyBtn" style="display:none;" onclick="selectAllSkins()">✅ Выбрать всё</button>
     <button class="btn btn-sell-all-qty" id="clearBtn" style="display:none; background:#b2bec3; color:white;" onclick="clearCart()">🗑️ Очистить</button>
 </div>
@@ -216,15 +202,6 @@
     <div id="dealsList"></div>
 </div>
 
-<!-- БЛОК: PANEL-CHAT -->
-<div class="panel" id="panelChat">
-    <div id="chatMessages"><div class="empty">Напиши сообщение, и админ ответит здесь</div></div>
-    <div style="display:flex;gap:8px;">
-        <input type="text" id="chatInput" placeholder="Напиши сообщение...">
-        <button onclick="sendChatMessage()" style="padding:10px 16px;background:var(--accent);color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">▶️</button>
-    </div>
-</div>
-
 <!-- БЛОК: FOOTER -->
 <div class="footer">
     <a onclick="openLegal('terms')">Условия</a> ·
@@ -232,13 +209,15 @@
     <a onclick="openLegal('refund')">Возврат</a> ·
     <span style="color:var(--muted);">|</span>
     <a onclick="toggleTheme()">🌓 Тема</a>
+    <div style="margin-top:8px;color:var(--muted);font-size:10px;">
+        📩 <b>Поддержка:</b> <a href="https://t.me/Zhukovsky732" target="_blank">@Zhukovsky732</a> · godmarketsupport@gmail.com
+    </div>
 </div>
 
 <!-- БЛОК: BOTTOM-NAV -->
 <div class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('sell')"><span class="nav-icon">🛒</span> Продажа</div>
     <div class="nav-item" onclick="switchTab('deals')"><span class="nav-icon">📋</span> Сделки</div>
-    <div class="nav-item" onclick="switchTab('chat')" id="navChat"><span class="nav-icon">💬</span> Поддержка</div>
 </div>
 
 <!-- БЛОК: MODAL-LOGIN -->
@@ -332,7 +311,6 @@ function sendDataToBot(data) {
 }
 
 renderDeals();
-renderChat();
 
 // БЛОК: JS-AUTH
 function showLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
@@ -355,7 +333,6 @@ function switchTab(tab) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     if (tab === 'sell') { document.getElementById('panelSell').classList.add('active'); document.querySelector('.nav-item:nth-child(1)').classList.add('active'); }
     else if (tab === 'deals') { document.getElementById('panelDeals').classList.add('active'); document.querySelector('.nav-item:nth-child(2)').classList.add('active'); renderDeals(); }
-    else { document.getElementById('panelChat').classList.add('active'); document.querySelector('.nav-item:nth-child(3)').classList.add('active'); renderChat(); document.getElementById('navChat').querySelector('.nav-badge')?.remove(); }
 }
 function showUI() {
     document.getElementById('loginBtn').style.display = 'none';
@@ -444,14 +421,17 @@ function renderInventory() {
         return `<div class="skin-item ${rarityClass}">
             ${g.icon ? `<img src="${g.icon}" class="skin-icon" onerror="this.style.display='none'">` : ''}
             <div class="skin-info"><div class="skin-name">${g.name}</div><div class="skin-meta"><span class="skin-count">${g.assetIds.length} шт.</span>${g.isST ? '<span class="badge badge-st">ST</span>' : ''}${g.wear ? `<span class="badge badge-wear">${g.wear}</span>` : ''}</div>
-            <div class="qty-selector"><button class="qty-btn" onclick="changeQty(${i}, -1)" ${g.selectedQty <= 0 ? 'disabled' : ''}>−</button><span class="qty-value">${g.selectedQty}</span><button class="qty-btn" onclick="changeQty(${i}, 1)" ${g.selectedQty >= g.assetIds.length ? 'disabled' : ''}>+</button></div></div>
+            <div class="qty-selector"><button class="qty-btn" onclick="changeQty('${g.name}', -1)" ${g.selectedQty <= 0 ? 'disabled' : ''}>−</button><span class="qty-value">${g.selectedQty}</span><button class="qty-btn" onclick="changeQty('${g.name}', 1)" ${g.selectedQty >= g.assetIds.length ? 'disabled' : ''}>+</button></div></div>
             <div style="text-align: right;"><div class="skin-our">${g.price.toFixed(2) + ' ₽'}</div>${g.selectedQty > 0 ? `<div style="color: var(--green); font-size: 11px;">=${(g.price * g.selectedQty).toFixed(2)} ₽</div>` : ''}</div>
         </div>`;
     }).join('');
     if (displaySkins.length === 0) document.getElementById('skinsList').innerHTML = '<div class="empty">Нет скинов дороже 10 ₽</div>';
     updateSellButton();
 }
-function changeQty(i, delta) { const g = filteredSkins[i]; g.selectedQty = Math.max(0, Math.min(g.assetIds.length, g.selectedQty + delta)); renderInventory(); }
+function changeQty(name, delta) {
+    const g = filteredSkins.find(f => f.name === name);
+    if (g) { g.selectedQty = Math.max(0, Math.min(g.assetIds.length, g.selectedQty + delta)); renderInventory(); }
+}
 function getSelectedItems() { const r = []; filteredSkins.forEach(g => { if (g.selectedQty > 0 && g.price !== null && g.price > 10) for (let j=0; j<g.selectedQty; j++) r.push({ assetId: g.assetIds[j], name: g.name, price: g.price }); }); return r; }
 function updateSellButton() { const s = getSelectedItems(); document.getElementById('sellCount').textContent = s.length; document.getElementById('sellBtn').disabled = s.length === 0; }
 
@@ -508,25 +488,13 @@ function confirmDeal(fullPayment) {
             }
         });
     } else {
+        // В браузере используем confirm, но это лучше, чем prompt
         if (confirm(message + '\n\nНажмите OK для подтверждения.')) {
             saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
             sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) });
             document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = 'var(--green)';
         }
     }
-}
-
-// БЛОК: JS-CHAT
-function getChatHistory() { try { return JSON.parse(localStorage.getItem('gm_chat') || '[]'); } catch(e) { return []; } }
-function saveChatMessage(msg) { const h = getChatHistory(); h.push({ ...msg, time: Date.now() }); localStorage.setItem('gm_chat', JSON.stringify(h)); }
-function renderChat() { const h = getChatHistory(); const c = document.getElementById('chatMessages'); if (h.length === 0) { c.innerHTML = '<div class="empty">Напиши сообщение, и админ ответит здесь</div>'; return; } c.innerHTML = h.map(m => `<div class="chat-msg ${m.from}"><div>${m.text}</div><div class="chat-time">${new Date(m.time).toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'})}</div></div>`).join(''); c.scrollTop = c.scrollHeight; }
-function sendChatMessage() {
-    const input = document.getElementById('chatInput'); const text = input.value.trim();
-    if (!text) return;
-    saveChatMessage({ from: 'user', text }); input.value = ''; renderChat();
-    const payload = JSON.stringify({ action: 'chat', message: text });
-    if (isTelegram && tg) { tg.sendData(payload); }
-    else { fetch(`${API}/api/sell`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(e => console.error('Chat error:', e)); }
 }
 
 // БЛОК: JS-DEALS
