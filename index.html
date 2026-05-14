@@ -22,6 +22,7 @@
             padding: 16px;
             max-width: 420px;
             margin: 0 auto;
+            padding-bottom: 40px;
         }
         .header {
             text-align: center;
@@ -32,164 +33,97 @@
         }
         .logo { font-size: 32px; font-weight: 900; color: var(--accent); letter-spacing: -1px; }
         .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
-        .tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
+        .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
         .tab {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            text-align: center;
-            background: #1a1a2e;
-            color: var(--muted);
-            transition: all 0.2s;
+            flex: 1; padding: 10px; border: none; border-radius: 10px;
+            font-weight: 700; font-size: 13px; cursor: pointer; text-align: center;
+            background: #1a1a2e; color: var(--muted); transition: all 0.2s;
         }
         .tab.active { background: var(--accent); color: white; }
-        .toolbar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
+        .toolbar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
         .btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            flex: 1;
-            min-width: 80px;
-            text-align: center;
+            padding: 10px 16px; border: none; border-radius: 10px;
+            font-weight: 700; font-size: 13px; cursor: pointer;
+            transition: all 0.2s; flex: 1; min-width: 80px; text-align: center;
         }
         .btn-steam { background: #2a475e; color: #c7d5e0; }
         .btn-logout { background: #333; color: #aaa; }
         .btn-refresh { background: #1e3a5f; color: #8ab4f8; }
         .btn-sell-all {
-            background: var(--accent);
-            color: white;
-            font-size: 15px;
-            padding: 14px;
-            margin-top: 12px;
-            position: sticky;
-            bottom: 12px;
+            background: var(--accent); color: white; font-size: 15px;
+            padding: 14px; margin-top: 12px; position: sticky; bottom: 12px;
             box-shadow: 0 4px 20px rgba(233,69,96,0.4);
         }
         .btn-sell-all:disabled { background: #555; box-shadow: none; opacity: 0.6; }
         .user-info {
-            text-align: center;
-            color: var(--green);
-            font-size: 11px;
-            margin-bottom: 12px;
-            background: rgba(78,204,163,0.1);
-            padding: 6px;
-            border-radius: 8px;
+            text-align: center; color: var(--green); font-size: 11px;
+            margin-bottom: 12px; background: rgba(78,204,163,0.1);
+            padding: 6px; border-radius: 8px;
         }
         .skin-item {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 14px;
-            margin: 8px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-left: 4px solid var(--accent);
-            transition: all 0.2s;
+            background: var(--card); border-radius: 12px; padding: 14px;
+            margin: 8px 0; display: flex; align-items: center; gap: 12px;
+            border-left: 4px solid var(--accent); transition: all 0.2s;
         }
         .skin-info { flex: 1; min-width: 0; }
         .skin-name {
-            font-weight: 700;
-            font-size: 13px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-weight: 700; font-size: 13px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .skin-count {
-            color: var(--muted);
-            font-size: 11px;
-            margin-top: 2px;
-        }
-        .skin-our {
-            font-weight: 700;
-            color: var(--green);
-            font-size: 14px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .qty-selector {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 6px;
-        }
+        .skin-count { color: var(--muted); font-size: 11px; margin-top: 2px; }
+        .skin-our { font-weight: 700; color: var(--green); font-size: 14px; white-space: nowrap; flex-shrink: 0; }
+        .qty-selector { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
         .qty-btn {
-            background: #2a475e;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            width: 28px;
-            height: 28px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
+            background: #2a475e; color: white; border: none;
+            border-radius: 6px; width: 28px; height: 28px;
+            font-size: 16px; font-weight: bold; cursor: pointer;
         }
         .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .qty-value {
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--green);
-            min-width: 20px;
-            text-align: center;
-        }
+        .qty-value { font-weight: 700; font-size: 14px; color: var(--green); min-width: 20px; text-align: center; }
         .deal-card {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 14px;
-            margin: 8px 0;
-            border-left: 4px solid var(--green);
-            cursor: pointer;
-            transition: all 0.2s;
+            background: var(--card); border-radius: 12px; padding: 14px;
+            margin: 8px 0; border-left: 4px solid var(--green);
+            cursor: pointer; transition: all 0.2s;
         }
         .deal-card:hover { background: #1e2a3a; }
-        .deal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .deal-header { display: flex; justify-content: space-between; align-items: center; }
         .deal-date { color: var(--muted); font-size: 11px; }
         .deal-sum { font-weight: 700; color: var(--green); font-size: 15px; }
         .deal-skins { color: var(--muted); font-size: 12px; margin-top: 4px; }
         .deal-detail {
-            display: none;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #333;
-            font-size: 12px;
-            color: var(--muted);
+            display: none; margin-top: 10px; padding-top: 10px;
+            border-top: 1px solid #333; font-size: 12px; color: var(--muted);
         }
         .deal-detail.open { display: block; }
         .deal-detail b { color: var(--text); }
-        .countdown { color: var(--accent); font-weight: 700; }
-        .status {
-            text-align: center;
-            padding: 30px 20px;
-            color: var(--muted);
-        }
-        .empty {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--muted);
-            font-size: 14px;
-        }
+        .status { text-align: center; padding: 30px 20px; color: var(--muted); }
+        .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
         .panel { display: none; }
         .panel.active { display: block; }
+        .footer {
+            text-align: center; margin-top: 30px; padding: 16px;
+            border-top: 1px solid #333; font-size: 11px; color: var(--muted);
+        }
+        .footer a { color: var(--green); text-decoration: none; cursor: pointer; }
+        .footer a:hover { text-decoration: underline; }
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 1000;
+            overflow-y: auto; padding: 20px;
+        }
+        .modal.open { display: flex; align-items: flex-start; justify-content: center; }
+        .modal-content {
+            background: #1a1a2e; border-radius: 16px; padding: 20px;
+            width: 100%; max-width: 500px; color: #eee; margin-top: 20px;
+        }
+        .modal-content h2 { color: #e94560; margin-bottom: 12px; }
+        .modal-content h3 { color: #4ecca3; margin: 16px 0 8px; }
+        .modal-content p { font-size: 13px; line-height: 1.6; color: #aaa; margin-bottom: 8px; }
+        .modal-close {
+            display: block; width: 100%; padding: 12px; margin-top: 20px;
+            background: #e94560; color: white; border: none; border-radius: 8px;
+            font-size: 14px; cursor: pointer; font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -199,6 +133,7 @@
     </div>
 
     <div id="userInfo" class="user-info" style="display:none;"></div>
+    <div id="rateInfo" style="text-align:center;color:#888;font-size:11px;margin-bottom:12px;display:none;"></div>
 
     <div class="tabs">
         <button class="tab active" id="tabSell" onclick="switchTab('sell')">🛒 Продажа</button>
@@ -211,7 +146,6 @@
         <button class="btn btn-refresh" id="refreshBtn" style="display:none;" onclick="refresh()">🔄</button>
     </div>
 
-    <!-- Панель продажи -->
     <div id="panelSell" class="panel active">
         <div id="inventory" style="display:none;">
             <div id="skinsList"></div>
@@ -222,15 +156,67 @@
         <div id="status" class="status">🔐 Войди через Steam</div>
     </div>
 
-    <!-- Панель сделок -->
     <div id="panelDeals" class="panel">
         <div id="dealsList" class="empty">У тебя пока нет активных сделок</div>
+    </div>
+
+    <div class="footer">
+        <a onclick="openModal('terms')">Условия использования</a> ·
+        <a onclick="openModal('privacy')">Политика конфиденциальности</a> ·
+        <a onclick="openModal('refund')">Возврат и отмена</a>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="modal-terms" class="modal">
+        <div class="modal-content">
+            <h2>📄 Условия использования</h2>
+            <p><i>Последнее обновление: 14 мая 2026 г.</i></p>
+            <h3>1. Общие положения</h3>
+            <p>1.1. Сервис GodMarket предоставляет услуги по выкупу виртуальных предметов (скинов) игры Counter-Strike 2.</p>
+            <p>1.2. Используя Сервис, вы соглашаетесь с настоящими Условиями.</p>
+            <h3>2. Предмет соглашения</h3>
+            <p>2.1. Сервис выступает в роли покупателя виртуальных предметов.</p>
+            <p>2.2. Цена выкупа формируется автоматически на основе рыночных данных.</p>
+            <h3>3. Порядок сделки</h3>
+            <p>3.1. Пользователь выбирает скины и указывает реквизиты.</p>
+            <p>3.2. Выплата производится через 8 дней (правила Steam Trade Protection).</p>
+            <h3>4. Ответственность</h3>
+            <p>4.1. Сервис не несёт ответственности за задержки, вызванные блокировками Steam или банков.</p>
+            <button class="modal-close" onclick="closeModal('terms')">Закрыть</button>
+        </div>
+    </div>
+
+    <div id="modal-privacy" class="modal">
+        <div class="modal-content">
+            <h2>🔒 Политика конфиденциальности</h2>
+            <p><i>Последнее обновление: 14 мая 2026 г.</i></p>
+            <h3>1. Сбор данных</h3>
+            <p>1.1. Собираем только Steam ID, реквизиты для оплаты, информацию о скинах.</p>
+            <p>1.2. Данные не передаются третьим лицам.</p>
+            <h3>2. Хранение</h3>
+            <p>2.1. Реквизиты удаляются после выплаты.</p>
+            <p>2.2. Данные о сделках хранятся 30 дней.</p>
+            <button class="modal-close" onclick="closeModal('privacy')">Закрыть</button>
+        </div>
+    </div>
+
+    <div id="modal-refund" class="modal">
+        <div class="modal-content">
+            <h2>↩️ Возврат и отмена</h2>
+            <p><i>Последнее обновление: 14 мая 2026 г.</i></p>
+            <h3>1. Отмена</h3>
+            <p>1.1. Можно отменить до отправки трейд-оффера.</p>
+            <p>1.2. После отправки — сделка заключена.</p>
+            <h3>2. Trade Protection</h3>
+            <p>2.1. Выплата на 8-й день после трейда.</p>
+            <p>2.2. Если трейд отменён через Steam — выплата аннулируется.</p>
+            <button class="modal-close" onclick="closeModal('refund')">Закрыть</button>
+        </div>
     </div>
 
     <script>
         const API = 'https://attendant-esophagus-expand.ngrok-free.dev';
         const H = { 'ngrok-skip-browser-warning': 'true' };
-
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.setHeaderColor('#0f0f1a');
@@ -240,11 +226,15 @@
         let groupedSkins = [];
         let priceCache = {};
 
-        // Восстановление сессии
         const saved = localStorage.getItem('gm_steamid');
-        if (saved) { steamId = saved; showUI(); loadInventory(); }
+        if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
         renderDeals();
 
+        // === МОДАЛЬНЫЕ ОКНА ===
+        function openModal(type) { document.getElementById('modal-' + type).classList.add('open'); }
+        function closeModal(type) { document.getElementById('modal-' + type).classList.remove('open'); }
+
+        // === ТАБЫ ===
         function switchTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -258,6 +248,7 @@
             }
         }
 
+        // === UI ===
         function showUI() {
             document.getElementById('loginBtn').style.display = 'none';
             document.getElementById('logoutBtn').style.display = 'inline-block';
@@ -281,6 +272,7 @@
                 localStorage.setItem('gm_steamid', id);
                 showUI();
                 loadInventory();
+                fetchRate();
             }
         }
 
@@ -296,6 +288,19 @@
 
         function refresh() { priceCache = {}; loadInventory(); }
 
+        async function fetchRate() {
+            try {
+                const r = await fetch(`${API}/api/price?name=AK-47`, { headers: H });
+                const d = await r.json();
+                if (d.rate) {
+                    localStorage.setItem('gm_rate', d.rate);
+                    document.getElementById('rateInfo').style.display = 'block';
+                    document.getElementById('rateInfo').innerHTML = '💱 Курс: ' + d.rate.toFixed(2) + ' ₽/$';
+                }
+            } catch(e) {}
+        }
+
+        // === ИНВЕНТАРЬ ===
         async function fetchPrice(name) {
             if (priceCache[name]) return priceCache[name];
             try {
@@ -382,100 +387,200 @@
             document.getElementById('sellBtn').disabled = sel.length === 0;
         }
 
+        // === ПРОДАЖА ===
         function sellSelected() {
             const sel = getSelectedItems();
             if (sel.length === 0) return;
             const total = sel.reduce((sum, s) => sum + s.price, 0).toFixed(2);
+            const grouped = {};
+            sel.forEach(s => {
+                if (!grouped[s.name]) grouped[s.name] = { name: s.name, count: 0, price: s.price };
+                grouped[s.name].count++;
+            });
+            const skinsSummary = Object.values(grouped).map(g => `${g.name} ×${g.count}`).join('\n');
+            showPaymentMethods(sel, total, skinsSummary);
+        }
 
-            const paymentMethod = prompt(
-                `Сумма к выплате: ${total} ₽\n\nУкажи реквизиты для перевода:\n(СБП, номер карты, USDT-адрес и т.д.)`
-            );
-            if (!paymentMethod || paymentMethod.trim() === '') { alert('Не указаны реквизиты. Продажа отменена.'); return; }
+        function showPaymentMethods(skins, total, skinsSummary) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:999;display:flex;align-items:center;justify-content:center;';
+            overlay.id = 'paymentOverlay';
+            overlay.innerHTML = `
+                <div style="background:#1a1a2e;border-radius:16px;padding:20px;width:90%;max-width:360px;color:#eee;">
+                    <h3 style="color:#e94560;margin-bottom:8px;">💰 Выберите метод выплаты</h3>
+                    <p style="font-size:13px;color:#aaa;margin-bottom:4px;">Скины: ${skinsSummary.replace(/\n/g, '<br>')}</p>
+                    <p style="font-size:16px;font-weight:700;color:#4ecca3;margin-bottom:16px;">Сумма: ${total} ₽</p>
+                    <button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">📱 СБП</button>
+                    <button onclick="chooseBank('card')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💳 Карта</button>
+                    <button onclick="confirmPayment('usdt-bep20', 'BEP20')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">🪙 USDT (BEP20)</button>
+                    <button onclick="confirmPayment('usdt-ton', 'TON')" style="display:block;width:100%;padding:12px;margin:6px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💎 USDT (TON)</button>
+                    <button onclick="closePayment()" style="display:block;width:100%;padding:12px;margin:6px 0;background:#333;color:#aaa;border:none;border-radius:8px;font-size:14px;cursor:pointer;">❌ Отмена</button>
+                </div>`;
+            document.body.appendChild(overlay);
+            window._pendingDeal = { skins, total, skinsSummary };
+        }
+
+        function closePayment() { const el = document.getElementById('paymentOverlay'); if (el) el.remove(); }
+
+        function chooseBank(method) {
+            closePayment();
+            const deal = window._pendingDeal;
+            if (!deal) return;
+            const methodLabel = method === 'sbp' ? 'СБП' : 'Карта';
+            const banks = ['Сбербанк', 'Т-Банк', 'ВТБ', 'Альфа-Банк', 'Райффайзен', 'Другой'];
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:999;display:flex;align-items:center;justify-content:center;';
+            overlay.id = 'bankOverlay';
+            overlay.innerHTML = `
+                <div style="background:#1a1a2e;border-radius:16px;padding:20px;width:90%;max-width:360px;color:#eee;">
+                    <h3 style="color:#e94560;margin-bottom:12px;">🏦 Выбери банк (${methodLabel})</h3>
+                    ${banks.map(b => `<button onclick="confirmPayment('${method}', '${b}')" style="display:block;width:100%;padding:10px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">${b}</button>`).join('')}
+                    <button onclick="closeBank()" style="display:block;width:100%;padding:10px;margin:4px 0;background:#333;color:#aaa;border:none;border-radius:8px;font-size:14px;cursor:pointer;">❌ Отмена</button>
+                </div>`;
+            document.body.appendChild(overlay);
+        }
+
+        function closeBank() { const el = document.getElementById('bankOverlay'); if (el) el.remove(); }
+
+        function confirmPayment(method, networkOrBank) {
+            closePayment();
+            closeBank();
+            const deal = window._pendingDeal;
+            if (!deal) return;
+
+            let methodName, promptText, hint, isCrypto = false, fee = 0;
+
+            if (method === 'sbp') {
+                methodName = 'СБП';
+                promptText = `Банк: ${networkOrBank}\n\nВведи номер телефона:`;
+                hint = `СБП (${networkOrBank}): `;
+            } else if (method === 'card') {
+                methodName = 'Карта';
+                promptText = `Банк: ${networkOrBank}\n\nВведи номер карты:`;
+                hint = `Карта (${networkOrBank}): `;
+            } else if (method === 'usdt-bep20') {
+                methodName = 'USDT (BEP20)';
+                isCrypto = true;
+                promptText = 'Введи адрес кошелька USDT (BEP20):';
+                hint = 'USDT (BEP20): ';
+            } else if (method === 'usdt-ton') {
+                methodName = 'USDT (TON)';
+                isCrypto = true;
+                fee = 0.1;
+                promptText = 'Введи адрес кошелька USDT (TON):';
+                hint = 'USDT (TON): ';
+            }
+
+            const detail = prompt(`${methodName}\n\n${promptText}`, '');
+            if (!detail || detail.trim() === '') { alert('Не указаны реквизиты.'); return; }
+
+            const fullPayment = hint + detail.trim();
+
+            let usdAmount = '';
+            if (isCrypto) {
+                const rate = parseFloat(localStorage.getItem('gm_rate') || '76');
+                const usd = (parseFloat(deal.total) / rate).toFixed(2);
+                usdAmount = ` (≈ $${usd})`;
+                if (fee > 0) usdAmount += `\nКомиссия сети: $${fee.toFixed(2)}`;
+            }
 
             tg.showPopup({
-                title: 'Подтверждение',
-                message: `Продать ${sel.length} скинов за ${total} ₽?\n\nРеквизиты: ${paymentMethod}\n\nВыплата через 8 дней.`,
-                buttons: [{id: 'ok', type: 'ok', text: 'Продать'}, {type: 'cancel'}]
+                title: 'Подтверждение продажи',
+                message: (
+                    `💰 Сумма к получению: ${deal.total} ₽${usdAmount}\n` +
+                    `💳 Способ: ${fullPayment}\n` +
+                    `⏳ Время обработки: 8 дней\n\n` +
+                    `Нажимая «Продать», я соглашаюсь с Правилами сервиса и Политикой конфиденциальности.`
+                ),
+                buttons: [{id: 'ok', type: 'ok', text: '✅ Продать'}, {type: 'cancel', text: '❌ Отмена'}]
             }, (btn) => {
                 if (btn === 'ok') {
-                    const deal = {
+                    const dealObj = {
                         id: Date.now(),
                         date: new Date().toISOString(),
-                        payDate: new Date(Date.now() + 8 * 86400000).toISOString(),
-                        skins: sel,
-                        total: parseFloat(total),
-                        paymentMethod: paymentMethod.trim(),
+                        payDate: new Date(Date.now() + 8*86400000).toISOString(),
+                        skins: deal.skins,
+                        total: parseFloat(deal.total),
+                        paymentMethod: fullPayment,
                         steamId: steamId
                     };
-                    saveDeal(deal);
+                    saveDeal(dealObj);
                     tg.sendData(JSON.stringify({
                         action: 'sell',
                         steamId: steamId,
-                        skins: sel,
-                        paymentMethod: paymentMethod.trim(),
-                        total: parseFloat(total)
+                        skins: deal.skins,
+                        paymentMethod: fullPayment,
+                        total: parseFloat(deal.total)
                     }));
                     document.getElementById('status').style.display = 'block';
-                    document.getElementById('status').innerHTML = '✅ Заявка отправлена! Сделка в разделе «Мои сделки».';
+                    document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
                     document.getElementById('status').style.color = '#4ecca3';
                 }
             });
         }
 
-        // === МОИ СДЕЛКИ ===
-        function getDeals() {
-            try {
-                return JSON.parse(localStorage.getItem('gm_deals') || '[]');
-            } catch(e) { return []; }
-        }
-
-        function saveDeal(deal) {
-            const deals = getDeals();
-            deals.unshift(deal);
-            localStorage.setItem('gm_deals', JSON.stringify(deals));
-        }
-
+        // === СДЕЛКИ ===
+        function getDeals() { try { return JSON.parse(localStorage.getItem('gm_deals') || '[]'); } catch(e) { return []; } }
+        function saveDeal(deal) { const deals = getDeals(); deals.unshift(deal); localStorage.setItem('gm_deals', JSON.stringify(deals)); }
+        function formatDate(iso) { return new Date(iso).toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric' }); }
         function getTimeLeft(payDate) {
-            const now = Date.now();
-            const pay = new Date(payDate).getTime();
-            const diff = pay - now;
+            const diff = new Date(payDate).getTime() - Date.now();
             if (diff <= 0) return '✅ Можно выплачивать';
-            const days = Math.floor(diff / 86400000);
-            const hours = Math.floor((diff % 86400000) / 3600000);
-            return `⏳ ${days} дн. ${hours} ч.`;
+            return `⏳ ${Math.floor(diff/86400000)} дн. ${Math.floor((diff%86400000)/3600000)} ч.`;
         }
+        function toggleDealDetail(id) { const el = document.getElementById('deal-detail-'+id); if (el) el.classList.toggle('open'); }
 
-        function formatDate(iso) {
-            return new Date(iso).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        }
-
-        function toggleDealDetail(id) {
-            const el = document.getElementById('deal-detail-' + id);
-            if (el) el.classList.toggle('open');
+        function getStats() {
+            const deals = getDeals();
+            const totalSum = deals.reduce((sum, d) => sum + d.total, 0);
+            const totalCount = deals.length;
+            return { totalSum, totalCount };
         }
 
         function renderDeals() {
             const deals = getDeals();
             const container = document.getElementById('dealsList');
-            if (deals.length === 0) {
-                container.innerHTML = '<div class="empty">У тебя пока нет активных сделок</div>';
-                return;
+            const stats = getStats();
+            let html = '';
+
+            if (deals.length > 0) {
+                html += `
+                    <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: center;">
+                        <div style="display: flex; justify-content: space-around;">
+                            <div>
+                                <div style="font-size: 20px; font-weight: 900; color: #4ecca3;">${stats.totalCount}</div>
+                                <div style="font-size: 11px; color: #888;">заявок</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 20px; font-weight: 900; color: #e94560;">${stats.totalSum.toFixed(0)} ₽</div>
+                                <div style="font-size: 11px; color: #888;">выкуплено</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
-            container.innerHTML = deals.map(d => `
-                <div class="deal-card" onclick="toggleDealDetail(${d.id})">
-                    <div class="deal-header">
-                        <span class="deal-date">${formatDate(d.date)}</span>
-                        <span class="deal-sum">${d.total.toFixed(2)} ₽</span>
+
+            if (deals.length === 0) {
+                html += '<div class="empty">У тебя пока нет активных сделок</div>';
+            } else {
+                html += deals.map(d => `
+                    <div class="deal-card" onclick="toggleDealDetail(${d.id})">
+                        <div class="deal-header">
+                            <span class="deal-date">${formatDate(d.date)}</span>
+                            <span class="deal-sum">${d.total.toFixed(2)} ₽</span>
+                        </div>
+                        <div class="deal-skins">${d.skins.length} скинов · ${getTimeLeft(d.payDate)}</div>
+                        <div class="deal-detail" id="deal-detail-${d.id}">
+                            <p><b>Скины:</b> ${d.skins.map(s => s.name).join(', ')}</p>
+                            <p><b>Реквизиты:</b> ${d.paymentMethod}</p>
+                            <p><b>Выплатить до:</b> ${formatDate(d.payDate)}</p>
+                            <p><b>Steam ID:</b> ${d.steamId}</p>
+                        </div>
                     </div>
-                    <div class="deal-skins">${d.skins.length} скинов · ${getTimeLeft(d.payDate)}</div>
-                    <div class="deal-detail" id="deal-detail-${d.id}">
-                        <p><b>Скины:</b> ${d.skins.map(s => s.name).join(', ')}</p>
-                        <p><b>Реквизиты:</b> ${d.paymentMethod}</p>
-                        <p><b>Выплатить до:</b> ${formatDate(d.payDate)}</p>
-                        <p><b>Steam ID:</b> ${d.steamId}</p>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
+
+            container.innerHTML = html;
         }
     </script>
 </body>
