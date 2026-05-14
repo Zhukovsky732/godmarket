@@ -32,6 +32,25 @@
         }
         .logo { font-size: 32px; font-weight: 900; color: var(--accent); letter-spacing: -1px; }
         .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            background: #1a1a2e;
+            color: var(--muted);
+            transition: all 0.2s;
+        }
+        .tab.active { background: var(--accent); color: white; }
         .toolbar {
             display: flex;
             gap: 8px;
@@ -84,7 +103,6 @@
             border-left: 4px solid var(--accent);
             transition: all 0.2s;
         }
-        .skin-item.selected { border-left-color: var(--green); background: #1a2a2a; }
         .skin-info { flex: 1; min-width: 0; }
         .skin-name {
             font-weight: 700;
@@ -130,11 +148,48 @@
             min-width: 20px;
             text-align: center;
         }
+        .deal-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px;
+            margin: 8px 0;
+            border-left: 4px solid var(--green);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .deal-card:hover { background: #1e2a3a; }
+        .deal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .deal-date { color: var(--muted); font-size: 11px; }
+        .deal-sum { font-weight: 700; color: var(--green); font-size: 15px; }
+        .deal-skins { color: var(--muted); font-size: 12px; margin-top: 4px; }
+        .deal-detail {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .deal-detail.open { display: block; }
+        .deal-detail b { color: var(--text); }
+        .countdown { color: var(--accent); font-weight: 700; }
         .status {
             text-align: center;
             padding: 30px 20px;
             color: var(--muted);
         }
+        .empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .panel { display: none; }
+        .panel.active { display: block; }
     </style>
 </head>
 <body>
@@ -145,20 +200,32 @@
 
     <div id="userInfo" class="user-info" style="display:none;"></div>
 
+    <div class="tabs">
+        <button class="tab active" id="tabSell" onclick="switchTab('sell')">🛒 Продажа</button>
+        <button class="tab" id="tabDeals" onclick="switchTab('deals')">📋 Мои сделки</button>
+    </div>
+
     <div class="toolbar">
         <button class="btn btn-steam" id="loginBtn" onclick="login()">🔐 Steam</button>
         <button class="btn btn-logout" id="logoutBtn" style="display:none;" onclick="logout()">🚪</button>
         <button class="btn btn-refresh" id="refreshBtn" style="display:none;" onclick="refresh()">🔄</button>
     </div>
 
-    <div id="inventory" style="display:none;">
-        <div id="skinsList"></div>
-        <button class="btn btn-sell-all" id="sellBtn" onclick="sellSelected()" disabled>
-            💰 Продать выбранное (<span id="sellCount">0</span>)
-        </button>
+    <!-- Панель продажи -->
+    <div id="panelSell" class="panel active">
+        <div id="inventory" style="display:none;">
+            <div id="skinsList"></div>
+            <button class="btn btn-sell-all" id="sellBtn" onclick="sellSelected()" disabled>
+                💰 Продать выбранное (<span id="sellCount">0</span>)
+            </button>
+        </div>
+        <div id="status" class="status">🔐 Войди через Steam</div>
     </div>
 
-    <div id="status" class="status">🔐 Войди через Steam</div>
+    <!-- Панель сделок -->
+    <div id="panelDeals" class="panel">
+        <div id="dealsList" class="empty">У тебя пока нет активных сделок</div>
+    </div>
 
     <script>
         const API = 'https://attendant-esophagus-expand.ngrok-free.dev';
@@ -170,12 +237,26 @@
         tg.setBackgroundColor('#0f0f1a');
 
         let steamId = null;
-        let groupedSkins = [];  // [{name, price, assetIds: [], selectedQty: 0}, ...]
+        let groupedSkins = [];
         let priceCache = {};
 
         // Восстановление сессии
         const saved = localStorage.getItem('gm_steamid');
         if (saved) { steamId = saved; showUI(); loadInventory(); }
+        renderDeals();
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            if (tab === 'sell') {
+                document.getElementById('tabSell').classList.add('active');
+                document.getElementById('panelSell').classList.add('active');
+            } else {
+                document.getElementById('tabDeals').classList.add('active');
+                document.getElementById('panelDeals').classList.add('active');
+                renderDeals();
+            }
+        }
 
         function showUI() {
             document.getElementById('loginBtn').style.display = 'none';
@@ -220,10 +301,7 @@
             try {
                 const r = await fetch(`${API}/api/price?name=${encodeURIComponent(name)}`, { headers: H });
                 const d = await r.json();
-                if (d.success) {
-                    priceCache[name] = d.buy_price;
-                    return d.buy_price;
-                }
+                if (d.success) { priceCache[name] = d.buy_price; return d.buy_price; }
             } catch(e) {}
             return null;
         }
@@ -235,31 +313,20 @@
                 const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H });
                 const d = await r.json();
                 if (d.success && d.assets) {
-                    // Карта описаний
                     const descMap = {};
                     if (d.descriptions) {
                         d.descriptions.forEach(dd => {
                             descMap[`${dd.classid}_${dd.instanceid}`] = dd.market_hash_name;
                         });
                     }
-
-                    // Группируем скины по названию
                     const groupMap = {};
                     d.assets.forEach(a => {
                         const name = descMap[`${a.classid}_${a.instanceid}`] || `Скин #${a.assetid}`;
-                        if (!groupMap[name]) {
-                            groupMap[name] = { name, assetIds: [], price: null, selectedQty: 0 };
-                        }
+                        if (!groupMap[name]) groupMap[name] = { name, assetIds: [], price: null, selectedQty: 0 };
                         groupMap[name].assetIds.push(a.assetid);
                     });
-
                     groupedSkins = Object.values(groupMap);
-
-                    // Загружаем цены
-                    for (const g of groupedSkins) {
-                        g.price = await fetchPrice(g.name);
-                    }
-
+                    for (const g of groupedSkins) { g.price = await fetchPrice(g.name); }
                     renderInventory();
                     document.getElementById('status').style.display = 'none';
                 } else {
@@ -272,10 +339,8 @@
 
         function renderInventory() {
             document.getElementById('inventory').style.display = 'block';
-            const container = document.getElementById('skinsList');
-
-            container.innerHTML = groupedSkins.map((g, i) => `
-                <div class="skin-item" id="skin-${i}">
+            document.getElementById('skinsList').innerHTML = groupedSkins.map((g, i) => `
+                <div class="skin-item">
                     <div class="skin-info">
                         <div class="skin-name">🎨 ${g.name}</div>
                         <div class="skin-count">В наличии: ${g.assetIds.length} шт.</div>
@@ -291,13 +356,11 @@
                     </div>
                 </div>
             `).join('');
-
             updateSellButton();
         }
 
         function changeQty(i, delta) {
-            const g = groupedSkins[i];
-            g.selectedQty = Math.max(0, Math.min(g.assetIds.length, g.selectedQty + delta));
+            groupedSkins[i].selectedQty = Math.max(0, Math.min(groupedSkins[i].assetIds.length, groupedSkins[i].selectedQty + delta));
             renderInventory();
         }
 
@@ -306,11 +369,7 @@
             groupedSkins.forEach(g => {
                 if (g.selectedQty > 0 && g.price !== null) {
                     for (let j = 0; j < g.selectedQty; j++) {
-                        result.push({
-                            assetId: g.assetIds[j],
-                            name: g.name,
-                            price: g.price
-                        });
+                        result.push({ assetId: g.assetIds[j], name: g.name, price: g.price });
                     }
                 }
             });
@@ -327,22 +386,96 @@
             const sel = getSelectedItems();
             if (sel.length === 0) return;
             const total = sel.reduce((sum, s) => sum + s.price, 0).toFixed(2);
+
+            const paymentMethod = prompt(
+                `Сумма к выплате: ${total} ₽\n\nУкажи реквизиты для перевода:\n(СБП, номер карты, USDT-адрес и т.д.)`
+            );
+            if (!paymentMethod || paymentMethod.trim() === '') { alert('Не указаны реквизиты. Продажа отменена.'); return; }
+
             tg.showPopup({
                 title: 'Подтверждение',
-                message: `Продать ${sel.length} скинов за ${total} ₽?`,
+                message: `Продать ${sel.length} скинов за ${total} ₽?\n\nРеквизиты: ${paymentMethod}\n\nВыплата через 8 дней.`,
                 buttons: [{id: 'ok', type: 'ok', text: 'Продать'}, {type: 'cancel'}]
             }, (btn) => {
                 if (btn === 'ok') {
+                    const deal = {
+                        id: Date.now(),
+                        date: new Date().toISOString(),
+                        payDate: new Date(Date.now() + 8 * 86400000).toISOString(),
+                        skins: sel,
+                        total: parseFloat(total),
+                        paymentMethod: paymentMethod.trim(),
+                        steamId: steamId
+                    };
+                    saveDeal(deal);
                     tg.sendData(JSON.stringify({
                         action: 'sell',
                         steamId: steamId,
-                        skins: sel
+                        skins: sel,
+                        paymentMethod: paymentMethod.trim(),
+                        total: parseFloat(total)
                     }));
                     document.getElementById('status').style.display = 'block';
-                    document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
+                    document.getElementById('status').innerHTML = '✅ Заявка отправлена! Сделка в разделе «Мои сделки».';
                     document.getElementById('status').style.color = '#4ecca3';
                 }
             });
+        }
+
+        // === МОИ СДЕЛКИ ===
+        function getDeals() {
+            try {
+                return JSON.parse(localStorage.getItem('gm_deals') || '[]');
+            } catch(e) { return []; }
+        }
+
+        function saveDeal(deal) {
+            const deals = getDeals();
+            deals.unshift(deal);
+            localStorage.setItem('gm_deals', JSON.stringify(deals));
+        }
+
+        function getTimeLeft(payDate) {
+            const now = Date.now();
+            const pay = new Date(payDate).getTime();
+            const diff = pay - now;
+            if (diff <= 0) return '✅ Можно выплачивать';
+            const days = Math.floor(diff / 86400000);
+            const hours = Math.floor((diff % 86400000) / 3600000);
+            return `⏳ ${days} дн. ${hours} ч.`;
+        }
+
+        function formatDate(iso) {
+            return new Date(iso).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function toggleDealDetail(id) {
+            const el = document.getElementById('deal-detail-' + id);
+            if (el) el.classList.toggle('open');
+        }
+
+        function renderDeals() {
+            const deals = getDeals();
+            const container = document.getElementById('dealsList');
+            if (deals.length === 0) {
+                container.innerHTML = '<div class="empty">У тебя пока нет активных сделок</div>';
+                return;
+            }
+            container.innerHTML = deals.map(d => `
+                <div class="deal-card" onclick="toggleDealDetail(${d.id})">
+                    <div class="deal-header">
+                        <span class="deal-date">${formatDate(d.date)}</span>
+                        <span class="deal-sum">${d.total.toFixed(2)} ₽</span>
+                    </div>
+                    <div class="deal-skins">${d.skins.length} скинов · ${getTimeLeft(d.payDate)}</div>
+                    <div class="deal-detail" id="deal-detail-${d.id}">
+                        <p><b>Скины:</b> ${d.skins.map(s => s.name).join(', ')}</p>
+                        <p><b>Реквизиты:</b> ${d.paymentMethod}</p>
+                        <p><b>Выплатить до:</b> ${formatDate(d.payDate)}</p>
+                        <p><b>Steam ID:</b> ${d.steamId}</p>
+                    </div>
+                </div>
+            `).join('');
         }
     </script>
 </body>
