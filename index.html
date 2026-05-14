@@ -305,11 +305,20 @@ const oauthSteamId = urlParams.get('steamid');
 if (oauthSteamId && oauthSteamId.length === 17) {
     steamId = oauthSteamId;
     localStorage.setItem('gm_steamid', steamId);
-    // Убираем параметр из URL
     window.history.replaceState({}, document.title, '/');
-    showUI();
-    loadInventory();
-    fetchRate();
+    // Если мы в браузере, а не в Telegram — показываем сообщение
+    if (!window.Telegram || !tg.initData) {
+        document.body.innerHTML = `<div style="text-align:center;padding:40px;font-family:sans-serif;background:#0f0f1a;color:#eee;min-height:100vh;">
+            <h2 style="color:#4ecca3;">✅ Вход выполнен!</h2>
+            <p>Steam ID: <b>${steamId}</b></p>
+            <p style="color:#888;margin:20px 0;">Возвращайтесь в приложение GodMarket в Telegram.</p>
+            <button onclick="window.open('https://t.me/godmarket_bot', '_self')" style="padding:12px 24px;background:#e94560;color:white;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;">📱 Открыть в Telegram</button>
+        </div>`;
+    } else {
+        showUI();
+        loadInventory();
+        fetchRate();
+    }
 } else {
     const saved = localStorage.getItem('gm_steamid');
     if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
