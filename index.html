@@ -14,6 +14,9 @@
             --rarity-pink: #d32ce6; --rarity-red: #eb4b4b;
             --rarity-gold: #ffd700;
         }
+        .light-theme {
+            --bg: #f5f5f5; --card: #fff; --text: #222; --muted: #666;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -32,17 +35,25 @@
             background-clip: text; letter-spacing: -1px;
         }
         .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
+        .theme-toggle {
+            position: absolute; top: 20px; right: 20px;
+            background: none; border: none; font-size: 20px; cursor: pointer;
+        }
         .user-info {
             text-align: center; color: var(--green); font-size: 11px;
             margin-bottom: 6px; background: rgba(78,204,163,0.1);
             padding: 6px; border-radius: 8px; display: none;
+        }
+        .inv-summary {
+            text-align: center; color: var(--green); font-size: 12px;
+            margin-bottom: 8px; display: none;
         }
         .rate-info {
             text-align: center; color: var(--muted); font-size: 10px;
             margin-bottom: 12px; display: none;
         }
         .toolbar {
-            display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+            display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; align-items: center;
         }
         .btn {
             padding: 8px 12px; border: none; border-radius: 8px;
@@ -52,6 +63,13 @@
         .btn-steam { background: #2a475e; color: #c7d5e0; flex: 1; }
         .btn-logout { background: #333; color: #aaa; }
         .btn-refresh { background: #1e3a5f; color: #8ab4f8; }
+        .btn-copy { background: #1e3a5f; color: #8ab4f8; font-size: 10px; padding: 6px 10px; }
+        .btn-share { background: #2a475e; color: #c7d5e0; font-size: 10px; padding: 6px 10px; }
+        .btn-sell-all-qty {
+            background: #4ecca3; color: #0f0f1a; font-size: 11px;
+            padding: 6px 12px; border: none; border-radius: 6px;
+            font-weight: 700; cursor: pointer; margin-left: auto;
+        }
         .search-box {
             display: flex; gap: 6px; margin-bottom: 10px;
         }
@@ -100,6 +118,13 @@
         .badge-st { background: #cf6a32; color: white; }
         .badge-wear { background: #333; color: #aaa; }
         .skin-our { font-weight: 700; color: var(--green); font-size: 13px; white-space: nowrap; flex-shrink: 0; }
+        .skin-spinner {
+            display: inline-block; width: 12px; height: 12px;
+            border: 2px solid #333; border-top-color: var(--green);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            vertical-align: middle; margin-left: 4px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .qty-selector { display: flex; align-items: center; gap: 3px; margin-top: 4px; }
         .qty-btn {
             background: #2a475e; color: white; border: none;
@@ -109,7 +134,6 @@
         .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .qty-value { font-weight: 700; font-size: 13px; color: var(--green); min-width: 16px; text-align: center; }
 
-        /* Скелетоны */
         .skeleton {
             background: linear-gradient(90deg, #1a1a2e 25%, #222 50%, #1a1a2e 75%);
             background-size: 200% 100%; animation: shimmer 1.5s infinite;
@@ -130,16 +154,14 @@
             border-radius: 10px; font-weight: 700; cursor: pointer;
             position: sticky; bottom: 80px;
             box-shadow: 0 4px 20px rgba(233,69,96,0.4);
-            animation: pulse 2s infinite;
         }
+        .btn-sell-all:not(:disabled) { animation: pulse 2s infinite; }
         @keyframes pulse {
             0%, 100% { box-shadow: 0 4px 20px rgba(233,69,96,0.4); }
             50% { box-shadow: 0 4px 30px rgba(233,69,96,0.7); }
         }
         .btn-sell-all:disabled { background: #555; box-shadow: none; opacity: 0.6; animation: none; }
-        .btn-sell-all:not(:disabled) { animation: pulse 2s infinite; }
 
-        /* Нижняя панель */
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 420px;
@@ -161,7 +183,6 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* Модалки */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 200;
@@ -243,15 +264,18 @@
     </div>
 
     <div class="user-info" id="userInfo"></div>
+    <div class="inv-summary" id="invSummary"></div>
     <div class="rate-info" id="rateInfo"></div>
 
     <div class="toolbar" id="toolbarTop">
         <button class="btn btn-steam" id="loginBtn" onclick="showLoginModal()">🔐 Steam</button>
         <button class="btn btn-logout" id="logoutBtn" style="display:none;" onclick="logout()">🚪</button>
         <button class="btn btn-refresh" id="refreshBtn" style="display:none;" onclick="refresh()">🔄</button>
+        <button class="btn btn-copy" id="copyBtn" style="display:none;" onclick="copySteamID()">📋 Копировать ID</button>
+        <button class="btn btn-share" id="shareBtn" style="display:none;" onclick="shareBot()">📤 Поделиться</button>
+        <button class="btn btn-sell-all-qty" id="sellAllQtyBtn" style="display:none;" onclick="selectAllSkins()">✅ Выбрать все</button>
     </div>
 
-    <!-- Панель Продажа -->
     <div class="panel active" id="panelSell">
         <div class="search-box" id="searchBox" style="display:none;">
             <input type="text" id="searchInput" placeholder="🔍 Поиск скина..." oninput="applyFilters()">
@@ -271,12 +295,10 @@
         <div id="status" class="status">🔐 Войди через Steam</div>
     </div>
 
-    <!-- Панель Сделки -->
     <div class="panel" id="panelDeals">
         <div id="dealsList"></div>
     </div>
 
-    <!-- Панель Поддержка -->
     <div class="panel" id="panelChat">
         <div id="chatMessages"><div class="empty">Напиши сообщение, и админ ответит здесь</div></div>
         <div style="display:flex;gap:8px;">
@@ -288,20 +310,15 @@
     <div class="footer">
         <a onclick="openLegal('terms')">Условия</a> ·
         <a onclick="openLegal('privacy')">Конфиденциальность</a> ·
-        <a onclick="openLegal('refund')">Возврат</a>
+        <a onclick="openLegal('refund')">Возврат</a> ·
+        <span style="color:var(--muted);">|</span>
+        <a onclick="toggleTheme()">🌓 Тема</a>
     </div>
 
-    <!-- Нижняя панель -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('sell')">
-            <span class="nav-icon">🛒</span> Продажа
-        </div>
-        <div class="nav-item" onclick="switchTab('deals')">
-            <span class="nav-icon">📋</span> Сделки
-        </div>
-        <div class="nav-item" onclick="switchTab('chat')" id="navChat">
-            <span class="nav-icon">💬</span> Поддержка
-        </div>
+        <div class="nav-item active" onclick="switchTab('sell')"><span class="nav-icon">🛒</span> Продажа</div>
+        <div class="nav-item" onclick="switchTab('deals')"><span class="nav-icon">📋</span> Сделки</div>
+        <div class="nav-item" onclick="switchTab('chat')" id="navChat"><span class="nav-icon">💬</span> Поддержка</div>
     </div>
 
     <!-- Модалка входа -->
@@ -309,7 +326,7 @@
         <div class="modal-box">
             <h3>🔐 Вход через Steam</h3>
             <p style="color:#888;font-size:12px;margin-bottom:12px;">Введи свой Steam ID64 (17 цифр)</p>
-            <input type="text" id="loginSteamId" placeholder="7656119XXXXXXXXXX" maxlength="17">
+            <input type="text" id="loginSteamId" placeholder="7656119XXXXXXXXXX" maxlength="17" inputmode="numeric" pattern="[0-9]*">
             <div class="btn-row">
                 <button class="btn-secondary" onclick="closeLoginModal()">Отмена</button>
                 <button class="btn-primary" onclick="doLogin()">Войти</button>
@@ -323,11 +340,10 @@
     </div>
 
     <!-- Юридические модалки -->
-    <div class="legal-modal" id="legal-terms"><div class="legal-content"><h2>📄 Условия использования GodMarket</h2><p><i>14 мая 2026 г.</i></p><h3>1. Общие положения</h3><p>1.1. Сервис GodMarket осуществляет покупку виртуальных предметов (скинов) для игры Counter-Strike 2.</p><p>1.2. Используя Сервис, вы принимаете Условия.</p><p>1.3. Администратор вправе изменить Условия.</p><p>1.4. Сервис использует Steam API, но не является партнёром Valve.</p><p>1.5. Все цены в рублях. Минимальная сумма выкупа — 10 ₽.</p><h3>2. Кто может использовать</h3><p>2.1. Совершеннолетние (18+).</p><p>2.2. Продаваемые предметы должны принадлежать Пользователю.</p><h3>3. Процесс сделки</h3><p>3.1. Выплата — в течение 8 дней.</p><p>3.2. Дополнительно 20 дней (до 28-го дня).</p><p>3.3. После 30 дней — право требовать компенсацию.</p><h3>4. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('terms')">Закрыть</button></div></div>
-    <div class="legal-modal" id="legal-privacy"><div class="legal-content"><h2>🔒 Политика конфиденциальности</h2><p><i>14 мая 2026 г.</i></p><h3>1. Данные</h3><p>Steam ID, реквизиты, история сделок.</p><h3>2. Хранение</h3><p>Данные хранятся локально на устройстве (localStorage).</p><p>Вопросы: godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('privacy')">Закрыть</button></div></div>
-    <div class="legal-modal" id="legal-refund"><div class="legal-content"><h2>↩️ Возврат и отмена</h2><p><i>14 мая 2026 г.</i></p><h3>1. Сроки</h3><p>8 дней — стандартный срок. +20 дней — дополнительный. 30 дней — право на компенсацию.</p><p>Контакты: godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('refund')">Закрыть</button></div></div>
-
-    <script>
+    <div class="legal-modal" id="legal-terms"><div class="legal-content"><h2>📄 Условия использования GodMarket</h2><p><i>14 мая 2026 г.</i></p><h3>1. Общие положения</h3><p>1.1. Сервис GodMarket осуществляет покупку виртуальных предметов (скинов) для игры Counter-Strike 2.</p><p>1.2. Используя Сервис, вы принимаете Условия.</p><p>1.3. Администратор вправе изменить Условия, приостановить или прекратить работу Сервиса.</p><p>1.4. Сервис использует Steam API, но не является партнёром Valve Corporation.</p><p>1.5. Все цены в рублях. Минимальная сумма выкупа — 10 ₽.</p><h3>2. Кто может использовать</h3><p>2.1. Совершеннолетние (18+).</p><p>2.2. Продаваемые предметы должны принадлежать Пользователю.</p><h3>3. Вход через Steam</h3><p>3.1. Вход через учётную запись Steam. Запрещено использовать чужую учётную запись.</p><h3>4. Процесс сделки</h3><p>4.1. Выплата — в течение 8 дней.</p><p>4.2. Дополнительно 20 дней (до 28-го дня).</p><p>4.3. После 30 дней — право требовать компенсацию.</p><h3>5. Способы оплаты</h3><p>5.1. СБП — перевод по номеру телефона. Только для РФ.</p><p>5.2. Карта — перевод по номеру карты. Только для РФ.</p><p>5.3. USDT (BEP20 и TON) — криптовалюта. Комиссия TON: $0.10.</p><h3>6. Ограничение ответственности</h3><p>6.1. Сервис не отвечает за задержки из-за Steam, банков, платёжных систем.</p><h3>7. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('terms')">Закрыть</button></div></div>
+    <div class="legal-modal" id="legal-privacy"><div class="legal-content"><h2>🔒 Политика конфиденциальности</h2><p><i>14 мая 2026 г.</i></p><h3>1. Данные</h3><p>Steam ID, реквизиты, история сделок.</p><h3>2. Хранение</h3><p>Данные хранятся локально на устройстве (localStorage).</p><h3>3. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('privacy')">Закрыть</button></div></div>
+    <div class="legal-modal" id="legal-refund"><div class="legal-content"><h2>↩️ Возврат и отмена</h2><p><i>14 мая 2026 г.</i></p><h3>1. Сроки</h3><p>8 дней — стандартный срок. +20 дней — дополнительный. 30 дней — право на компенсацию.</p><h3>2. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('refund')">Закрыть</button></div></div>
+        <script>
         const API = 'https://attendant-esophagus-expand.ngrok-free.dev';
         const H = { 'ngrok-skip-browser-warning': 'true' };
         const tg = window.Telegram.WebApp;
@@ -340,6 +356,17 @@
         let filteredSkins = [];
         let priceCache = {};
         let currentSort = 'default';
+        let darkTheme = true;
+
+        // Тема
+        const savedTheme = localStorage.getItem('gm_theme');
+        if (savedTheme === 'light') { darkTheme = false; document.body.classList.add('light-theme'); }
+
+        function toggleTheme() {
+            darkTheme = !darkTheme;
+            document.body.classList.toggle('light-theme', !darkTheme);
+            localStorage.setItem('gm_theme', darkTheme ? 'dark' : 'light');
+        }
 
         const saved = localStorage.getItem('gm_steamid');
         if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
@@ -357,12 +384,8 @@
             } else { alert('Неверный Steam ID. Должен быть 17 цифр.'); }
         }
 
-        function showPaymentModal(html) {
-            document.getElementById('paymentContent').innerHTML = html;
-            document.getElementById('paymentModal').style.display = 'flex';
-        }
+        function showPaymentModal(html) { document.getElementById('paymentContent').innerHTML = html; document.getElementById('paymentModal').style.display = 'flex'; }
         function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; }
-
         function openLegal(t) { document.getElementById('legal-'+t).classList.add('open'); }
         function closeLegal(t) { document.getElementById('legal-'+t).classList.remove('open'); }
 
@@ -370,26 +393,14 @@
         function switchTab(tab) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            if (tab === 'sell') {
-                document.getElementById('panelSell').classList.add('active');
-                document.querySelector('.nav-item:nth-child(1)').classList.add('active');
-            } else if (tab === 'deals') {
-                document.getElementById('panelDeals').classList.add('active');
-                document.querySelector('.nav-item:nth-child(2)').classList.add('active');
-                renderDeals();
-            } else {
-                document.getElementById('panelChat').classList.add('active');
-                document.querySelector('.nav-item:nth-child(3)').classList.add('active');
-                renderChat();
-                document.getElementById('navChat').querySelector('.nav-badge')?.remove();
-            }
+            if (tab === 'sell') { document.getElementById('panelSell').classList.add('active'); document.querySelector('.nav-item:nth-child(1)').classList.add('active'); }
+            else if (tab === 'deals') { document.getElementById('panelDeals').classList.add('active'); document.querySelector('.nav-item:nth-child(2)').classList.add('active'); renderDeals(); }
+            else { document.getElementById('panelChat').classList.add('active'); document.querySelector('.nav-item:nth-child(3)').classList.add('active'); renderChat(); document.getElementById('navChat').querySelector('.nav-badge')?.remove(); }
         }
 
-        // === UI ===
         function showUI() {
             document.getElementById('loginBtn').style.display = 'none';
-            document.getElementById('logoutBtn').style.display = 'inline-block';
-            document.getElementById('refreshBtn').style.display = 'inline-block';
+            ['logoutBtn','refreshBtn','copyBtn','shareBtn','sellAllQtyBtn'].forEach(id => document.getElementById(id).style.display = 'inline-block');
             document.getElementById('userInfo').style.display = 'block';
             document.getElementById('userInfo').innerHTML = '🟢 ' + steamId;
             document.getElementById('searchBox').style.display = 'flex';
@@ -398,38 +409,36 @@
 
         function hideUI() {
             document.getElementById('loginBtn').style.display = 'inline-block';
-            document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('refreshBtn').style.display = 'none';
-            document.getElementById('userInfo').style.display = 'none';
-            document.getElementById('searchBox').style.display = 'none';
-            document.getElementById('sortBtns').style.display = 'none';
+            ['logoutBtn','refreshBtn','copyBtn','shareBtn','sellAllQtyBtn','userInfo','invSummary','searchBox','sortBtns'].forEach(id => document.getElementById(id).style.display = 'none');
             document.getElementById('inventory').style.display = 'none';
         }
 
         function logout() {
             localStorage.removeItem('gm_steamid'); steamId = null; groupedSkins = []; filteredSkins = []; priceCache = {};
-            hideUI(); document.getElementById('status').style.display = 'block';
-            document.getElementById('status').innerHTML = '🔐 Войди через Steam';
+            hideUI(); document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '🔐 Войди через Steam';
         }
 
         function refresh() { priceCache = {}; loadInventory(); }
 
         async function fetchRate() {
             try {
-                const r = await fetch(`${API}/api/price?name=AK-47`, { headers: H });
-                const d = await r.json();
-                if (d.rate) { localStorage.setItem('gm_rate', d.rate); document.getElementById('rateInfo').style.display = 'block';
-                    document.getElementById('rateInfo').innerHTML = '💱 ' + d.rate.toFixed(2) + ' ₽/$'; }
+                const r = await fetch(`${API}/api/price?name=AK-47`, { headers: H }); const d = await r.json();
+                if (d.rate) { localStorage.setItem('gm_rate', d.rate); document.getElementById('rateInfo').style.display = 'block'; document.getElementById('rateInfo').innerHTML = '💱 ' + d.rate.toFixed(2) + ' ₽/$'; }
             } catch(e) {}
         }
 
-        // === Сортировка и поиск ===
-        function setSort(type, btn) {
-            currentSort = type;
-            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        function copySteamID() { if (steamId) { navigator.clipboard.writeText(steamId); alert('Steam ID скопирован!'); } }
+        function shareBot() {
+            const text = `🎮 Продай скины CS2 быстро и выгодно через @godmarket_bot!\nМой Steam ID: ${steamId}\nТвоя реферальная ссылка: https://t.me/godmarket_bot?start=ref_${steamId}`;
+            tg.openTelegramLink(`https://t.me/share/url?url=https://t.me/godmarket_bot&text=${encodeURIComponent(text)}`);
+        }
+
+        function selectAllSkins() {
+            filteredSkins.forEach(g => { if (g.price) g.selectedQty = g.assetIds.length; });
             applyFilters();
         }
+
+        function setSort(type, btn) { currentSort = type; document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); }
 
         function applyFilters() {
             const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
@@ -441,7 +450,6 @@
             renderInventory();
         }
 
-        // === Цены ===
         async function fetchPrice(name) {
             if (priceCache[name]) return priceCache[name];
             try { const r = await fetch(`${API}/api/price?name=${encodeURIComponent(name)}`, { headers: H }); const d = await r.json();
@@ -449,7 +457,6 @@
             return null;
         }
 
-        // === Инвентарь ===
         async function loadInventory() {
             document.getElementById('status').style.display = 'block';
             document.getElementById('status').innerHTML = '<div class="skeleton-card"><div class="skeleton skeleton-icon"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-price"></div></div>'.repeat(3);
@@ -461,11 +468,10 @@
                         d.descriptions.forEach(dd => {
                             const key = `${dd.classid}_${dd.instanceid}`;
                             const tags = dd.tags || [];
-                            const rarityTag = tags.find(t => t.category === 'Rarity')?.localized_tag_name || '';
                             descMap[key] = {
                                 name: dd.market_hash_name,
                                 icon: `https://steamcommunity-a.akamaihd.net/economy/image/${dd.icon_url}`,
-                                rarity: rarityTag,
+                                rarity: tags.find(t => t.category === 'Rarity')?.localized_tag_name || '',
                                 wear: tags.find(t => t.category === 'Exterior')?.localized_tag_name || '',
                                 isST: dd.market_hash_name.includes('StatTrak')
                             };
@@ -482,9 +488,18 @@
                     groupedSkins = Object.values(groupMap);
                     for (const g of groupedSkins) { g.price = await fetchPrice(g.name); }
                     applyFilters();
+                    updateInvSummary();
                     document.getElementById('status').style.display = 'none';
                 } else { document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт'; }
             } catch(e) { document.getElementById('status').innerHTML = '❌ Ошибка загрузки'; }
+        }
+
+        function updateInvSummary() {
+            const totalValue = groupedSkins.reduce((s, g) => s + (g.price || 0) * g.assetIds.length, 0);
+            const totalItems = groupedSkins.reduce((s, g) => s + g.assetIds.length, 0);
+            const withPrice = groupedSkins.filter(g => g.price).length;
+            document.getElementById('invSummary').style.display = 'block';
+            document.getElementById('invSummary').innerHTML = `📦 ${totalItems} скинов · 💰 ~${totalValue.toFixed(0)} ₽ · ✅ Цены на ${withPrice}/${groupedSkins.length} видах`;
         }
 
         function getRarityClass(rarity) {
@@ -500,6 +515,7 @@
             document.getElementById('inventory').style.display = 'block';
             document.getElementById('skinsList').innerHTML = filteredSkins.map((g, i) => {
                 const rarityClass = getRarityClass(g.rarity);
+                const priceLoaded = g.price !== null;
                 return `
                 <div class="skin-item ${rarityClass}">
                     ${g.icon ? `<img src="${g.icon}" class="skin-icon" onerror="this.style.display='none'">` : ''}
@@ -517,8 +533,8 @@
                         </div>
                     </div>
                     <div style="text-align: right;">
-                        <div class="skin-our">${g.price ? g.price.toFixed(2) + ' ₽' : '—'}</div>
-                        ${g.selectedQty > 0 ? `<div style="color: var(--green); font-size: 11px;">=${(g.price * g.selectedQty).toFixed(2)} ₽</div>` : ''}
+                        <div class="skin-our">${priceLoaded ? g.price.toFixed(2) + ' ₽' : '<span class="skin-spinner"></span>'}</div>
+                        ${g.selectedQty > 0 && priceLoaded ? `<div style="color: var(--green); font-size: 11px;">=${(g.price * g.selectedQty).toFixed(2)} ₽</div>` : ''}
                     </div>
                 </div>`;
             }).join('');
@@ -526,8 +542,7 @@
         }
 
         function changeQty(i, delta) {
-            const g = filteredSkins[i];
-            g.selectedQty = Math.max(0, Math.min(g.assetIds.length, g.selectedQty + delta));
+            const g = filteredSkins[i]; g.selectedQty = Math.max(0, Math.min(g.assetIds.length, g.selectedQty + delta));
             renderInventory();
         }
 
@@ -538,7 +553,6 @@
 
         function updateSellButton() { const s = getSelectedItems(); document.getElementById('sellCount').textContent = s.length; document.getElementById('sellBtn').disabled = s.length === 0; }
 
-        // === Продажа ===
         function sellSelected() {
             const sel = getSelectedItems(); if (sel.length === 0) return;
             const total = sel.reduce((s, x) => s + x.price, 0).toFixed(2);
@@ -548,10 +562,11 @@
                 <h3>💰 Выберите метод выплаты</h3>
                 <p style="font-size:12px;color:#aaa;margin-bottom:4px;">Скины:<br>${summary}</p>
                 <p style="font-size:16px;font-weight:700;color:#4ecca3;margin-bottom:16px;">Сумма: ${total} ₽</p>
-                <button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">📱 СБП</button>
-                <button onclick="chooseBank('card')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💳 Карта</button>
-                <button onclick="showCryptoInput('usdt-bep20')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">🪙 USDT (BEP20)</button>
-                <button onclick="showCryptoInput('usdt-ton')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💎 USDT (TON)</button>
+                <p style="font-size:11px;color:#e94560;margin-bottom:12px;">⚠️ Трейд-оффер нужно подтвердить в Steam Guard в течение 5 минут. Выплата — через 8 дней после получения скинов.</p>
+                <button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">[СБП] СБП</button>
+                <button onclick="chooseBank('card')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">[Visa/MC] Карта</button>
+                <button onclick="showCryptoInput('usdt-bep20')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💲 USDT (BEP20)</button>
+                <button onclick="showCryptoInput('usdt-ton')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#2a475e;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">💲 USDT (TON)</button>
                 <button onclick="closePaymentModal()" style="display:block;width:100%;padding:12px;margin:4px 0;background:#333;color:#aaa;border:none;border-radius:8px;font-size:14px;cursor:pointer;">❌ Отмена</button>
             `);
             window._pd = { skins: sel, total };
@@ -569,7 +584,7 @@
         function showBankInput(method, bank) {
             const label = method === 'sbp' ? 'номер телефона (11 цифр)' : 'номер карты (16 цифр)';
             const maxLen = method === 'sbp' ? 11 : 16;
-            const title = method === 'sbp' ? '📱 СБП' : '💳 Карта';
+            const title = method === 'sbp' ? '[СБП] СБП' : '[Visa/MC] Карта';
             showPaymentModal(`
                 <h3>${title} — ${bank === 'Другой' ? 'Другой банк' : bank}</h3>
                 <p style="color:#888;font-size:11px;margin-bottom:8px;">Только для РФ</p>
@@ -584,23 +599,18 @@
 
         function submitBank(method, bank) {
             let bankName = bank;
-            if (bank === 'Другой') {
-                bankName = document.getElementById('bankName')?.value?.trim();
-                if (!bankName) { alert('Введи название банка'); return; }
-            }
-            const detail = document.getElementById('bankDetail')?.value?.trim();
-            if (!detail) { alert('Введи реквизиты'); return; }
+            if (bank === 'Другой') { bankName = document.getElementById('bankName')?.value?.trim(); if (!bankName) { alert('Введи название банка'); return; } }
+            const detail = document.getElementById('bankDetail')?.value?.trim(); if (!detail) { alert('Введи реквизиты'); return; }
             const maxLen = method === 'sbp' ? 11 : 16;
             if (!new RegExp(`^\\d{${maxLen}}$`).test(detail)) { alert(`Должно быть ровно ${maxLen} цифр`); return; }
-            const full = `${method === 'sbp' ? 'СБП' : 'Карта'} (${bankName}): ${detail}`;
-            confirmDeal(full);
+            confirmDeal(`${method === 'sbp' ? 'СБП' : 'Карта'} (${bankName}): ${detail}`);
         }
 
         function showCryptoInput(method) {
             const label = method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)';
             const fee = method === 'usdt-ton' ? '<p style="color:#888;font-size:11px;">Комиссия сети: $0.10</p>' : '';
             showPaymentModal(`
-                <h3>🪙 ${label}</h3>
+                <h3>💲 ${label}</h3>
                 ${fee}
                 <input type="text" id="cryptoAddr" placeholder="Адрес кошелька">
                 <div class="btn-row">
@@ -611,37 +621,29 @@
         }
 
         function submitCrypto(method) {
-            const addr = document.getElementById('cryptoAddr')?.value?.trim();
-            if (!addr) { alert('Введи адрес кошелька'); return; }
-            const label = method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)';
-            confirmDeal(`${label}: ${addr}`);
+            const addr = document.getElementById('cryptoAddr')?.value?.trim(); if (!addr) { alert('Введи адрес кошелька'); return; }
+            confirmDeal(`${method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'}: ${addr}`);
         }
 
         function confirmDeal(fullPayment) {
             const d = window._pd; if (!d) return;
             let usd = '';
-            if (fullPayment.startsWith('USDT')) {
-                const rate = parseFloat(localStorage.getItem('gm_rate') || '76');
-                usd = ` (≈ $${(parseFloat(d.total)/rate).toFixed(2)})`;
-                if (fullPayment.includes('TON')) usd += '\nКомиссия сети: $0.10';
-            }
+            if (fullPayment.startsWith('USDT')) { const rate = parseFloat(localStorage.getItem('gm_rate') || '76'); usd = ` (≈ $${(parseFloat(d.total)/rate).toFixed(2)})`; if (fullPayment.includes('TON')) usd += '\nКомиссия сети: $0.10'; }
             closePaymentModal();
             tg.showPopup({
                 title: 'Подтверждение продажи',
-                message: `💰 Сумма: ${d.total} ₽${usd}\n💳 ${fullPayment}\n⏳ Обработка: 8 дней\n\nНажимая «Продать», я соглашаюсь с Правилами сервиса и Политикой конфиденциальности.`,
+                message: `💰 Сумма: ${d.total} ₽${usd}\n💳 ${fullPayment}\n⏳ Обработка: 8 дней\n\n⚠️ Трейд-оффер нужно подтвердить в Steam Guard в течение 5 минут.\n\nНажимая «Продать», я соглашаюсь с Правилами сервиса и Политикой конфиденциальности.`,
                 buttons: [{id: 'ok', type: 'ok', text: '✅ Продать'}, {type: 'cancel', text: '❌ Отмена'}]
             }, (btn) => {
                 if (btn === 'ok') {
                     saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
                     tg.sendData(JSON.stringify({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) }));
-                    document.getElementById('status').style.display = 'block';
-                    document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
-                    document.getElementById('status').style.color = '#4ecca3';
+                    document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = '#4ecca3';
                 }
             });
         }
 
-        // === Чат ===
+        // Чат
         function getChatHistory() { try { return JSON.parse(localStorage.getItem('gm_chat') || '[]'); } catch(e) { return []; } }
         function saveChatMessage(msg) { const h = getChatHistory(); h.push({ ...msg, time: Date.now() }); localStorage.setItem('gm_chat', JSON.stringify(h)); }
         function renderChat() {
@@ -657,7 +659,7 @@
             tg.sendData(JSON.stringify({ action: 'chat', message: text }));
         }
 
-        // === Сделки ===
+        // Сделки
         function getDeals() { try { return JSON.parse(localStorage.getItem('gm_deals') || '[]'); } catch(e) { return []; } }
         function saveDeal(deal) { const deals = getDeals(); deals.unshift(deal); localStorage.setItem('gm_deals', JSON.stringify(deals)); }
         function getPayDate(iso) { const d = new Date(iso); const ten = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 10, 0, 0); if (d < ten) ten.setDate(ten.getDate() - 1); ten.setDate(ten.getDate() + 8); return ten; }
@@ -684,11 +686,7 @@
                         return `<div class="deal-card" onclick="toggleDealDetail(${d.id})">
                             <div class="deal-header"><span class="deal-date">${formatDate(new Date(d.date))}</span><span class="deal-sum">${d.total.toFixed(2)} ₽</span></div>
                             <div class="deal-skins">${d.skins.length} скинов · ${getTimeLeft(pay)}</div>
-                            <div class="deal-detail" id="deal-detail-${d.id}">
-                                <p><b>Скины:</b> ${d.skins.map(s=>s.name).join(', ')}</p>
-                                <p><b>Реквизиты:</b> ${d.paymentMethod}</p>
-                                <p><b>Выплатить до:</b> ${formatDate(pay)}</p>
-                            </div></div>`;
+                            <div class="deal-detail" id="deal-detail-${d.id}"><p><b>Скины:</b> ${d.skins.map(s=>s.name).join(', ')}</p><p><b>Реквизиты:</b> ${d.paymentMethod}</p><p><b>Выплатить до:</b> ${formatDate(pay)}</p></div></div>`;
                     }).join('');
                 }
             } else { html += '<div class="empty">🔐 Войди через Steam, чтобы увидеть свои сделки</div>'; }
