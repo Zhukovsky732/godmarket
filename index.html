@@ -225,14 +225,9 @@
     <div class="modal-box" style="text-align:center;">
         <h3>🔐 Вход через Steam</h3>
         <p style="color:var(--muted);font-size:12px;margin-bottom:16px;">Авторизуйся через Steam, чтобы увидеть свои скины</p>
-        <button onclick="loginViaSteam()" style="display:block;width:100%;padding:14px;background:#0c2461;color:#dfe6e9;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;">🔐 Войти через Steam</button>
-        <p style="color:var(--muted);font-size:10px;margin:12px 0;">— или —</p>
-        <p style="color:var(--muted);font-size:11px;margin-bottom:8px;">Введи Steam ID64 вручную</p>
-        <input type="text" id="loginSteamId" placeholder="7656119XXXXXXXXXX" maxlength="17" inputmode="numeric" pattern="[0-9]*" style="width:100%;padding:12px;border-radius:8px;border:1px solid #dfe6e9;background:#f5f6fa;color:#2d3436;font-size:14px;margin-bottom:8px;">
-        <div class="btn-row">
-            <button class="btn-secondary" onclick="closeLoginModal()">Отмена</button>
-            <button class="btn-primary" onclick="doLogin()">Войти</button>
-        </div>
+        <button onclick="loginViaSteam()" style="display:block;width:100%;padding:14px;background:#0c2461;color:#dfe6e9;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">🔐 Войти через Steam</button>
+        <p style="color:var(--muted);font-size:10px;margin-top:12px;">Вы будете перенаправлены на сайт Steam</p>
+        <button class="btn-secondary" onclick="closeLoginModal()" style="width:100%;padding:10px;margin-top:8px;">Отмена</button>
     </div>
 </div>
 
@@ -316,11 +311,6 @@ renderDeals();
 function showLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
 function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
 function loginViaSteam() { closeLoginModal(); window.open(API + '/api/steam/login', '_blank'); }
-function doLogin() {
-    const id = document.getElementById('loginSteamId').value.trim();
-    if (id && id.length === 17) { steamId = id; localStorage.setItem('gm_steamid', id); closeLoginModal(); showUI(); loadInventory(); fetchRate(); renderDeals(); }
-    else { alert('Неверный Steam ID.'); }
-}
 function logout() { localStorage.removeItem('gm_steamid'); steamId = null; groupedSkins = []; filteredSkins = []; priceCache = {}; hideUI(); document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '🔐 Войди через Steam'; }
 
 // БЛОК: JS-UI
@@ -355,6 +345,9 @@ function shareBot() {
     } else {
         navigator.clipboard.writeText(`https://t.me/godmarket_bot?start=ref_${steamId}`).then(() => { alert('Реферальная ссылка скопирована!'); });
     }
+}
+function showErrorModal(msg) {
+    showPaymentModal(`<h3>⚠️ Ошибка</h3><p style="color:var(--muted);font-size:14px;margin-bottom:16px;">${msg}</p><button class="btn-primary" onclick="closePaymentModal()" style="width:100%;padding:12px;">ОК</button>`);
 }
 function selectAllSkins() { filteredSkins.forEach(g => { if (g.price && g.price > 10) g.selectedQty = g.assetIds.length; }); applyFilters(); }
 function clearCart() { filteredSkins.forEach(g => g.selectedQty = 0); applyFilters(); }
@@ -462,9 +455,15 @@ function showBankInput(method, bank) {
     showPaymentModal(`<h3>${title} — ${bank === 'Другой' ? 'Другой банк' : bank}</h3><p style="color:var(--muted);font-size:11px;margin-bottom:8px;">Только для РФ</p>${bank === 'Другой' ? '<input type="text" id="bankName" placeholder="Название банка" style="margin-bottom:6px;">' : ''}<input type="text" id="bankDetail" placeholder="${label}" maxlength="${maxLen}" inputmode="numeric" pattern="[0-9]*"><div class="btn-row"><button class="btn-secondary" onclick="chooseBank('${method}')">⬅ Назад</button><button class="btn-primary" onclick="submitBank('${method}','${bank}')">Далее</button></div>`);
 }
 function submitBank(method, bank) {
-    let bankName = bank; if (bank === 'Другой') { bankName = document.getElementById('bankName')?.value?.trim(); if (!bankName) { alert('Введи название банка'); return; } }
-    const detail = document.getElementById('bankDetail')?.value?.trim(); if (!detail) { alert('Введи реквизиты'); return; }
-    const maxLen = method === 'sbp' ? 11 : 16; if (!new RegExp(`^\\d{${maxLen}}$`).test(detail)) { alert(`Должно быть ровно ${maxLen} цифр`); return; }
+    let bankName = bank;
+    if (bank === 'Другой') {
+        bankName = document.getElementById('bankName')?.value?.trim();
+        if (!bankName) { showErrorModal('Введи название банка'); return; }
+    }
+    const detail = document.getElementById('bankDetail')?.value?.trim();
+    if (!detail) { showErrorModal('Введи реквизиты'); return; }
+    const maxLen = method === 'sbp' ? 11 : 16;
+    if (!new RegExp(`^\\d{${maxLen}}$`).test(detail)) { showErrorModal(`Должно быть ровно ${maxLen} цифр`); return; }
     confirmDeal(`${method === 'sbp' ? '📱 СБП' : '💳 Карта'} (${bankName}): ${detail}`);
 }
 function showCryptoInput(method) {
@@ -472,17 +471,14 @@ function showCryptoInput(method) {
     const fee = method === 'usdt-ton' ? '<p style="color:var(--muted);font-size:11px;">Может взиматься комиссия сети</p>' : '';
     showPaymentModal(`<h3>💲 ${label}</h3>${fee}<input type="text" id="cryptoAddr" placeholder="Адрес кошелька"><div class="btn-row"><button class="btn-secondary" onclick="sellSelected()">⬅ Назад</button><button class="btn-primary" onclick="submitCrypto('${method}')">Далее</button></div>`);
 }
-function submitCrypto(method) { const addr = document.getElementById('cryptoAddr')?.value?.trim(); if (!addr) { alert('Введи адрес кошелька'); return; } confirmDeal(`💲 ${method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'}: ${addr}`); }
+function submitCrypto(method) {
+    const addr = document.getElementById('cryptoAddr')?.value?.trim();
+    if (!addr) { showErrorModal('Введи адрес кошелька'); return; }
+    confirmDeal(`💲 ${method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'}: ${addr}`);
+}
 
 function showConfirmModal(message, onOk) {
-    showPaymentModal(`
-        <h3>Подтверждение продажи</h3>
-        <p style="color:var(--muted);font-size:13px;white-space:pre-line;">${message}</p>
-        <div class="btn-row">
-            <button class="btn-secondary" onclick="closePaymentModal()">❌ Отмена</button>
-            <button class="btn-primary" onclick="closePaymentModal();onOk();">✅ Продать</button>
-        </div>
-    `);
+    showPaymentModal(`<h3>Подтверждение продажи</h3><p style="color:var(--muted);font-size:13px;white-space:pre-line;">${message}</p><div class="btn-row"><button class="btn-secondary" onclick="closePaymentModal()">❌ Отмена</button><button class="btn-primary" onclick="closePaymentModal();onOk();">✅ Продать</button></div>`);
 }
 
 function confirmDeal(fullPayment) {
