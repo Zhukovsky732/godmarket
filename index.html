@@ -320,7 +320,7 @@ function showLoginModal() { document.getElementById('loginModal').style.display 
 function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
 
 function loginViaSteam() {
-    closeLoginModal();
+    // Открываем OAuth в том же окне
     window.location.href = API + '/api/steam/login';
 }
 
@@ -331,7 +331,7 @@ function doLogin() {
 }
 
 function logout() { localStorage.removeItem('gm_steamid'); steamId = null; groupedSkins = []; filteredSkins = []; priceCache = {}; hideUI(); document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '🔐 Войди через Steam'; }
-
+    
 // БЛОК: JS-UI
 function showPaymentModal(html) { document.getElementById('paymentContent').innerHTML = html; document.getElementById('paymentModal').style.display = 'flex'; }
 function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; }
