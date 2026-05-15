@@ -61,21 +61,22 @@
             width: 100vw;
             min-height: 100vh;
         }
-        /* ПК-версия: растянуто на весь экран */
+        /* ПК-версия */
         @media (min-width: 768px) {
             body {
                 padding: 32px 40px 40px 40px;
                 display: grid;
-                grid-template-columns: 1fr 400px;
+                grid-template-columns: 1fr;
                 grid-template-rows: auto auto;
                 gap: 24px;
                 align-items: start;
             }
             .header { grid-column: 1 / -1; }
             #toolbarTop { grid-column: 1 / -1; }
-            #panelSell { grid-column: 1; display: block !important; }
-            #panelDeals { grid-column: 2; display: block !important; position: sticky; top: 32px; }
-            .bottom-nav { display: none; }
+            #panelSell { display: block !important; }
+            #panelDeals { display: none; }
+            .bottom-nav { display: flex; position: static; max-width: 100%; background: transparent; box-shadow: none; padding: 0; gap: 8px; }
+            .bottom-nav .nav-item { padding: 10px 20px; font-size: 14px; }
             .skin-item { width: 100%; margin: 8px 0; }
             #skinsList { display: block; }
             .btn-sell-all { position: static; margin-top: 20px; }
@@ -86,6 +87,7 @@
         @media (max-width: 767px) {
             .panel { display: none; }
             .panel.active { display: block; }
+            .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; padding: 12px 20px; z-index: 100; }
         }
         .header {
             text-align: center; padding: 32px 0;
@@ -98,12 +100,12 @@
         .inv-summary { text-align: center; color: var(--green); font-size: 15px; margin-bottom: 10px; display: none; }
         .rate-info { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 14px; display: none; }
         .toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
-        .btn { padding: 12px 18px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .btn { padding: 12px 18px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; text-align: center; flex: 1; min-width: 80px; }
         .btn:hover { transform: translateY(-1px); }
         .btn:active { transform: translateY(0); }
         .btn-steam { flex: 1; }
         .btn-tool { flex: 1; }
-        .btn-sell-all-qty { font-size: 13px; padding: 10px 16px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-left: auto; }
+        .btn-sell-all-qty { font-size: 13px; padding: 10px 16px; border-radius: 10px; font-weight: 700; cursor: pointer; flex: 1; }
         .btn-sell-all-qty:hover { opacity: 0.9; }
         .search-box { display: flex; gap: 8px; margin-bottom: 14px; }
         .search-box input { flex: 1; padding: 14px 18px; border-radius: 12px; border: 2px solid #dfe6e9; font-size: 15px; }
@@ -143,8 +145,8 @@
         .btn-sell-all:not(:disabled) { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { box-shadow: 0 4px 24px rgba(108,92,231,0.4); } 50% { box-shadow: 0 4px 36px rgba(108,92,231,0.7); } }
         .btn-sell-all:disabled { background: #b2bec3; box-shadow: none; opacity: 0.6; animation: none; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; padding: 12px 20px; z-index: 100; }
-        .nav-item { flex: 1; text-align: center; color: var(--muted); font-size: 13px; font-weight: 700; cursor: pointer; padding: 8px 0; border-radius: 10px; transition: all 0.2s; position: relative; }
+        .bottom-nav { }
+        .nav-item { flex: 1; text-align: center; color: var(--muted); font-size: 13px; font-weight: 700; cursor: pointer; padding: 8px 0; border-radius: 10px; transition: all 0.2s; position: relative; background: transparent; }
         .nav-item.active { color: var(--accent); }
         .nav-item .nav-icon { font-size: 24px; display: block; }
         .nav-badge { position: absolute; top: 0; right: 20%; background: var(--accent); color: white; font-size: 11px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
@@ -308,6 +310,7 @@ if (oauthSteamId && oauthSteamId.length === 17) {
     if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
 }
 
+// Всегда светлая тема по умолчанию
 const savedTheme = localStorage.getItem('gm_theme');
 if (savedTheme === 'dark') { darkTheme = true; document.body.classList.add('dark-theme'); }
 else { document.body.classList.add('light-theme'); }
@@ -342,12 +345,10 @@ function closePaymentModal() { document.getElementById('paymentModal').style.dis
 function openLegal(t) { document.getElementById('legal-'+t).classList.add('open'); }
 function closeLegal(t) { document.getElementById('legal-'+t).classList.remove('open'); }
 function switchTab(tab) {
-    if (window.innerWidth < 768) {
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if (tab === 'sell') { document.getElementById('panelSell').classList.add('active'); document.querySelector('.nav-item:nth-child(1)').classList.add('active'); }
-        else if (tab === 'deals') { document.getElementById('panelDeals').classList.add('active'); document.querySelector('.nav-item:nth-child(2)').classList.add('active'); renderDeals(); }
-    }
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (tab === 'sell') { document.getElementById('panelSell').classList.add('active'); document.querySelector('.nav-item:nth-child(1)').classList.add('active'); }
+    else if (tab === 'deals') { document.getElementById('panelDeals').classList.add('active'); document.querySelector('.nav-item:nth-child(2)').classList.add('active'); renderDeals(); }
 }
 function showUI() {
     document.getElementById('loginBtn').style.display = 'none';
