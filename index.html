@@ -476,8 +476,9 @@ function showCryptoInput(method) {
 }
 function submitCrypto(method) { const addr = document.getElementById('cryptoAddr')?.value?.trim(); if (!addr) { showErrorModal('Введи адрес кошелька'); return; } confirmDeal(`💲 ${method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'}: ${addr}`); }
 
-function showConfirmModal(message, onOk) {
-    showPaymentModal(`<h3>Подтверждение продажи</h3><p style="color:var(--muted);font-size:13px;white-space:pre-line;">${message}</p><div class="btn-row"><button class="btn-secondary" onclick="closePaymentModal()">❌ Отмена</button><button class="btn-primary" onclick="closePaymentModal();onOk();">✅ Продать</button></div>`);
+function showConfirmModal(message, callback) {
+    window._confirmCallback = callback;
+    showPaymentModal(`<h3>Подтверждение продажи</h3><p style="color:var(--muted);font-size:13px;white-space:pre-line;">${message}</p><div class="btn-row"><button class="btn-secondary" onclick="closePaymentModal()">❌ Отмена</button><button class="btn-primary" onclick="closePaymentModal(); if(window._confirmCallback) window._confirmCallback();">✅ Продать</button></div>`);
 }
 
 function confirmDeal(fullPayment) {
@@ -494,7 +495,7 @@ function confirmDeal(fullPayment) {
             }
         });
     } else {
-        showConfirmModal(message + '\n\nНажмите «Продать» для подтверждения.', () => {
+        showConfirmModal(message + '\n\nНажмите «Продать» для подтверждения.', function() {
             saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
             sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) });
             document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = 'var(--green)';
