@@ -57,28 +57,28 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg); color: var(--text);
-            padding: 16px 16px 90px 16px;
-            max-width: 420px; margin: 0 auto; min-height: 100vh;
+            padding: 20px 20px 100px 20px;
+            width: 100vw;
+            min-height: 100vh;
         }
-        /* ПК-версия */
+        /* ПК-версия: растянуто на весь экран */
         @media (min-width: 768px) {
             body {
-                max-width: 1400px;
-                padding: 24px 24px 40px 24px;
+                padding: 32px 40px 40px 40px;
                 display: grid;
-                grid-template-columns: 1fr 380px;
+                grid-template-columns: 1fr 400px;
                 grid-template-rows: auto auto;
-                gap: 20px;
+                gap: 24px;
                 align-items: start;
             }
             .header { grid-column: 1 / -1; }
             #toolbarTop { grid-column: 1 / -1; }
             #panelSell { grid-column: 1; display: block !important; }
-            #panelDeals { grid-column: 2; display: block !important; position: sticky; top: 24px; }
+            #panelDeals { grid-column: 2; display: block !important; position: sticky; top: 32px; }
             .bottom-nav { display: none; }
-            .skin-item { width: 100%; margin: 6px 0; }
+            .skin-item { width: 100%; margin: 8px 0; }
             #skinsList { display: block; }
-            .btn-sell-all { position: static; margin-top: 16px; }
+            .btn-sell-all { position: static; margin-top: 20px; }
             .inv-summary, .rate-info, .user-info { grid-column: 1 / -1; }
             #marketStats { grid-column: 1 / -1; }
         }
@@ -88,98 +88,97 @@
             .panel.active { display: block; }
         }
         .header {
-            text-align: center; padding: 24px 0;
+            text-align: center; padding: 32px 0;
             background: linear-gradient(135deg, var(--accent), #a29bfe);
-            border-radius: 16px; margin-bottom: 16px; color: white;
+            border-radius: 20px; margin-bottom: 20px; color: white;
         }
-        .logo { font-size: 32px; font-weight: 900; letter-spacing: -1px; }
-        .subtitle { opacity: 0.85; font-size: 13px; margin-top: 4px; }
-        .user-info { text-align: center; color: var(--green); font-size: 11px; margin-bottom: 6px; background: rgba(0,184,148,0.1); padding: 6px; border-radius: 8px; display: none; }
-        .inv-summary { text-align: center; color: var(--green); font-size: 12px; margin-bottom: 8px; display: none; }
-        .rate-info { text-align: center; color: var(--muted); font-size: 10px; margin-bottom: 12px; display: none; }
-        .toolbar { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
-        .btn { padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 11px; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .logo { font-size: 40px; font-weight: 900; letter-spacing: -1px; }
+        .subtitle { opacity: 0.85; font-size: 16px; margin-top: 4px; }
+        .user-info { text-align: center; color: var(--green); font-size: 14px; margin-bottom: 8px; background: rgba(0,184,148,0.1); padding: 8px; border-radius: 10px; display: none; }
+        .inv-summary { text-align: center; color: var(--green); font-size: 15px; margin-bottom: 10px; display: none; }
+        .rate-info { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 14px; display: none; }
+        .toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+        .btn { padding: 12px 18px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; text-align: center; }
         .btn:hover { transform: translateY(-1px); }
         .btn:active { transform: translateY(0); }
         .btn-steam { flex: 1; }
         .btn-tool { flex: 1; }
-        .btn-sell-all-qty { font-size: 11px; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-left: auto; }
+        .btn-sell-all-qty { font-size: 13px; padding: 10px 16px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-left: auto; }
         .btn-sell-all-qty:hover { opacity: 0.9; }
-        .search-box { display: flex; gap: 6px; margin-bottom: 10px; }
-        .search-box input { flex: 1; padding: 10px 14px; border-radius: 10px; border: 2px solid #dfe6e9; font-size: 12px; }
-        .search-box button { padding: 10px 14px; background: var(--accent); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 12px; }
-        .sort-btns { display: flex; gap: 6px; margin-bottom: 10px; }
-        .sort-btn { flex: 1; padding: 8px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer; }
-        .skin-item { border-radius: 12px; padding: 12px 14px; margin: 8px 0; display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--rarity-blue); transition: all 0.2s; }
-        .skin-item:hover { transform: translateX(2px); }
+        .search-box { display: flex; gap: 8px; margin-bottom: 14px; }
+        .search-box input { flex: 1; padding: 14px 18px; border-radius: 12px; border: 2px solid #dfe6e9; font-size: 15px; }
+        .search-box button { padding: 14px 18px; background: var(--accent); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 15px; }
+        .sort-btns { display: flex; gap: 8px; margin-bottom: 14px; }
+        .sort-btn { flex: 1; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .skin-item { border-radius: 14px; padding: 14px 16px; margin: 10px 0; display: flex; align-items: center; gap: 12px; border-left: 5px solid var(--rarity-blue); transition: all 0.2s; }
+        .skin-item:hover { transform: translateX(3px); }
         .skin-item.rarity-purple { border-left-color: var(--rarity-purple); }
         .skin-item.rarity-pink { border-left-color: var(--rarity-pink); }
         .skin-item.rarity-red { border-left-color: var(--rarity-red); }
         .skin-item.rarity-gold { border-left-color: var(--rarity-gold); }
-        .skin-icon { width: 48px; height: 36px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: #dfe6e9; }
+        .skin-icon { width: 56px; height: 42px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: #dfe6e9; }
         .skin-info { flex: 1; min-width: 0; }
-        .skin-name { font-weight: 700; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .skin-meta { display: flex; gap: 6px; align-items: center; margin-top: 2px; }
-        .skin-count { color: var(--muted); font-size: 10px; }
-        .badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+        .skin-name { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .skin-meta { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+        .skin-count { color: var(--muted); font-size: 12px; }
+        .badge { font-size: 11px; padding: 3px 8px; border-radius: 5px; font-weight: 700; }
         .badge-st { background: #cf6a32; color: white; }
         .badge-wear { background: #dfe6e9; color: #636e72; }
         .dark-theme .badge-wear { background: #1e3799; color: #b2bec3; }
-        .skin-our { font-weight: 700; font-size: 13px; white-space: nowrap; flex-shrink: 0; }
-        .skin-spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #dfe6e9; border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 4px; }
+        .skin-our { font-weight: 700; font-size: 16px; white-space: nowrap; flex-shrink: 0; }
+        .skin-spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #dfe6e9; border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 6px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .qty-selector { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
-        .qty-btn { background: #dfe6e9; color: #2d3436; border: none; border-radius: 6px; width: 24px; height: 24px; font-size: 14px; font-weight: bold; cursor: pointer; line-height: 1; }
+        .qty-selector { display: flex; align-items: center; gap: 5px; margin-top: 6px; }
+        .qty-btn { background: #dfe6e9; color: #2d3436; border: none; border-radius: 8px; width: 30px; height: 30px; font-size: 18px; font-weight: bold; cursor: pointer; line-height: 1; }
         .dark-theme .qty-btn { background: #0c2461; color: #dfe6e9; }
         .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .qty-value { font-weight: 700; font-size: 13px; color: var(--green); min-width: 16px; text-align: center; }
-        .skeleton { border-radius: 8px; }
+        .qty-value { font-weight: 700; font-size: 16px; color: var(--green); min-width: 20px; text-align: center; }
+        .skeleton { border-radius: 10px; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .skeleton-card { height: 60px; margin: 8px 0; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
-        .skeleton-icon { width: 48px; height: 36px; border-radius: 6px; }
-        .skeleton-text { flex: 1; height: 14px; }
-        .skeleton-price { width: 50px; height: 16px; }
-        .btn-sell-all { background: var(--accent); color: white; font-size: 15px; padding: 16px; margin-top: 12px; width: 100%; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 20px rgba(108,92,231,0.4); }
+        .skeleton-card { height: 70px; margin: 10px 0; border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+        .skeleton-icon { width: 56px; height: 42px; border-radius: 6px; }
+        .skeleton-text { flex: 1; height: 16px; }
+        .skeleton-price { width: 60px; height: 18px; }
+        .btn-sell-all { background: var(--accent); color: white; font-size: 18px; padding: 18px; margin-top: 16px; width: 100%; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 24px rgba(108,92,231,0.4); }
         .btn-sell-all:not(:disabled) { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 4px 20px rgba(108,92,231,0.4); } 50% { box-shadow: 0 4px 30px rgba(108,92,231,0.7); } }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 4px 24px rgba(108,92,231,0.4); } 50% { box-shadow: 0 4px 36px rgba(108,92,231,0.7); } }
         .btn-sell-all:disabled { background: #b2bec3; box-shadow: none; opacity: 0.6; animation: none; }
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; display: flex; padding: 10px 16px; z-index: 100; }
-        @media (min-width: 768px) { .bottom-nav { max-width: 900px; } }
-        .nav-item { flex: 1; text-align: center; color: var(--muted); font-size: 10px; font-weight: 700; cursor: pointer; padding: 6px 0; border-radius: 8px; transition: all 0.2s; position: relative; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; padding: 12px 20px; z-index: 100; }
+        .nav-item { flex: 1; text-align: center; color: var(--muted); font-size: 13px; font-weight: 700; cursor: pointer; padding: 8px 0; border-radius: 10px; transition: all 0.2s; position: relative; }
         .nav-item.active { color: var(--accent); }
-        .nav-item .nav-icon { font-size: 20px; display: block; }
-        .nav-badge { position: absolute; top: 0; right: 20%; background: var(--accent); color: white; font-size: 9px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .nav-item .nav-icon { font-size: 24px; display: block; }
+        .nav-badge { position: absolute; top: 0; right: 20%; background: var(--accent); color: white; font-size: 11px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; }
-        .modal-box { border-radius: 20px; padding: 28px; width: 90%; max-width: 360px; }
-        .modal-box h3 { color: var(--accent); margin-bottom: 12px; font-size: 18px; }
-        .modal-box input { width: 100%; padding: 14px; border-radius: 10px; font-size: 14px; margin: 8px 0; }
-        .modal-box .btn-row { display: flex; gap: 8px; margin-top: 16px; }
-        .modal-box .btn-row button { flex: 1; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
+        .modal-box { border-radius: 24px; padding: 32px; width: 90%; max-width: 420px; }
+        .modal-box h3 { color: var(--accent); margin-bottom: 16px; font-size: 22px; }
+        .modal-box input { width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; margin: 10px 0; }
+        .modal-box .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        .modal-box .btn-row button { flex: 1; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 16px; }
         .btn-primary { background: var(--accent); color: white; border: none; }
         .btn-primary:hover { opacity: 0.9; }
         .btn-secondary { border: 2px solid #dfe6e9; }
         .dark-theme .btn-secondary { border-color: #1e3799; }
-        .deal-card { border-radius: 14px; padding: 16px; margin: 8px 0; border-left: 4px solid var(--green); cursor: pointer; transition: all 0.2s; }
-        .deal-card:hover { transform: translateX(2px); }
+        .deal-card { border-radius: 16px; padding: 18px; margin: 10px 0; border-left: 5px solid var(--green); cursor: pointer; transition: all 0.2s; }
+        .deal-card:hover { transform: translateX(3px); }
         .deal-header { display: flex; justify-content: space-between; align-items: center; }
-        .deal-date { color: var(--muted); font-size: 11px; }
-        .deal-sum { font-weight: 700; font-size: 15px; }
-        .deal-detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dfe6e9; font-size: 12px; color: var(--muted); }
+        .deal-date { color: var(--muted); font-size: 13px; }
+        .deal-sum { font-weight: 700; font-size: 18px; }
+        .deal-detail { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid #dfe6e9; font-size: 14px; color: var(--muted); }
         .dark-theme .deal-detail { border-color: #1e3799; }
         .deal-detail.open { display: block; }
         .deal-detail b { color: var(--text); }
-        .stats-card { background: var(--card); border-radius: 14px; padding: 18px; margin-bottom: 16px; text-align: center; box-shadow: var(--shadow); }
-        .status { text-align: center; padding: 30px 20px; color: var(--muted); }
-        .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
-        .footer { text-align: center; margin-top: 30px; padding: 16px; font-size: 10px; color: var(--muted); }
+        .stats-card { background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; box-shadow: var(--shadow); }
+        .status { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 16px; }
+        .empty { text-align: center; padding: 50px 20px; color: var(--muted); font-size: 16px; }
+        .footer { text-align: center; margin-top: 40px; padding: 20px; font-size: 13px; color: var(--muted); }
         .footer a { color: var(--accent); text-decoration: none; cursor: pointer; }
         .legal-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 300; overflow-y: auto; padding: 20px; }
         .legal-modal.open { display: flex; align-items: flex-start; justify-content: center; }
-        .legal-content { border-radius: 20px; padding: 24px; width: 100%; max-width: 500px; margin-top: 20px; font-size: 13px; }
-        .legal-content h2 { color: var(--accent); margin-bottom: 12px; }
-        .legal-content h3 { color: var(--green); margin: 16px 0 8px; }
-        .legal-content p { line-height: 1.6; margin-bottom: 8px; }
-        .legal-close { display: block; width: 100%; padding: 14px; margin-top: 20px; background: var(--accent); color: white; border: none; border-radius: 10px; font-size: 14px; cursor: pointer; font-weight: 700; }
+        .legal-content { border-radius: 24px; padding: 28px; width: 100%; max-width: 560px; margin-top: 20px; font-size: 15px; }
+        .legal-content h2 { color: var(--accent); margin-bottom: 16px; }
+        .legal-content h3 { color: var(--green); margin: 20px 0 10px; }
+        .legal-content p { line-height: 1.6; margin-bottom: 10px; }
+        .legal-close { display: block; width: 100%; padding: 16px; margin-top: 24px; background: var(--accent); color: white; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; font-weight: 700; }
         .legal-close:hover { opacity: 0.9; }
     </style>
 </head>
@@ -237,7 +236,7 @@
     <a onclick="openLegal('refund')">Возврат</a> ·
     <span style="color:var(--muted);">|</span>
     <a onclick="toggleTheme()">🌓 Тема</a>
-    <div style="margin-top:8px;color:var(--muted);font-size:10px;">
+    <div style="margin-top:10px;color:var(--muted);font-size:12px;">
         📩 <b>Поддержка:</b> <a href="https://t.me/Zhukovsky732" target="_blank">@Zhukovsky732</a> · godmarketsupport@gmail.com
     </div>
 </div>
@@ -252,10 +251,10 @@
 <div class="modal-overlay" id="loginModal" style="display:none;">
     <div class="modal-box" style="text-align:center;">
         <h3>🔐 Вход через Steam</h3>
-        <p style="color:var(--muted);font-size:12px;margin-bottom:16px;">Авторизуйся через Steam, чтобы увидеть свои скины</p>
-        <button onclick="loginViaSteam()" style="display:block;width:100%;padding:14px;background:#0c2461;color:#dfe6e9;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">🔐 Войти через Steam</button>
-        <p style="color:var(--muted);font-size:10px;margin-top:12px;">Вы будете перенаправлены на сайт Steam</p>
-        <button class="btn-secondary" onclick="closeLoginModal()" style="width:100%;padding:10px;margin-top:8px;">Отмена</button>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">Авторизуйся через Steam, чтобы увидеть свои скины</p>
+        <button onclick="loginViaSteam()" style="display:block;width:100%;padding:16px;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;">🔐 Войти через Steam</button>
+        <p style="color:var(--muted);font-size:12px;margin-top:16px;">Вы будете перенаправлены на сайт Steam</p>
+        <button class="btn-secondary" onclick="closeLoginModal()" style="width:100%;padding:12px;margin-top:10px;">Отмена</button>
     </div>
 </div>
 
@@ -325,11 +324,7 @@ function sendDataToBot(data) {
     if (isTelegram && tg) {
         tg.sendData(payload);
     } else {
-        fetch(`${API}/api/sell`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: payload
-        }).then(r => r.json()).catch(e => console.error('❌ Fetch error:', e));
+        fetch(`${API}/api/sell`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(e => console.error('❌ Fetch error:', e));
     }
 }
 
@@ -370,17 +365,14 @@ function hideUI() {
 function refresh() { priceCache = {}; loadInventory(); }
 function shareBot() {
     const refLink = `https://t.me/godmarket_bot?start=ref_${steamId}`;
-    if (isTelegram && tg) {
-        tg.openTelegramLink(`https://t.me/share/url?text=${encodeURIComponent('🎮 Продай скины CS2 быстро и выгодно!\n' + refLink)}`);
-    } else {
-        navigator.clipboard.writeText(refLink).then(() => { showCopyModal('Реферальная ссылка скопирована!', refLink); });
-    }
+    if (isTelegram && tg) { tg.openTelegramLink(`https://t.me/share/url?text=${encodeURIComponent('🎮 Продай скины CS2 быстро и выгодно!\n' + refLink)}`); }
+    else { navigator.clipboard.writeText(refLink).then(() => { showCopyModal('Реферальная ссылка скопирована!', refLink); }); }
 }
 function showCopyModal(title, text) {
-    showPaymentModal(`<h3>🔗 ${title}</h3><input type="text" value="${text}" readonly style="width:100%;padding:10px;border-radius:10px;border:1px solid #dfe6e9;background:#f8f9fc;color:#2d3436;font-size:12px;margin-bottom:12px;"><button class="btn-primary" onclick="closePaymentModal()" style="width:100%;padding:12px;">ОК</button>`);
+    showPaymentModal(`<h3>🔗 ${title}</h3><input type="text" value="${text}" readonly style="width:100%;padding:12px;border-radius:12px;border:1px solid #dfe6e9;background:#f8f9fc;color:#2d3436;font-size:14px;margin-bottom:16px;"><button class="btn-primary" onclick="closePaymentModal()" style="width:100%;padding:14px;">ОК</button>`);
 }
 function showErrorModal(msg) {
-    showPaymentModal(`<h3>⚠️ Ошибка</h3><p style="color:var(--muted);font-size:14px;margin-bottom:16px;">${msg}</p><button class="btn-primary" onclick="closePaymentModal()" style="width:100%;padding:12px;">ОК</button>`);
+    showPaymentModal(`<h3>⚠️ Ошибка</h3><p style="color:var(--muted);font-size:16px;margin-bottom:20px;">${msg}</p><button class="btn-primary" onclick="closePaymentModal()" style="width:100%;padding:14px;">ОК</button>`);
 }
 function selectAllSkins() { filteredSkins.forEach(g => { if (g.price && g.price > 10) g.selectedQty = g.assetIds.length; }); applyFilters(); }
 function clearCart() { filteredSkins.forEach(g => g.selectedQty = 0); applyFilters(); }
@@ -404,7 +396,7 @@ function applyFilters() {
 async function fetchPrice(name) { if (priceCache[name]) return priceCache[name]; try { const r = await fetch(`${API}/api/price?name=${encodeURIComponent(name)}`, { headers: H }); const d = await r.json(); if (d.success) { priceCache[name] = d.buy_price; return d.buy_price; } } catch(e) {} return null; }
 async function loadInventory() {
     document.getElementById('status').style.display = 'block';
-    document.getElementById('status').innerHTML = `<div style="text-align:center;padding:20px;"><div class="skin-spinner" style="width:32px;height:32px;border-width:3px;margin:0 auto 12px;"></div><div style="color:var(--muted);">Загружаем инвентарь...</div></div>`;
+    document.getElementById('status').innerHTML = `<div style="text-align:center;padding:24px;"><div class="skin-spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;"></div><div style="color:var(--muted);font-size:16px;">Загружаем инвентарь...</div></div>`;
     try {
         const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H }); const d = await r.json();
         if (d.success && d.assets) {
@@ -413,7 +405,7 @@ async function loadInventory() {
             const groupMap = {};
             d.assets.forEach(a => { const key = `${a.classid}_${a.instanceid}`; const skinData = descMap[key] || {}; if (skinData.type === 'Charm') return; const name = skinData.name || `Скин #${a.assetid}`; if (!groupMap[name]) groupMap[name] = { ...skinData, assetIds: [], price: null, selectedQty: 0 }; groupMap[name].assetIds.push(a.assetid); });
             groupedSkins = Object.values(groupMap);
-            document.getElementById('status').innerHTML = `<div style="text-align:center;padding:20px;"><div class="skin-spinner" style="width:32px;height:32px;border-width:3px;margin:0 auto 12px;"></div><div style="color:var(--muted);">Загружаем цены...</div></div>`;
+            document.getElementById('status').innerHTML = `<div style="text-align:center;padding:24px;"><div class="skin-spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;"></div><div style="color:var(--muted);font-size:16px;">Загружаем цены...</div></div>`;
             for (const g of groupedSkins) { g.price = await fetchPrice(g.name); }
             applyFilters();
             updateInvSummary();
@@ -431,7 +423,7 @@ function updateMarketStats() {
     const deals = getDeals();
     const totalSum = deals.reduce((s, d) => s + d.total, 0);
     const totalCount = deals.length;
-    document.getElementById('marketStats').innerHTML = `<div class="stats-card"><div style="font-size:12px;color:var(--muted);margin-bottom:8px;">📊 Статистика маркета</div><div style="display:flex;justify-content:space-around;"><div><div style="font-size:24px;font-weight:900;color:var(--green);">${totalCount}</div><div style="font-size:11px;color:var(--muted);">скинов продано</div></div><div><div style="font-size:24px;font-weight:900;color:var(--accent);">${totalSum.toFixed(0)} ₽</div><div style="font-size:11px;color:var(--muted);">выкуплено</div></div></div></div>`;
+    document.getElementById('marketStats').innerHTML = `<div class="stats-card"><div style="font-size:14px;color:var(--muted);margin-bottom:10px;">📊 Статистика маркета</div><div style="display:flex;justify-content:space-around;"><div><div style="font-size:28px;font-weight:900;color:var(--green);">${totalCount}</div><div style="font-size:13px;color:var(--muted);">скинов продано</div></div><div><div style="font-size:28px;font-weight:900;color:var(--accent);">${totalSum.toFixed(0)} ₽</div><div style="font-size:13px;color:var(--muted);">выкуплено</div></div></div></div>`;
 }
 function getRarityClass(rarity) {
     if (/Covert|Red/.test(rarity)) return 'rarity-red'; if (/Classified|Pink/.test(rarity)) return 'rarity-pink';
@@ -446,7 +438,7 @@ function renderInventory() {
             ${g.icon ? `<img src="${g.icon}" class="skin-icon" onerror="this.style.display='none'">` : ''}
             <div class="skin-info"><div class="skin-name">${g.name}</div><div class="skin-meta"><span class="skin-count">${g.assetIds.length} шт.</span>${g.isST ? '<span class="badge badge-st">ST</span>' : ''}${g.wear ? `<span class="badge badge-wear">${g.wear}</span>` : ''}</div>
             <div class="qty-selector"><button class="qty-btn" onclick="changeQty('${g.name}', -1)" ${g.selectedQty <= 0 ? 'disabled' : ''}>−</button><span class="qty-value">${g.selectedQty}</span><button class="qty-btn" onclick="changeQty('${g.name}', 1)" ${g.selectedQty >= g.assetIds.length ? 'disabled' : ''}>+</button></div></div>
-            <div style="text-align: right;"><div class="skin-our">${g.price.toFixed(2) + ' ₽'}</div>${g.selectedQty > 0 ? `<div style="color: var(--green); font-size: 11px;">=${(g.price * g.selectedQty).toFixed(2)} ₽</div>` : ''}</div>
+            <div style="text-align: right;"><div class="skin-our">${g.price.toFixed(2) + ' ₽'}</div>${g.selectedQty > 0 ? `<div style="color: var(--green); font-size: 13px;">=${(g.price * g.selectedQty).toFixed(2)} ₽</div>` : ''}</div>
         </div>`;
     }).join('');
     if (displaySkins.length === 0) document.getElementById('skinsList').innerHTML = '<div class="empty">Нет скинов дороже 10 ₽</div>';
@@ -462,25 +454,25 @@ function sellSelected() {
     const total = sel.reduce((s, x) => s + x.price, 0).toFixed(2);
     const grp = {}; sel.forEach(s => { if (!grp[s.name]) grp[s.name] = { name: s.name, count: 0, price: s.price }; grp[s.name].count++; });
     const summary = Object.values(grp).map(g => `${g.name} ×${g.count}`).join('<br>');
-    showPaymentModal(`<h3>💰 Выберите метод выплаты</h3><p style="font-size:12px;color:var(--muted);margin-bottom:4px;">Скины:<br>${summary}</p><p style="font-size:16px;font-weight:700;color:var(--green);margin-bottom:16px;">Сумма: ${total} ₽</p><p style="font-size:11px;color:var(--accent);margin-bottom:12px;">⚠️ Выплата — через 8 дней.</p>
-        <button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:10px;font-size:14px;cursor:pointer;">📱 СБП</button>
-        <button onclick="chooseBank('card')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:10px;font-size:14px;cursor:pointer;">💳 Карта</button>
-        <button onclick="showCryptoInput('usdt-bep20')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:10px;font-size:14px;cursor:pointer;">💲 USDT (BEP20)</button>
-        <button onclick="showCryptoInput('usdt-ton')" style="display:block;width:100%;padding:12px;margin:4px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:10px;font-size:14px;cursor:pointer;">💲 USDT (TON)</button>
-        <button onclick="closePaymentModal()" style="display:block;width:100%;padding:12px;margin:4px 0;background:#b2bec3;color:white;border:none;border-radius:10px;font-size:14px;cursor:pointer;">❌ Отмена</button>`);
+    showPaymentModal(`<h3>💰 Выберите метод выплаты</h3><p style="font-size:14px;color:var(--muted);margin-bottom:6px;">Скины:<br>${summary}</p><p style="font-size:18px;font-weight:700;color:var(--green);margin-bottom:20px;">Сумма: ${total} ₽</p><p style="font-size:13px;color:var(--accent);margin-bottom:16px;">⚠️ Выплата — через 8 дней.</p>
+        <button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">📱 СБП</button>
+        <button onclick="chooseBank('card')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💳 Карта</button>
+        <button onclick="showCryptoInput('usdt-bep20')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💲 USDT (BEP20)</button>
+        <button onclick="showCryptoInput('usdt-ton')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💲 USDT (TON)</button>
+        <button onclick="closePaymentModal()" style="display:block;width:100%;padding:14px;margin:6px 0;background:#b2bec3;color:white;border:none;border-radius:12px;font-size:16px;cursor:pointer;">❌ Отмена</button>`);
     window._pd = { skins: sel, total };
 }
 
 // БЛОК: JS-PAYMENT
 function chooseBank(method) {
     const banks = ['Сбербанк','Т-Банк','ВТБ','Альфа-Банк','Райффайзен','Другой'];
-    showPaymentModal(`<h3>🏦 Выберите банк</h3>${banks.map(b => `<button onclick="showBankInput('${method}','${b}')" style="display:block;width:100%;padding:10px;margin:4px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:10px;font-size:14px;cursor:pointer;">${b}</button>`).join('')}<button onclick="sellSelected()" style="display:block;width:100%;padding:10px;margin:4px 0;background:#b2bec3;color:white;border:none;border-radius:10px;font-size:14px;cursor:pointer;">⬅ Назад</button>`);
+    showPaymentModal(`<h3>🏦 Выберите банк</h3>${banks.map(b => `<button onclick="showBankInput('${method}','${b}')" style="display:block;width:100%;padding:12px;margin:5px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">${b}</button>`).join('')}<button onclick="sellSelected()" style="display:block;width:100%;padding:12px;margin:5px 0;background:#b2bec3;color:white;border:none;border-radius:12px;font-size:16px;cursor:pointer;">⬅ Назад</button>`);
 }
 function showBankInput(method, bank) {
     const label = method === 'sbp' ? 'номер телефона (11 цифр)' : 'номер карты (16 цифр)';
     const maxLen = method === 'sbp' ? 11 : 16;
     const title = method === 'sbp' ? '📱 СБП' : '💳 Карта';
-    showPaymentModal(`<h3>${title} — ${bank === 'Другой' ? 'Другой банк' : bank}</h3><p style="color:var(--muted);font-size:11px;margin-bottom:8px;">Только для РФ</p>${bank === 'Другой' ? '<input type="text" id="bankName" placeholder="Название банка" style="margin-bottom:6px;">' : ''}<input type="text" id="bankDetail" placeholder="${label}" maxlength="${maxLen}" inputmode="numeric" pattern="[0-9]*"><div class="btn-row"><button class="btn-secondary" onclick="chooseBank('${method}')">⬅ Назад</button><button class="btn-primary" onclick="submitBank('${method}','${bank}')">Далее</button></div>`);
+    showPaymentModal(`<h3>${title} — ${bank === 'Другой' ? 'Другой банк' : bank}</h3><p style="color:var(--muted);font-size:13px;margin-bottom:10px;">Только для РФ</p>${bank === 'Другой' ? '<input type="text" id="bankName" placeholder="Название банка" style="margin-bottom:8px;">' : ''}<input type="text" id="bankDetail" placeholder="${label}" maxlength="${maxLen}" inputmode="numeric" pattern="[0-9]*"><div class="btn-row"><button class="btn-secondary" onclick="chooseBank('${method}')">⬅ Назад</button><button class="btn-primary" onclick="submitBank('${method}','${bank}')">Далее</button></div>`);
 }
 function submitBank(method, bank) {
     let bankName = bank; if (bank === 'Другой') { bankName = document.getElementById('bankName')?.value?.trim(); if (!bankName) { showErrorModal('Введи название банка'); return; } }
@@ -491,14 +483,14 @@ function submitBank(method, bank) {
 }
 function showCryptoInput(method) {
     const label = method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)';
-    const fee = method === 'usdt-ton' ? '<p style="color:var(--muted);font-size:11px;">Может взиматься комиссия сети</p>' : '';
+    const fee = method === 'usdt-ton' ? '<p style="color:var(--muted);font-size:13px;">Может взиматься комиссия сети</p>' : '';
     showPaymentModal(`<h3>💲 ${label}</h3>${fee}<input type="text" id="cryptoAddr" placeholder="Адрес кошелька"><div class="btn-row"><button class="btn-secondary" onclick="sellSelected()">⬅ Назад</button><button class="btn-primary" onclick="submitCrypto('${method}')">Далее</button></div>`);
 }
 function submitCrypto(method) { const addr = document.getElementById('cryptoAddr')?.value?.trim(); if (!addr) { showErrorModal('Введи адрес кошелька'); return; } confirmDeal(`💲 ${method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'}: ${addr}`); }
 
 function showConfirmModal(message, callback) {
     window._confirmCallback = callback;
-    showPaymentModal(`<h3>Подтверждение продажи</h3><p style="color:var(--muted);font-size:13px;white-space:pre-line;">${message}</p><div class="btn-row"><button class="btn-secondary" onclick="closePaymentModal()">❌ Отмена</button><button class="btn-primary" onclick="closePaymentModal(); if(window._confirmCallback) window._confirmCallback();">✅ Продать</button></div>`);
+    showPaymentModal(`<h3>Подтверждение продажи</h3><p style="color:var(--muted);font-size:15px;white-space:pre-line;">${message}</p><div class="btn-row"><button class="btn-secondary" onclick="closePaymentModal()">❌ Отмена</button><button class="btn-primary" onclick="closePaymentModal(); if(window._confirmCallback) window._confirmCallback();">✅ Продать</button></div>`);
 }
 
 function confirmDeal(fullPayment) {
@@ -530,7 +522,7 @@ function renderDeals() {
     if (steamId) {
         const userDeals = deals.filter(d => d.steamId === steamId);
         if (userDeals.length === 0) { container.innerHTML = '<div class="empty">У тебя пока нет активных сделок</div>'; return; }
-        let html = '<div style="font-size:13px;color:var(--green);margin-bottom:8px;">📋 Твои сделки</div>';
+        let html = '<div style="font-size:15px;color:var(--green);margin-bottom:10px;">📋 Твои сделки</div>';
         html += userDeals.map(d => { const pay = getPayDate(d.date); return `<div class="deal-card" onclick="toggleDealDetail(${d.id})"><div class="deal-header"><span class="deal-date">${formatDate(new Date(d.date))}</span><span class="deal-sum">${d.total.toFixed(2)} ₽</span></div><div class="deal-skins">${d.skins.length} скинов · ${getTimeLeft(pay)}</div><div class="deal-detail" id="deal-detail-${d.id}"><p><b>Скины:</b> ${d.skins.map(s=>s.name).join(', ')}</p><p><b>Реквизиты:</b> ${d.paymentMethod}</p><p><b>Выплатить до:</b> ${formatDate(pay)}</p></div></div>`; }).join('');
         container.innerHTML = html;
     } else { container.innerHTML = '<div class="empty">🔐 Войди через Steam, чтобы увидеть свои сделки</div>'; }
