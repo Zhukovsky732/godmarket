@@ -87,7 +87,7 @@
             .panel { display: none; }
             .panel.active { display: block; }
             .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; padding: 12px 20px; z-index: 100; }
-            .toolbar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+            .toolbar { display: grid !important; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
             .toolbar .btn { font-size: 11px; padding: 10px 6px; white-space: nowrap; }
             .toolbar .btn-sell-all-qty { font-size: 11px; padding: 10px 6px; }
             .toolbar #logoutBtn { grid-column: 1; grid-row: 1; }
@@ -325,7 +325,6 @@ if (oauthSteamId && oauthSteamId.length === 17) {
     showUI();
     loadInventory();
     fetchRate();
-    renderDeals();
 } else {
     const saved = localStorage.getItem('gm_steamid');
     if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
@@ -333,8 +332,15 @@ if (oauthSteamId && oauthSteamId.length === 17) {
 
 // Всегда светлая тема по умолчанию
 const savedTheme = localStorage.getItem('gm_theme');
-if (savedTheme === 'dark') { darkTheme = true; document.body.classList.add('dark-theme'); }
-else { document.body.classList.add('light-theme'); }
+if (savedTheme === 'dark') {
+    darkTheme = true;
+    document.body.classList.add('dark-theme');
+    document.body.classList.remove('light-theme');
+} else {
+    darkTheme = false;
+    document.body.classList.add('light-theme');
+    document.body.classList.remove('dark-theme');
+}
 
 function toggleTheme() {
     darkTheme = !darkTheme;
@@ -358,10 +364,6 @@ function sendDataToBot(data) {
     else { fetch(`${API}/api/sell`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(e => console.error('❌ Fetch error:', e)); }
 }
 
-(async function() {
-    await renderDeals();
-})();
-
 // БЛОК: JS-AUTH
 function showLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
 function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
@@ -380,14 +382,12 @@ function switchTab(tab) {
         document.getElementById('panelSell').classList.add('active');
         document.getElementById('panelDeals').classList.remove('active');
         document.querySelector('.nav-item:nth-child(1)').classList.add('active');
-        // На ПК принудительно показываем продажу, скрываем сделки
         document.getElementById('panelSell').style.display = 'block';
         document.getElementById('panelDeals').style.display = 'none';
     } else if (tab === 'deals') {
         document.getElementById('panelDeals').classList.add('active');
         document.getElementById('panelSell').classList.remove('active');
         document.querySelector('.nav-item:nth-child(2)').classList.add('active');
-        // На ПК принудительно показываем сделки, скрываем продажу
         document.getElementById('panelDeals').style.display = 'block';
         document.getElementById('panelSell').style.display = 'none';
         document.getElementById('dealFilter').style.display = 'flex';
@@ -446,7 +446,12 @@ async function loadInventory() {
     } catch(e) { document.getElementById('status').innerHTML = '❌ Ошибка загрузки'; }
 }
 function updateInvSummary() { const totalValue = groupedSkins.reduce((s, g) => s + (g.price || 0) * g.assetIds.length, 0); const totalItems = groupedSkins.reduce((s, g) => s + g.assetIds.length, 0); document.getElementById('invSummary').style.display = 'block'; document.getElementById('invSummary').innerHTML = `📦 ${totalItems} скинов · 💰 ~${totalValue.toFixed(0)} ₽`; }
-function updateMarketStats() { const deals = getDeals(); const totalSum = deals.reduce((s, d) => s + d.total, 0); const totalCount = deals.length; document.getElementById('marketStats').innerHTML = `<div class="stats-card"><div style="font-size:14px;color:var(--muted);margin-bottom:10px;">📊 Статистика маркета</div><div style="display:flex;justify-content:space-around;"><div><div style="font-size:28px;font-weight:900;color:var(--green);">${totalCount}</div><div style="font-size:13px;color:var(--muted);">скинов продано</div></div><div><div style="font-size:28px;font-weight:900;color:var(--accent);">${totalSum.toFixed(0)} ₽</div><div style="font-size:13px;color:var(--muted);">выкуплено</div></div></div></div>`; }
+async function updateMarketStats() {
+    const deals = await getDeals();
+    const totalSum = deals.reduce((s, d) => s + d.total, 0);
+    const totalCount = deals.length;
+    document.getElementById('marketStats').innerHTML = `<div class="stats-card"><div style="font-size:14px;color:var(--muted);margin-bottom:10px;">📊 Статистика маркета</div><div style="display:flex;justify-content:space-around;"><div><div style="font-size:28px;font-weight:900;color:var(--green);">${totalCount}</div><div style="font-size:13px;color:var(--muted);">скинов продано</div></div><div><div style="font-size:28px;font-weight:900;color:var(--accent);">${totalSum.toFixed(0)} ₽</div><div style="font-size:13px;color:var(--muted);">выкуплено</div></div></div></div>`;
+}
 function getRarityClass(rarity) { if (/Covert|Red/.test(rarity)) return 'rarity-red'; if (/Classified|Pink/.test(rarity)) return 'rarity-pink'; if (/Restricted|Purple/.test(rarity)) return 'rarity-purple'; if (/Rare|Gold/.test(rarity)) return 'rarity-gold'; return ''; }
 function renderInventory() {
     document.getElementById('inventory').style.display = 'block';
@@ -473,18 +478,16 @@ function confirmDeal(fullPayment) { const d = window._pd; if (!d) return; let us
 
 // БЛОК: JS-DEALS
 async function getDeals() {
-    if (steamId) {
-        try {
-            const r = await fetch(`${API}/api/deals?steamid=${steamId}`);
-            const d = await r.json();
-            if (d.success) return d.deals;
-        } catch(e) { console.error('❌ getDeals error:', e); }
-    }
+    if (!steamId) return [];
+    try {
+        const r = await fetch(`${API}/api/deals?steamid=${steamId}`);
+        const d = await r.json();
+        if (d.success) return d.deals;
+    } catch(e) { console.error('❌ getDeals error:', e); }
     return [];
 }
 
 async function saveDeal(deal) {
-    // Сохраняем на сервер
     try {
         await fetch(`${API}/api/deals`, {
             method: 'POST',
@@ -492,9 +495,7 @@ async function saveDeal(deal) {
             body: JSON.stringify(deal)
         });
     } catch(e) { console.error('❌ saveDeal error:', e); }
-    // И локально для быстрого отображения
-    const deals = await getDeals();
-    renderDeals();
+    await renderDeals();
 }
 
 function getPayDate(iso) { const d = new Date(iso); const ten = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 10, 0, 0); if (d < ten) ten.setDate(ten.getDate() - 1); ten.setDate(ten.getDate() + 8); return ten; }
@@ -502,7 +503,7 @@ function getTimeLeft(pay) { const diff = pay.getTime() - Date.now(); if (diff <=
 function isDealActive(pay) { return pay.getTime() - Date.now() > 0; }
 function formatDate(d) { return d.toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric' }); }
 function toggleDealDetail(id) { const e = document.getElementById('deal-detail-'+id); if (e) e.classList.toggle('open'); }
-function getStats() { const deals = getDeals(); return { totalSum: deals.reduce((s,d) => s+d.total, 0), totalCount: deals.length }; }
+
 async function renderDeals() {
     const deals = await getDeals();
     const container = document.getElementById('dealsList');
