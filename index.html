@@ -1,1 +1,622 @@
-8 (905) 655-77-23
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8f9fc">
+    <title>GodMarket</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="ngrok-skip-browser-warning" content="true">
+
+    <!-- БЛОК: CSS -->
+    <style>
+        :root {
+            --bg: #f8f9fc; --card: #ffffff; --accent: #6c5ce7;
+            --green: #00b894; --text: #2d3436; --muted: #636e72;
+            --rarity-blue: #74b9ff; --rarity-purple: #a29bfe;
+            --rarity-pink: #fd79a8; --rarity-red: #e17055;
+            --rarity-gold: #fdcb6e;
+            --shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .light-theme { --bg: #f8f9fc; --card: #fff; --text: #2d3436; --muted: #636e72; --green: #00b894; }
+        .dark-theme { --bg: #1a1a2e; --card: #16213e; --text: #dfe6e9; --muted: #b2bec3; --green: #55efc4; --shadow: 0 2px 12px rgba(0,0,0,0.3); }
+        .light-theme .skin-our, .light-theme .qty-value, .light-theme .inv-summary,
+        .light-theme .deal-sum, .light-theme .user-info { color: var(--green); }
+        .dark-theme .skin-our, .dark-theme .qty-value, .dark-theme .inv-summary,
+        .dark-theme .deal-sum, .dark-theme .user-info { color: var(--green); }
+        .light-theme .btn-steam { background: #fff; color: #2d3436; border: 2px solid #dfe6e9; }
+        .dark-theme .btn-steam { background: #0c2461; color: #dfe6e9; border: 2px solid #1e3799; }
+        .light-theme .btn-tool { background: #fff; color: #2d3436; border: 2px solid #dfe6e9; }
+        .dark-theme .btn-tool { background: #0c2461; color: #dfe6e9; border: 2px solid #1e3799; }
+        .light-theme .btn-sell-all-qty { background: #00b894; color: white; border: none; }
+        .dark-theme .btn-sell-all-qty { background: #55efc4; color: #1a1a2e; border: none; }
+        .light-theme .sort-btn { background: #fff; color: #2d3436; border: 1px solid #dfe6e9; }
+        .dark-theme .sort-btn { background: #0c2461; color: #b2bec3; border: 1px solid #1e3799; }
+        .light-theme .sort-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .dark-theme .sort-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .light-theme .search-box input { background: #fff; color: #2d3436; border-color: #dfe6e9; }
+        .dark-theme .search-box input { background: #0c2461; color: #dfe6e9; border-color: #1e3799; }
+        .light-theme .modal-box { background: #fff; color: #2d3436; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .dark-theme .modal-box { background: #16213e; color: #dfe6e9; }
+        .light-theme .modal-box input { background: #f8f9fc; color: #2d3436; border-color: #dfe6e9; }
+        .dark-theme .modal-box input { background: #0c2461; color: #dfe6e9; border-color: #1e3799; }
+        .light-theme .legal-content { background: #fff; color: #2d3436; }
+        .dark-theme .legal-content { background: #16213e; color: #dfe6e9; }
+        .light-theme .legal-content p { color: #636e72; }
+        .dark-theme .legal-content p { color: #b2bec3; }
+        .light-theme .bottom-nav { background: #fff; border-color: #dfe6e9; box-shadow: 0 -2px 12px rgba(0,0,0,0.05); }
+        .dark-theme .bottom-nav { background: #16213e; border-color: #1e3799; }
+        .light-theme .skin-item { background: #fff; box-shadow: var(--shadow); }
+        .dark-theme .skin-item { background: #16213e; }
+        .light-theme .deal-card { background: #fff; box-shadow: var(--shadow); }
+        .dark-theme .deal-card { background: #16213e; }
+        .light-theme .deal-card:hover { background: #f1f2f6; }
+        .dark-theme .deal-card:hover { background: #1e3799; }
+        .light-theme .footer { border-color: #dfe6e9; }
+        .dark-theme .footer { border-color: #1e3799; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fc !important;
+            background-color: #f8f9fc !important;
+            color: var(--text);
+            padding: 20px 20px 100px 20px;
+            width: 100vw;
+            min-height: 100vh;
+        }
+        body.dark-theme {
+            background: #1a1a2e !important;
+            background-color: #1a1a2e !important;
+        }
+        @media (min-width: 768px) {
+            body {
+                padding: 32px 40px 40px 40px;
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto;
+                gap: 24px;
+                align-items: start;
+            }
+            .header { grid-column: 1 / -1; }
+            #toolbarTop { grid-column: 1 / -1; }
+            .bottom-nav { display: flex; position: static; max-width: 100%; background: transparent; box-shadow: none; padding: 0; gap: 8px; }
+            .bottom-nav .nav-item { padding: 10px 20px; font-size: 14px; }
+            .skin-item { width: 100%; margin: 8px 0; }
+            #skinsList { display: block; }
+            .btn-sell-all { position: static; margin-top: 20px; }
+            .inv-summary, .rate-info, .user-info { grid-column: 1 / -1; }
+            #marketStats { grid-column: 1 / -1; }
+            #panelSell { }
+            #panelDeals { }
+        }
+        .panel { }
+        @media (max-width: 767px) {
+            .panel { display: none; }
+            .panel.active { display: block; }
+            .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; padding: 12px 20px; z-index: 100; }
+            .toolbar { display: grid !important; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; gap: 6px; }
+            .toolbar .btn { font-size: 11px; padding: 10px 6px; white-space: nowrap; }
+            .toolbar .btn-sell-all-qty { font-size: 11px; padding: 10px 6px; }
+            .toolbar #loginBtn { grid-column: 1 / -1; }
+            .toolbar #logoutBtn { grid-column: 1 / 3; grid-row: 1; }
+            .toolbar #refreshBtn { grid-column: 3 / 5; grid-row: 1; }
+            .toolbar #shareBtn { grid-column: 5 / 7; grid-row: 1; }
+            .toolbar #sellAllQtyBtn { grid-column: 1 / 4; grid-row: 2; }
+            .toolbar #clearBtn { grid-column: 4 / 7; grid-row: 2; }
+        }
+        .header {
+            text-align: center; padding: 32px 0;
+            background: linear-gradient(135deg, var(--accent), #a29bfe);
+            border-radius: 20px; margin-bottom: 20px; color: white;
+        }
+        .logo { font-size: 40px; font-weight: 900; letter-spacing: -1px; }
+        .subtitle { opacity: 0.85; font-size: 16px; margin-top: 4px; }
+        .user-info { text-align: center; color: var(--green); font-size: 14px; margin-bottom: 8px; background: rgba(0,184,148,0.1); padding: 8px; border-radius: 10px; display: none; }
+        .inv-summary { text-align: center; color: var(--green); font-size: 15px; margin-bottom: 10px; display: none; }
+        .rate-info { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 14px; display: none; }
+        .toolbar { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+        .btn { padding: 12px 18px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; text-align: center; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .btn:hover { transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
+        .btn-steam { flex: 1; }
+        .btn-tool { flex: 1; }
+        #loginBtn { flex: 1 1 100%; min-width: 100%; }
+        .btn-sell-all-qty { font-size: 13px; padding: 10px 16px; border-radius: 10px; font-weight: 700; cursor: pointer; flex: 1; white-space: nowrap; }
+        .btn-sell-all-qty:hover { opacity: 0.9; }
+        .search-box { display: flex; gap: 8px; margin-bottom: 14px; }
+        .search-box input { flex: 1; padding: 14px 18px; border-radius: 12px; border: 2px solid #dfe6e9; font-size: 15px; }
+        .search-box button { padding: 14px 18px; background: var(--accent); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 15px; }
+        .sort-btns { display: flex; gap: 8px; margin-bottom: 14px; }
+        .sort-btn { flex: 1; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .skin-item { border-radius: 14px; padding: 14px 16px; margin: 10px 0; display: flex; align-items: center; gap: 12px; border-left: 5px solid var(--rarity-blue); transition: all 0.2s; }
+        .skin-item:hover { transform: translateX(3px); }
+        .skin-item.rarity-purple { border-left-color: var(--rarity-purple); }
+        .skin-item.rarity-pink { border-left-color: var(--rarity-pink); }
+        .skin-item.rarity-red { border-left-color: var(--rarity-red); }
+        .skin-item.rarity-gold { border-left-color: var(--rarity-gold); }
+        .skin-icon { width: 56px; height: 42px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: #dfe6e9; }
+        .skin-info { flex: 1; min-width: 0; }
+        .skin-name { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .skin-meta { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+        .skin-count { color: var(--muted); font-size: 12px; }
+        .badge { font-size: 11px; padding: 3px 8px; border-radius: 5px; font-weight: 700; }
+        .badge-st { background: #cf6a32; color: white; }
+        .badge-wear { background: #dfe6e9; color: #636e72; }
+        .dark-theme .badge-wear { background: #1e3799; color: #b2bec3; }
+        .skin-our { font-weight: 700; font-size: 16px; white-space: nowrap; flex-shrink: 0; }
+        .skin-spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #dfe6e9; border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 6px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .qty-selector { display: flex; align-items: center; gap: 5px; margin-top: 6px; }
+        .qty-btn { background: #dfe6e9; color: #2d3436; border: none; border-radius: 8px; width: 30px; height: 30px; font-size: 18px; font-weight: bold; cursor: pointer; line-height: 1; }
+        .dark-theme .qty-btn { background: #0c2461; color: #dfe6e9; }
+        .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .qty-value { font-weight: 700; font-size: 16px; color: var(--green); min-width: 20px; text-align: center; }
+        .skeleton { border-radius: 10px; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .skeleton-card { height: 70px; margin: 10px 0; border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+        .skeleton-icon { width: 56px; height: 42px; border-radius: 6px; }
+        .skeleton-text { flex: 1; height: 16px; }
+        .skeleton-price { width: 60px; height: 18px; }
+        .btn-sell-all { background: var(--accent); color: white; font-size: 18px; padding: 18px; margin-top: 16px; width: 100%; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 24px rgba(108,92,231,0.4); }
+        .btn-sell-all:not(:disabled) { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 4px 24px rgba(108,92,231,0.4); } 50% { box-shadow: 0 4px 36px rgba(108,92,231,0.7); } }
+        .btn-sell-all:disabled { background: #b2bec3; box-shadow: none; opacity: 0.6; animation: none; }
+        .bottom-nav { }
+        .nav-item { flex: 1; text-align: center; color: var(--muted); font-size: 13px; font-weight: 700; cursor: pointer; padding: 8px 0; border-radius: 10px; transition: all 0.2s; position: relative; background: transparent; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item .nav-icon { font-size: 24px; display: block; }
+        .nav-badge { position: absolute; top: 0; right: 20%; background: var(--accent); color: white; font-size: 11px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; }
+        .modal-box { border-radius: 24px; padding: 32px; width: 90%; max-width: 420px; }
+        .modal-box h3 { color: var(--accent); margin-bottom: 16px; font-size: 22px; }
+        .modal-box input { width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; margin: 10px 0; }
+        .modal-box .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        .modal-box .btn-row button { flex: 1; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 16px; }
+        .btn-primary { background: var(--accent); color: white; border: none; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary { border: 2px solid #dfe6e9; }
+        .dark-theme .btn-secondary { border-color: #1e3799; }
+        .deal-card { border-radius: 16px; padding: 18px; margin: 10px 0; border-left: 5px solid var(--green); cursor: pointer; transition: all 0.2s; }
+        .deal-card.inactive { border-left-color: var(--muted); opacity: 0.7; }
+        .deal-card:hover { transform: translateX(3px); }
+        .deal-header { display: flex; justify-content: space-between; align-items: center; }
+        .deal-date { color: var(--muted); font-size: 13px; }
+        .deal-sum { font-weight: 700; font-size: 18px; }
+        .deal-status { font-size: 12px; padding: 4px 10px; border-radius: 6px; font-weight: 700; }
+        .deal-status.active { background: rgba(0,184,148,0.2); color: var(--green); }
+        .deal-status.done { background: rgba(108,92,231,0.2); color: var(--accent); }
+        .deal-detail { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid #dfe6e9; font-size: 14px; color: var(--muted); }
+        .dark-theme .deal-detail { border-color: #1e3799; }
+        .deal-detail.open { display: block; }
+        .deal-detail b { color: var(--text); }
+        .deal-filter { display: flex; gap: 6px; margin-bottom: 12px; }
+        .deal-filter button { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #dfe6e9; background: var(--card); color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; }
+        .deal-filter button.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .stats-card { background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; box-shadow: var(--shadow); }
+        .status { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 16px; }
+        .empty { text-align: center; padding: 50px 20px; color: var(--muted); font-size: 16px; }
+        .footer { text-align: center; margin-top: 40px; padding: 20px; font-size: 13px; color: var(--muted); }
+        .footer a { color: var(--accent); text-decoration: none; cursor: pointer; }
+        .legal-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 300; overflow-y: auto; padding: 20px; }
+        .legal-modal.open { display: flex; align-items: flex-start; justify-content: center; }
+        .legal-content { border-radius: 24px; padding: 28px; width: 100%; max-width: 560px; margin-top: 20px; font-size: 15px; }
+        .legal-content h2 { color: var(--accent); margin-bottom: 16px; }
+        .legal-content h3 { color: var(--green); margin: 20px 0 10px; }
+        .legal-content p { line-height: 1.6; margin-bottom: 10px; }
+        .legal-close { display: block; width: 100%; padding: 16px; margin-top: 24px; background: var(--accent); color: white; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; font-weight: 700; }
+        .legal-close:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<!-- БЛОК: HEADER -->
+<div class="header">
+    <div class="logo">GodMarket</div>
+    <div class="subtitle">Мгновенный выкуп скинов CS2</div>
+</div>
+
+<!-- БЛОК: USER-INFO -->
+<div class="user-info" id="userInfo"></div>
+<div class="inv-summary" id="invSummary"></div>
+<div class="rate-info" id="rateInfo"></div>
+
+<!-- БЛОК: TOOLBAR -->
+<div class="toolbar" id="toolbarTop">
+    <button class="btn btn-steam" id="loginBtn" onclick="showLoginModal()">🔐 Steam</button>
+    <button class="btn btn-tool" id="logoutBtn" style="display:none;" onclick="logout()">🚪 Выйти</button>
+    <button class="btn btn-tool" id="refreshBtn" style="display:none;" onclick="refresh()">🔄 Обновить</button>
+    <button class="btn btn-tool" id="shareBtn" style="display:none;" onclick="shareBot()">🔗 Ссылка</button>
+    <button class="btn btn-sell-all-qty" id="sellAllQtyBtn" style="display:none;" onclick="selectAllSkins()">✅ Выбрать всё</button>
+    <button class="btn btn-sell-all-qty" id="clearBtn" style="display:none; background:#b2bec3; color:white;" onclick="clearCart()">🗑️ Очистить</button>
+</div>
+
+<!-- БЛОК: PANEL-SELL -->
+<div class="panel active" id="panelSell">
+    <div class="search-box" id="searchBox" style="display:none;">
+        <input type="text" id="searchInput" placeholder="🔍 Поиск скина..." oninput="applyFilters()">
+        <button onclick="document.getElementById('searchInput').value='';applyFilters();">✕</button>
+    </div>
+    <div class="sort-btns" id="sortBtns" style="display:none;">
+        <button class="sort-btn active" onclick="setSort('default', this)">По умолчанию</button>
+        <button class="sort-btn" onclick="setSort('cheap', this)">Дешёвые</button>
+        <button class="sort-btn" onclick="setSort('expensive', this)">Дорогие</button>
+    </div>
+    <div id="marketStats" style="display:none;"></div>
+    <div id="inventory" style="display:none;">
+        <div id="skinsList"></div>
+        <button class="btn-sell-all" id="sellBtn" onclick="sellSelected()" disabled>💰 Продать выбранное (<span id="sellCount">0</span>)</button>
+    </div>
+    <div id="status" class="status">🔐 Войди через Steam</div>
+</div>
+
+<!-- БЛОК: PANEL-DEALS -->
+<div class="panel" id="panelDeals">
+    <div class="deal-filter" id="dealFilter" style="display:none;">
+        <button class="active" onclick="setDealFilter('all', this)">Все</button>
+        <button onclick="setDealFilter('active', this)">Активные</button>
+        <button onclick="setDealFilter('done', this)">Завершённые</button>
+    </div>
+    <div id="dealsList"></div>
+</div>
+
+<!-- БЛОК: FOOTER -->
+<div class="footer">
+    <a onclick="openLegal('terms')">Условия</a> ·
+    <a onclick="openLegal('privacy')">Конфиденциальность</a> ·
+    <a onclick="openLegal('refund')">Возврат</a> ·
+    <span style="color:var(--muted);">|</span>
+    <a onclick="toggleTheme()">🌓 Тема</a>
+    <div style="margin-top:10px;color:var(--muted);font-size:12px;">
+        📩 <b>Поддержка:</b> <a href="https://t.me/Zhukovsky732" target="_blank">@Zhukovsky732</a> · godmarketsupport@gmail.com
+    </div>
+</div>
+
+<!-- БЛОК: BOTTOM-NAV -->
+<div class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('sell')"><span class="nav-icon">🛒</span> Продажа</div>
+    <div class="nav-item" onclick="switchTab('deals')"><span class="nav-icon">📋</span> Сделки</div>
+</div>
+
+<!-- БЛОК: MODAL-LOGIN -->
+<div class="modal-overlay" id="loginModal" style="display:none;">
+    <div class="modal-box" style="text-align:center;">
+        <h3>🔐 Вход через Steam</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">Авторизуйся через Steam, чтобы увидеть свои скины</p>
+        <button onclick="loginViaSteam()" style="display:block;width:100%;padding:16px;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;">🔐 Войти через Steam</button>
+        <p style="color:var(--muted);font-size:12px;margin-top:16px;">Вы будете перенаправлены на сайт Steam</p>
+        <button class="btn-secondary" onclick="closeLoginModal()" style="width:100%;padding:12px;margin-top:10px;">Отмена</button>
+    </div>
+</div>
+
+<!-- БЛОК: MODAL-PAYMENT -->
+<div class="modal-overlay" id="paymentModal" style="display:none;">
+    <div class="modal-box" id="paymentContent"></div>
+</div>
+
+<!-- БЛОК: LEGAL-TERMS -->
+<div class="legal-modal" id="legal-terms"><div class="legal-content"><h2>📄 Условия использования GodMarket</h2><p><i>14 мая 2026 г.</i></p><h3>1. Общие положения</h3><p>1.1. Сервис GodMarket осуществляет выкуп виртуальных предметов (скинов) для игры Counter-Strike 2 у Пользователей.</p><p>1.2. Используя Сервис, вы принимаете Условия.</p><p>1.3. Администратор вправе изменить Условия.</p><p>1.4. Сервис использует Steam API, но не партнёр Valve.</p><p>1.5. Все цены в рублях. Минимальная сумма выкупа — 10 ₽.</p><h3>2. Кто может использовать</h3><p>2.1. Совершеннолетние (18+).</p><p>2.2. Предметы должны принадлежать Пользователю.</p><h3>3. Вход через Steam</h3><p>3.1. Вход через учётную запись Steam.</p><h3>4. Процесс сделки</h3><p>4.1. Цена формируется на основе рыночных данных.</p><p>4.2. Сервис вправе отказать в выкупе.</p><p>4.3. Выплата — 8 дней. +20 дней. После 30 дней — компенсация.</p><h3>5. Способы оплаты</h3><p>5.1. СБП, Карта (РФ), USDT (BEP20/TON).</p><h3>6. Ответственность</h3><p>6.1. Сервис не отвечает за задержки Steam, банков.</p><h3>7. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('terms')">Закрыть</button></div></div>
+
+<!-- БЛОК: LEGAL-PRIVACY -->
+<div class="legal-modal" id="legal-privacy"><div class="legal-content"><h2>🔒 Политика конфиденциальности</h2><p><i>14 мая 2026 г.</i></p><h3>1. Данные</h3><p>Steam ID, реквизиты, история сделок, IP.</p><h3>2. Использование</h3><p>Для выполнения сделки.</p><h3>3. Хранение</h3><p>Данные на устройстве (localStorage).</p><h3>4. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('privacy')">Закрыть</button></div></div>
+
+<!-- БЛОК: LEGAL-REFUND -->
+<div class="legal-modal" id="legal-refund"><div class="legal-content"><h2>↩️ Возврат и отмена</h2><p><i>14 мая 2026 г.</i></p><h3>1. Сроки</h3><p>8 дней — стандарт. +20 дней. 30 дней — компенсация.</p><h3>2. Chargeback</h3><p>Блокировка + компенсация.</p><h3>3. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('refund')">Закрыть</button></div></div>
+
+<script>
+// БЛОК: JS-CONFIG
+const API = 'https://attendant-esophagus-expand.ngrok-free.dev';
+const H = { 'ngrok-skip-browser-warning': 'true' };
+
+const isTelegram = !!(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData);
+let tg = null;
+if (isTelegram) {
+    tg = window.Telegram.WebApp;
+    tg.expand();
+    tg.ready();
+    
+    // Принудительно светлая тема
+    tg.setHeaderColor('#f8f9fc');
+    tg.setBackgroundColor('#f8f9fc');
+    tg.setBottomBarColor('#f8f9fc');
+    
+    // Полностью переопределяем всё
+    function forceLightTheme() {
+        document.documentElement.style.setProperty('background-color', '#f8f9fc', 'important');
+        document.documentElement.style.background = '#f8f9fc';
+        document.body.style.setProperty('background-color', '#f8f9fc', 'important');
+        document.body.style.background = '#f8f9fc';
+        document.body.style.backgroundColor = '#f8f9fc';
+    }
+    
+    forceLightTheme();
+    
+    // При изменении темы в Telegram — возвращаем светлую
+    tg.onEvent('themeChanged', () => {
+        tg.setHeaderColor('#f8f9fc');
+        tg.setBackgroundColor('#f8f9fc');
+        tg.setBottomBarColor('#f8f9fc');
+        forceLightTheme();
+    });
+}
+
+let steamId = null;
+let groupedSkins = [];
+let filteredSkins = [];
+let priceCache = {};
+let currentSort = 'default';
+let dealFilter = 'all';
+let darkTheme = false;
+
+const urlParams = new URLSearchParams(window.location.search);
+const oauthSteamId = urlParams.get('steamid');
+if (oauthSteamId && oauthSteamId.length === 17) {
+    steamId = oauthSteamId;
+    localStorage.setItem('gm_steamid', steamId);
+    window.history.replaceState({}, document.title, '/');
+    showUI();
+    loadInventory();
+    fetchRate();
+} else {
+    const saved = localStorage.getItem('gm_steamid');
+    if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
+}
+
+const savedTheme = localStorage.getItem('gm_theme');
+if (savedTheme === 'dark') {
+    darkTheme = true;
+    document.body.classList.add('dark-theme');
+} else {
+    darkTheme = false;
+    document.body.classList.remove('dark-theme');
+}
+
+function toggleTheme() {
+    darkTheme = !darkTheme;
+    document.body.classList.toggle('dark-theme', darkTheme);
+    localStorage.setItem('gm_theme', darkTheme ? 'dark' : 'light');
+    if (darkTheme) {
+        document.documentElement.style.backgroundColor = '#1a1a2e';
+        document.documentElement.style.setProperty('background-color', '#1a1a2e', 'important');
+        document.body.style.backgroundColor = '#1a1a2e';
+        document.body.style.setProperty('background-color', '#1a1a2e', 'important');
+        document.body.style.background = '#1a1a2e';
+        if (isTelegram && tg) {
+            tg.setHeaderColor('#1a1a2e');
+            tg.setBackgroundColor('#1a1a2e');
+            tg.setBottomBarColor('#1a1a2e');
+        }
+    } else {
+        document.documentElement.style.backgroundColor = '#f8f9fc';
+        document.documentElement.style.setProperty('background-color', '#f8f9fc', 'important');
+        document.body.style.backgroundColor = '#f8f9fc';
+        document.body.style.setProperty('background-color', '#f8f9fc', 'important');
+        document.body.style.background = '#f8f9fc';
+        if (isTelegram && tg) {
+            tg.setHeaderColor('#f8f9fc');
+            tg.setBackgroundColor('#f8f9fc');
+            tg.setBottomBarColor('#f8f9fc');
+        }
+    }
+}
+
+function sendDataToBot(data) {
+    const payload = JSON.stringify(data);
+    if (isTelegram && tg) { tg.sendData(payload); }
+    else { fetch(`${API}/api/sell`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(e => console.error('❌ Fetch error:', e)); }
+}
+
+// БЛОК: JS-AUTH
+function showLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+function loginViaSteam() { closeLoginModal(); window.open(API + '/api/steam/login', '_blank'); }
+function logout() { localStorage.removeItem('gm_steamid'); steamId = null; groupedSkins = []; filteredSkins = []; priceCache = {}; hideUI(); document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '🔐 Войди через Steam'; }
+
+// БЛОК: JS-UI
+function showPaymentModal(html) { document.getElementById('paymentContent').innerHTML = html; document.getElementById('paymentModal').style.display = 'flex'; }
+function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; }
+function openLegal(t) { document.getElementById('legal-'+t).classList.add('open'); }
+function closeLegal(t) { document.getElementById('legal-'+t).classList.remove('open'); }
+function switchTab(tab) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (tab === 'sell') {
+        document.getElementById('panelSell').classList.add('active');
+        document.getElementById('panelDeals').classList.remove('active');
+        document.querySelector('.nav-item:nth-child(1)').classList.add('active');
+        document.getElementById('panelSell').style.display = 'block';
+        document.getElementById('panelDeals').style.display = 'none';
+    } else if (tab === 'deals') {
+        document.getElementById('panelDeals').classList.add('active');
+        document.getElementById('panelSell').classList.remove('active');
+        document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+        document.getElementById('panelDeals').style.display = 'block';
+        document.getElementById('panelSell').style.display = 'none';
+        document.getElementById('dealFilter').style.display = 'flex';
+        renderDeals();
+    }
+}
+function showUI() {
+    document.getElementById('loginBtn').style.display = 'none';
+    ['logoutBtn','refreshBtn','shareBtn','sellAllQtyBtn','clearBtn'].forEach(id => document.getElementById(id).style.display = 'inline-block');
+    document.getElementById('userInfo').style.display = 'block'; document.getElementById('userInfo').innerHTML = '🟢 ' + steamId;
+    document.getElementById('searchBox').style.display = 'flex'; document.getElementById('sortBtns').style.display = 'flex';
+    document.getElementById('marketStats').style.display = 'block';
+    updateMarketStats();
+    renderDeals();
+}
+function hideUI() {
+    document.getElementById('loginBtn').style.display = 'inline-block';
+    ['logoutBtn','refreshBtn','shareBtn','sellAllQtyBtn','clearBtn','userInfo','invSummary','marketStats','searchBox','sortBtns'].forEach(id => document.getElementById(id).style.display = 'none');
+    document.getElementById('inventory').style.display = 'none';
+}
+function refresh() { priceCache = {}; loadInventory(); }
+function shareBot() {
+    const refLink = `https://t.me/godmarket_bot?start=ref_${steamId}`;
+    if (isTelegram && tg) { tg.openTelegramLink(`https://t.me/share/url?text=${encodeURIComponent('🎮 Продай скины CS2 быстро и выгодно!\n' + refLink)}`); }
+    else { navigator.clipboard.writeText(refLink).then(() => { showCopyModal('Реферальная ссылка скопирована!', refLink); }); }
+}
+function showCopyModal(title, text) { showPaymentModal(`<h3>🔗 ${title}</h3><input type="text" value="${text}" readonly style="width:100%;padding:12px;border-radius:12px;border:1px solid #dfe6e9;background:#f8f9fc;color:#2d3436;font-size:14px;margin-bottom:16px;"><button class="btn-primary" onclick="closePaymentModal()" style="width:100%;padding:14px;">ОК</button>`); }
+function showErrorModal(msg) { showPaymentModal(`<h3>⚠️ Ошибка</h3><p style="color:var(--muted);font-size:16px;margin-bottom:20px;">${msg}</p><button class="btn-primary" onclick="closePaymentModal()" style="width:100%;padding:14px;">ОК</button>`); }
+function selectAllSkins() { filteredSkins.forEach(g => { if (g.price && g.price > 10) g.selectedQty = g.assetIds.length; }); applyFilters(); }
+function clearCart() { filteredSkins.forEach(g => g.selectedQty = 0); applyFilters(); }
+function setSort(type, btn) { currentSort = type; document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); }
+function setDealFilter(filter, btn) {
+    dealFilter = filter;
+    document.querySelectorAll('#dealFilter button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderDeals();
+}
+
+// БЛОК: JS-INVENTORY
+async function fetchRate() { try { const r = await fetch(`${API}/api/price?name=AK-47`, { headers: H }); const d = await r.json(); if (d.rate) { localStorage.setItem('gm_rate', d.rate); document.getElementById('rateInfo').style.display = 'block'; document.getElementById('rateInfo').innerHTML = '💱 ' + d.rate.toFixed(2) + ' ₽/$'; } } catch(e) {} }
+function applyFilters() { const query = (document.getElementById('searchInput')?.value || '').toLowerCase(); let result = [...groupedSkins]; if (query) result = result.filter(g => g.name.toLowerCase().includes(query)); if (currentSort === 'cheap') result.sort((a, b) => (a.price || 0) - (b.price || 0)); else if (currentSort === 'expensive') result.sort((a, b) => (b.price || 0) - (a.price || 0)); result.forEach(g => { const existing = filteredSkins.find(f => f.name === g.name); if (existing) g.selectedQty = existing.selectedQty; }); filteredSkins = result; renderInventory(); }
+async function fetchPrice(name) { if (priceCache[name]) return priceCache[name]; try { const r = await fetch(`${API}/api/price?name=${encodeURIComponent(name)}`, { headers: H }); const d = await r.json(); if (d.success) { priceCache[name] = d.buy_price; return d.buy_price; } } catch(e) {} return null; }
+async function loadInventory() {
+    document.getElementById('status').style.display = 'block';
+    document.getElementById('status').innerHTML = `<div style="text-align:center;padding:24px;"><div class="skin-spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;"></div><div style="color:var(--muted);font-size:16px;">Загружаем инвентарь...</div></div>`;
+    try {
+        const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H }); const d = await r.json();
+        if (d.success && d.assets) {
+            const descMap = {}; if (d.descriptions) { d.descriptions.forEach(dd => { const key = `${dd.classid}_${dd.instanceid}`; const tags = dd.tags || []; descMap[key] = { name: dd.market_hash_name, icon: `https://steamcommunity-a.akamaihd.net/economy/image/${dd.icon_url}`, rarity: tags.find(t => t.category === 'Rarity')?.localized_tag_name || '', wear: tags.find(t => t.category === 'Exterior')?.localized_tag_name || '', type: tags.find(t => t.category === 'Type')?.localized_tag_name || '', isST: dd.market_hash_name.includes('StatTrak') }; }); }
+            const groupMap = {}; d.assets.forEach(a => { const key = `${a.classid}_${a.instanceid}`; const skinData = descMap[key] || {}; if (skinData.type === 'Charm') return; const name = skinData.name || `Скин #${a.assetid}`; if (!groupMap[name]) groupMap[name] = { ...skinData, assetIds: [], price: null, selectedQty: 0 }; groupMap[name].assetIds.push(a.assetid); });
+            groupedSkins = Object.values(groupMap);
+            document.getElementById('status').innerHTML = `<div style="text-align:center;padding:24px;"><div class="skin-spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;"></div><div style="color:var(--muted);font-size:16px;">Загружаем цены...</div></div>`;
+            for (const g of groupedSkins) { g.price = await fetchPrice(g.name); }
+            applyFilters(); updateInvSummary(); document.getElementById('status').style.display = 'none';
+        } else { document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт'; }
+    } catch(e) { document.getElementById('status').innerHTML = '❌ Ошибка загрузки'; }
+}
+function updateInvSummary() { const totalValue = groupedSkins.reduce((s, g) => s + (g.price || 0) * g.assetIds.length, 0); const totalItems = groupedSkins.reduce((s, g) => s + g.assetIds.length, 0); document.getElementById('invSummary').style.display = 'block'; document.getElementById('invSummary').innerHTML = `📦 ${totalItems} скинов · 💰 ~${totalValue.toFixed(0)} ₽`; }
+async function updateMarketStats() {
+    const deals = await getDeals();
+    const totalSum = deals.reduce((s, d) => s + d.total, 0);
+    const totalCount = deals.length;
+    document.getElementById('marketStats').innerHTML = `<div class="stats-card"><div style="font-size:14px;color:var(--muted);margin-bottom:10px;">📊 Статистика маркета</div><div style="display:flex;justify-content:space-around;"><div><div style="font-size:28px;font-weight:900;color:var(--green);">${totalCount}</div><div style="font-size:13px;color:var(--muted);">скинов продано</div></div><div><div style="font-size:28px;font-weight:900;color:var(--accent);">${totalSum.toFixed(0)} ₽</div><div style="font-size:13px;color:var(--muted);">выкуплено</div></div></div></div>`;
+}
+function getRarityClass(rarity) { if (/Covert|Red/.test(rarity)) return 'rarity-red'; if (/Classified|Pink/.test(rarity)) return 'rarity-pink'; if (/Restricted|Purple/.test(rarity)) return 'rarity-purple'; if (/Rare|Gold/.test(rarity)) return 'rarity-gold'; return ''; }
+function renderInventory() {
+    document.getElementById('inventory').style.display = 'block';
+    const displaySkins = filteredSkins.filter(g => g.price && g.price > 10);
+    document.getElementById('skinsList').innerHTML = displaySkins.map((g, i) => { const rarityClass = getRarityClass(g.rarity); return `<div class="skin-item ${rarityClass}">${g.icon ? `<img src="${g.icon}" class="skin-icon" onerror="this.style.display='none'">` : ''}<div class="skin-info"><div class="skin-name">${g.name}</div><div class="skin-meta"><span class="skin-count">${g.assetIds.length} шт.</span>${g.isST ? '<span class="badge badge-st">ST</span>' : ''}${g.wear ? `<span class="badge badge-wear">${g.wear}</span>` : ''}</div><div class="qty-selector"><button class="qty-btn" onclick="changeQty('${g.name}', -1)" ${g.selectedQty <= 0 ? 'disabled' : ''}>−</button><span class="qty-value">${g.selectedQty}</span><button class="qty-btn" onclick="changeQty('${g.name}', 1)" ${g.selectedQty >= g.assetIds.length ? 'disabled' : ''}>+</button></div></div><div style="text-align: right;"><div class="skin-our">${g.price.toFixed(2) + ' ₽'}</div>${g.selectedQty > 0 ? `<div style="color: var(--green); font-size: 13px;">=${(g.price * g.selectedQty).toFixed(2)} ₽</div>` : ''}</div></div>`; }).join('');
+    if (displaySkins.length === 0) document.getElementById('skinsList').innerHTML = '<div class="empty">Нет скинов дороже 10 ₽</div>';
+    updateSellButton();
+}
+function changeQty(name, delta) { const g = filteredSkins.find(f => f.name === name); if (g) { g.selectedQty = Math.max(0, Math.min(g.assetIds.length, g.selectedQty + delta)); renderInventory(); } }
+function getSelectedItems() { const r = []; filteredSkins.forEach(g => { if (g.selectedQty > 0 && g.price !== null && g.price > 10) for (let j=0; j<g.selectedQty; j++) r.push({ assetId: g.assetIds[j], name: g.name, price: g.price }); }); return r; }
+function updateSellButton() { const s = getSelectedItems(); document.getElementById('sellCount').textContent = s.length; document.getElementById('sellBtn').disabled = s.length === 0; }
+
+// БЛОК: JS-SELL
+function sellSelected() { const sel = getSelectedItems(); if (sel.length === 0) return; const total = sel.reduce((s, x) => s + x.price, 0).toFixed(2); const grp = {}; sel.forEach(s => { if (!grp[s.name]) grp[s.name] = { name: s.name, count: 0, price: s.price }; grp[s.name].count++; }); const summary = Object.values(grp).map(g => `${g.name} ×${g.count}`).join('<br>'); showPaymentModal(`<h3>💰 Выберите метод выплаты</h3><p style="font-size:14px;color:var(--muted);margin-bottom:6px;">Скины:<br>${summary}</p><p style="font-size:18px;font-weight:700;color:var(--green);margin-bottom:20px;">Сумма: ${total} ₽</p><p style="font-size:13px;color:var(--accent);margin-bottom:16px;">⚠️ Выплата — через 8 дней.</p><button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">📱 СБП</button><button onclick="chooseBank('card')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💳 Карта</button><button onclick="showCryptoInput('usdt-bep20')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💲 USDT (BEP20)</button><button onclick="showCryptoInput('usdt-ton')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💲 USDT (TON)</button><button onclick="closePaymentModal()" style="display:block;width:100%;padding:14px;margin:6px 0;background:#b2bec3;color:white;border:none;border-radius:12px;font-size:16px;cursor:pointer;">❌ Отмена</button>`); window._pd = { skins: sel, total }; }
+
+// БЛОК: JS-PAYMENT
+function chooseBank(method) { const banks = ['Сбербанк','Т-Банк','ВТБ','Альфа-Банк','Райффайзен','Другой']; showPaymentModal(`<h3>🏦 Выберите банк</h3>${banks.map(b => `<button onclick="showBankInput('${method}','${b}')" style="display:block;width:100%;padding:12px;margin:5px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">${b}</button>`).join('')}<button onclick="sellSelected()" style="display:block;width:100%;padding:12px;margin:5px 0;background:#b2bec3;color:white;border:none;border-radius:12px;font-size:16px;cursor:pointer;">⬅ Назад</button>`); }
+function showBankInput(method, bank) { const label = method === 'sbp' ? 'номер телефона (11 цифр)' : 'номер карты (16 цифр)'; const maxLen = method === 'sbp' ? 11 : 16; const title = method === 'sbp' ? '📱 СБП' : '💳 Карта'; showPaymentModal(`<h3>${title} — ${bank === 'Другой' ? 'Другой банк' : bank}</h3><p style="color:var(--muted);font-size:13px;margin-bottom:10px;">Только для РФ</p>${bank === 'Другой' ? '<input type="text" id="bankName" placeholder="Название банка" style="margin-bottom:8px;">' : ''}<input type="text" id="bankDetail" placeholder="${label}" maxlength="${maxLen}" inputmode="numeric" pattern="[0-9]*"><div class="btn-row"><button class="btn-secondary" onclick="chooseBank('${method}')">⬅ Назад</button><button class="btn-primary" onclick="submitBank('${method}','${bank}')">Далее</button></div>`); }
+function submitBank(method, bank) { let bankName = bank; if (bank === 'Другой') { bankName = document.getElementById('bankName')?.value?.trim(); if (!bankName) { showErrorModal('Введи название банка'); return; } } const detail = document.getElementById('bankDetail')?.value?.trim(); if (!detail) { showErrorModal('Введи реквизиты'); return; } const maxLen = method === 'sbp' ? 11 : 16; if (!new RegExp(`^\\d{${maxLen}}$`).test(detail)) { showErrorModal(`Должно быть ровно ${maxLen} цифр`); return; } confirmDeal(`${method === 'sbp' ? '📱 СБП' : '💳 Карта'} (${bankName}): ${detail}`); }
+function showCryptoInput(method) { const label = method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'; const fee = method === 'usdt-ton' ? '<p style="color:var(--muted);font-size:13px;">Может взиматься комиссия сети</p>' : ''; showPaymentModal(`<h3>💲 ${label}</h3>${fee}<input type="text" id="cryptoAddr" placeholder="Адрес кошелька"><div class="btn-row"><button class="btn-secondary" onclick="sellSelected()">⬅ Назад</button><button class="btn-primary" onclick="submitCrypto('${method}')">Далее</button></div>`); }
+function submitCrypto(method) { const addr = document.getElementById('cryptoAddr')?.value?.trim(); if (!addr) { showErrorModal('Введи адрес кошелька'); return; } confirmDeal(`💲 ${method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'}: ${addr}`); }
+function showConfirmModal(message, callback) { window._confirmCallback = callback; showPaymentModal(`<h3>Подтверждение продажи</h3><p style="color:var(--muted);font-size:15px;white-space:pre-line;">${message}</p><div class="btn-row"><button class="btn-secondary" onclick="closePaymentModal()">❌ Отмена</button><button class="btn-primary" onclick="closePaymentModal(); if(window._confirmCallback) window._confirmCallback();">✅ Продать</button></div>`); }
+function confirmDeal(fullPayment) {
+    const d = window._pd;
+    if (!d) return;
+    let usd = '';
+    if (fullPayment.startsWith('💲')) {
+        const rate = parseFloat(localStorage.getItem('gm_rate') || '76');
+        usd = ` (≈ $${(parseFloat(d.total)/rate).toFixed(2)})`;
+    }
+    closePaymentModal();
+    const message = `💰 Сумма: ${d.total} ₽${usd}\n💳 ${fullPayment}\n⏳ Обработка: 8 дней\n\nНажимая «Продать», я соглашаюсь с Правилами сервиса.`;
+    
+    if (isTelegram && tg) {
+        tg.showPopup({
+            title: 'Подтверждение продажи',
+            message: message,
+            buttons: [
+                {id: 'ok', type: 'ok', text: '✅ Продать'},
+                {type: 'cancel', text: '❌ Отмена'}
+            ]
+        }, async (btn) => {
+            if (btn === 'ok') {
+                await saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await updateMarketStats();
+                await renderDeals();
+                sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) });
+                document.getElementById('status').style.display = 'block';
+                document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
+                document.getElementById('status').style.color = 'var(--green)';
+            }
+        });
+    } else {
+        showConfirmModal(message + '\n\nНажмите «Продать» для подтверждения.', async function() {
+            await saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await updateMarketStats();
+            await renderDeals();
+            sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) });
+            document.getElementById('status').style.display = 'block';
+            document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
+            document.getElementById('status').style.color = 'var(--green)';
+        });
+    }
+}
+
+// БЛОК: JS-DEALS
+async function getDeals() {
+    if (!steamId) return [];
+    try {
+        const r = await fetch(`${API}/api/deals?steamid=${steamId}`);
+        const d = await r.json();
+        if (d.success) return d.deals;
+    } catch(e) { console.error('❌ getDeals error:', e); }
+    return [];
+}
+
+async function saveDeal(deal) {
+    try {
+        const response = await fetch(`${API}/api/deals`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(deal)
+        });
+        const result = await response.json();
+        console.log('✅ Сделка сохранена:', result);
+        return result;
+    } catch(e) { 
+        console.error('❌ saveDeal error:', e); 
+        return null;
+    }
+}
+
+function getPayDate(iso) { const d = new Date(iso); const ten = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 10, 0, 0); if (d < ten) ten.setDate(ten.getDate() - 1); ten.setDate(ten.getDate() + 8); return ten; }
+function getTimeLeft(pay) { const diff = pay.getTime() - Date.now(); if (diff <= 0) return '✅ Выплачено'; return `⏳ ${Math.floor(diff/86400000)} дн. ${Math.floor((diff%86400000)/3600000)} ч.`; }
+function isDealActive(pay) { return pay.getTime() - Date.now() > 0; }
+function formatDate(d) { return d.toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric' }); }
+function toggleDealDetail(id) { const e = document.getElementById('deal-detail-'+id); if (e) e.classList.toggle('open'); }
+
+async function renderDeals() {
+    const deals = await getDeals();
+    const container = document.getElementById('dealsList');
+    let filteredDeals = deals;
+    if (dealFilter === 'active') filteredDeals = deals.filter(d => isDealActive(getPayDate(d.date)));
+    else if (dealFilter === 'done') filteredDeals = deals.filter(d => !isDealActive(getPayDate(d.date)));
+
+    if (steamId) {
+        const userDeals = filteredDeals.filter(d => d.steamId === steamId);
+        if (userDeals.length === 0) { container.innerHTML = '<div class="empty">Нет сделок по выбранному фильтру</div>'; return; }
+        let html = '<div style="font-size:15px;color:var(--green);margin-bottom:10px;">📋 Твои сделки</div>';
+        html += userDeals.map(d => {
+            const pay = getPayDate(d.date);
+            const active = isDealActive(pay);
+            return `<div class="deal-card ${active ? '' : 'inactive'}" onclick="toggleDealDetail(${d.id})">
+                <div class="deal-header"><span class="deal-date">${formatDate(new Date(d.date))}</span><span class="deal-status ${active ? 'active' : 'done'}">${active ? 'Активна' : 'Завершена'}</span></div>
+                <div class="deal-sum">${d.total.toFixed(2)} ₽</div>
+                <div class="deal-skins">${d.skins.length} скинов · ${getTimeLeft(pay)}</div>
+                <div class="deal-detail" id="deal-detail-${d.id}"><p><b>Скины:</b> ${d.skins.map(s=>s.name).join(', ')}</p><p><b>Реквизиты:</b> ${d.paymentMethod}</p><p><b>Выплатить до:</b> ${formatDate(pay)}</p></div>
+            </div>`;
+        }).join('');
+        container.innerHTML = html;
+    } else { container.innerHTML = '<div class="empty">🔐 Войди через Steam, чтобы увидеть свои сделки</div>'; }
+}
+</script>
+</body>
+</html>
