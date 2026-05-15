@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8f9fc">
     <title>GodMarket</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="ngrok-skip-browser-warning" content="true">
@@ -54,15 +55,26 @@
         .light-theme .footer { border-color: #dfe6e9; }
         .dark-theme .footer { border-color: #1e3799; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html {
+            background: #f8f9fc !important;
+            background-color: #f8f9fc !important;
+        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f8f9fc; color: var(--text);
+            background: #f8f9fc !important;
+            background-color: #f8f9fc !important;
+            color: var(--text);
             padding: 20px 20px 100px 20px;
             width: 100vw;
             min-height: 100vh;
         }
-        .dark-theme body, body.dark-theme {
-            background: #1a1a2e;
+        body.dark-theme, html.dark-theme, .dark-theme body {
+            background: #1a1a2e !important;
+            background-color: #1a1a2e !important;
+        }
+        html.dark-theme {
+            background: #1a1a2e !important;
+            background-color: #1a1a2e !important;
         }
         @media (min-width: 768px) {
             body {
@@ -90,15 +102,15 @@
             .panel { display: none; }
             .panel.active { display: block; }
             .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; padding: 12px 20px; z-index: 100; }
-            .toolbar { display: grid !important; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+            .toolbar { display: grid !important; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; gap: 6px; }
             .toolbar .btn { font-size: 11px; padding: 10px 6px; white-space: nowrap; }
             .toolbar .btn-sell-all-qty { font-size: 11px; padding: 10px 6px; }
             .toolbar #loginBtn { grid-column: 1 / -1; }
-            .toolbar #logoutBtn { grid-column: 1; grid-row: 1; }
-            .toolbar #refreshBtn { grid-column: 2; grid-row: 1; }
-            .toolbar #shareBtn { grid-column: 3; grid-row: 1; }
-            .toolbar #sellAllQtyBtn { grid-column: 1 / 3; grid-row: 2; }
-            .toolbar #clearBtn { grid-column: 2 / 4; grid-row: 2; }
+            .toolbar #logoutBtn { grid-column: 1 / 3; grid-row: 1; }
+            .toolbar #refreshBtn { grid-column: 3 / 5; grid-row: 1; }
+            .toolbar #shareBtn { grid-column: 5 / 7; grid-row: 1; }
+            .toolbar #sellAllQtyBtn { grid-column: 1 / 4; grid-row: 2; }
+            .toolbar #clearBtn { grid-column: 4 / 7; grid-row: 2; }
         }
         .header {
             text-align: center; padding: 32px 0;
@@ -308,12 +320,27 @@ let tg = null;
 if (isTelegram) {
     tg = window.Telegram.WebApp;
     tg.expand();
-    // Принудительно светлая тема при загрузке
+    tg.ready();
     tg.setHeaderColor('#f8f9fc');
     tg.setBackgroundColor('#f8f9fc');
-    // Явно задаём цвет фона body
+    tg.setBottomBarColor('#f8f9fc');
+    document.documentElement.style.backgroundColor = '#f8f9fc';
+    document.documentElement.style.setProperty('background-color', '#f8f9fc', 'important');
     document.body.style.backgroundColor = '#f8f9fc';
-    document.body.style.setProperty('background', '#f8f9fc', 'important');
+    document.body.style.setProperty('background-color', '#f8f9fc', 'important');
+    document.body.style.background = '#f8f9fc';
+    
+    tg.onEvent('themeChanged', () => {
+        const savedTheme = localStorage.getItem('gm_theme');
+        if (savedTheme !== 'dark') {
+            tg.setHeaderColor('#f8f9fc');
+            tg.setBackgroundColor('#f8f9fc');
+            tg.setBottomBarColor('#f8f9fc');
+            document.documentElement.style.setProperty('background-color', '#f8f9fc', 'important');
+            document.body.style.setProperty('background-color', '#f8f9fc', 'important');
+            document.body.style.background = '#f8f9fc';
+        }
+    });
 }
 
 let steamId = null;
@@ -338,7 +365,6 @@ if (oauthSteamId && oauthSteamId.length === 17) {
     if (saved) { steamId = saved; showUI(); loadInventory(); fetchRate(); }
 }
 
-// Всегда светлая тема по умолчанию
 const savedTheme = localStorage.getItem('gm_theme');
 if (savedTheme === 'dark') {
     darkTheme = true;
@@ -348,9 +374,11 @@ if (savedTheme === 'dark') {
     darkTheme = false;
     document.body.classList.add('light-theme');
     document.body.classList.remove('dark-theme');
-    // Принудительно светлый фон
+    document.documentElement.style.backgroundColor = '#f8f9fc';
+    document.documentElement.style.setProperty('background-color', '#f8f9fc', 'important');
     document.body.style.backgroundColor = '#f8f9fc';
-    document.body.style.setProperty('background', '#f8f9fc', 'important');
+    document.body.style.setProperty('background-color', '#f8f9fc', 'important');
+    document.body.style.background = '#f8f9fc';
 }
 
 function toggleTheme() {
@@ -359,18 +387,26 @@ function toggleTheme() {
     document.body.classList.toggle('light-theme', !darkTheme);
     localStorage.setItem('gm_theme', darkTheme ? 'dark' : 'light');
     if (darkTheme) {
+        document.documentElement.style.backgroundColor = '#1a1a2e';
+        document.documentElement.style.setProperty('background-color', '#1a1a2e', 'important');
         document.body.style.backgroundColor = '#1a1a2e';
-        document.body.style.setProperty('background', '#1a1a2e', 'important');
+        document.body.style.setProperty('background-color', '#1a1a2e', 'important');
+        document.body.style.background = '#1a1a2e';
         if (isTelegram && tg) {
             tg.setHeaderColor('#1a1a2e');
             tg.setBackgroundColor('#1a1a2e');
+            tg.setBottomBarColor('#1a1a2e');
         }
     } else {
+        document.documentElement.style.backgroundColor = '#f8f9fc';
+        document.documentElement.style.setProperty('background-color', '#f8f9fc', 'important');
         document.body.style.backgroundColor = '#f8f9fc';
-        document.body.style.setProperty('background', '#f8f9fc', 'important');
+        document.body.style.setProperty('background-color', '#f8f9fc', 'important');
+        document.body.style.background = '#f8f9fc';
         if (isTelegram && tg) {
             tg.setHeaderColor('#f8f9fc');
             tg.setBackgroundColor('#f8f9fc');
+            tg.setBottomBarColor('#f8f9fc');
         }
     }
 }
@@ -510,11 +546,11 @@ function confirmDeal(fullPayment) {
                 {id: 'ok', type: 'ok', text: '✅ Продать'},
                 {type: 'cancel', text: '❌ Отмена'}
             ]
-        }, (btn) => {
+        }, async (btn) => {
             if (btn === 'ok') {
-                saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
-                updateMarketStats();
-                renderDeals();
+                await saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
+                await updateMarketStats();
+                await renderDeals();
                 sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) });
                 document.getElementById('status').style.display = 'block';
                 document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
@@ -522,10 +558,10 @@ function confirmDeal(fullPayment) {
             }
         });
     } else {
-        showConfirmModal(message + '\n\nНажмите «Продать» для подтверждения.', function() {
-            saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
-            updateMarketStats();
-            renderDeals();
+        showConfirmModal(message + '\n\nНажмите «Продать» для подтверждения.', async function() {
+            await saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
+            await updateMarketStats();
+            await renderDeals();
             sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) });
             document.getElementById('status').style.display = 'block';
             document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
@@ -547,13 +583,18 @@ async function getDeals() {
 
 async function saveDeal(deal) {
     try {
-        await fetch(`${API}/api/deals`, {
+        const response = await fetch(`${API}/api/deals`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(deal)
         });
-    } catch(e) { console.error('❌ saveDeal error:', e); }
-    await renderDeals();
+        const result = await response.json();
+        console.log('✅ Сделка сохранена:', result);
+        return result;
+    } catch(e) { 
+        console.error('❌ saveDeal error:', e); 
+        return null;
+    }
 }
 
 function getPayDate(iso) { const d = new Date(iso); const ten = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 10, 0, 0); if (d < ten) ten.setDate(ten.getDate() - 1); ten.setDate(ten.getDate() + 8); return ten; }
