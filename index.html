@@ -56,13 +56,36 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg); color: var(--text); padding: 16px 16px 90px 16px;
+            background: var(--bg); color: var(--text);
+            padding: 16px 16px 90px 16px;
             max-width: 420px; margin: 0 auto; min-height: 100vh;
         }
+        /* ПК-версия */
         @media (min-width: 768px) {
-            body { max-width: 900px; padding: 24px 24px 90px 24px; }
-            .skin-item { width: calc(33.33% - 6px); display: inline-flex; margin: 3px; }
-            #skinsList { display: flex; flex-wrap: wrap; }
+            body {
+                max-width: 1400px;
+                padding: 24px 24px 40px 24px;
+                display: grid;
+                grid-template-columns: 1fr 380px;
+                grid-template-rows: auto auto;
+                gap: 20px;
+                align-items: start;
+            }
+            .header { grid-column: 1 / -1; }
+            #toolbarTop { grid-column: 1 / -1; }
+            #panelSell { grid-column: 1; display: block !important; }
+            #panelDeals { grid-column: 2; display: block !important; position: sticky; top: 24px; }
+            .bottom-nav { display: none; }
+            .skin-item { width: 100%; margin: 6px 0; }
+            #skinsList { display: block; }
+            .btn-sell-all { position: static; margin-top: 16px; }
+            .inv-summary, .rate-info, .user-info { grid-column: 1 / -1; }
+            #marketStats { grid-column: 1 / -1; }
+        }
+        .panel { }
+        @media (max-width: 767px) {
+            .panel { display: none; }
+            .panel.active { display: block; }
         }
         .header {
             text-align: center; padding: 24px 0;
@@ -87,8 +110,6 @@
         .search-box button { padding: 10px 14px; background: var(--accent); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 12px; }
         .sort-btns { display: flex; gap: 6px; margin-bottom: 10px; }
         .sort-btn { flex: 1; padding: 8px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer; }
-        .panel { display: none; }
-        .panel.active { display: block; }
         .skin-item { border-radius: 12px; padding: 12px 14px; margin: 8px 0; display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--rarity-blue); transition: all 0.2s; }
         .skin-item:hover { transform: translateX(2px); }
         .skin-item.rarity-purple { border-left-color: var(--rarity-purple); }
@@ -118,7 +139,7 @@
         .skeleton-icon { width: 48px; height: 36px; border-radius: 6px; }
         .skeleton-text { flex: 1; height: 14px; }
         .skeleton-price { width: 50px; height: 16px; }
-        .btn-sell-all { background: var(--accent); color: white; font-size: 15px; padding: 16px; margin-top: 12px; width: 100%; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; position: sticky; bottom: 80px; box-shadow: 0 4px 20px rgba(108,92,231,0.4); }
+        .btn-sell-all { background: var(--accent); color: white; font-size: 15px; padding: 16px; margin-top: 12px; width: 100%; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 20px rgba(108,92,231,0.4); }
         .btn-sell-all:not(:disabled) { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { box-shadow: 0 4px 20px rgba(108,92,231,0.4); } 50% { box-shadow: 0 4px 30px rgba(108,92,231,0.7); } }
         .btn-sell-all:disabled { background: #b2bec3; box-shadow: none; opacity: 0.6; animation: none; }
@@ -301,7 +322,6 @@ function toggleTheme() {
 
 function sendDataToBot(data) {
     const payload = JSON.stringify(data);
-    console.log('📤 sendDataToBot:', payload);
     if (isTelegram && tg) {
         tg.sendData(payload);
     } else {
@@ -309,7 +329,7 @@ function sendDataToBot(data) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: payload
-        }).then(r => r.json()).then(d => console.log('✅ Fetch response:', d)).catch(e => console.error('❌ Fetch error:', e));
+        }).then(r => r.json()).catch(e => console.error('❌ Fetch error:', e));
     }
 }
 
@@ -327,10 +347,12 @@ function closePaymentModal() { document.getElementById('paymentModal').style.dis
 function openLegal(t) { document.getElementById('legal-'+t).classList.add('open'); }
 function closeLegal(t) { document.getElementById('legal-'+t).classList.remove('open'); }
 function switchTab(tab) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    if (tab === 'sell') { document.getElementById('panelSell').classList.add('active'); document.querySelector('.nav-item:nth-child(1)').classList.add('active'); }
-    else if (tab === 'deals') { document.getElementById('panelDeals').classList.add('active'); document.querySelector('.nav-item:nth-child(2)').classList.add('active'); renderDeals(); }
+    if (window.innerWidth < 768) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        if (tab === 'sell') { document.getElementById('panelSell').classList.add('active'); document.querySelector('.nav-item:nth-child(1)').classList.add('active'); }
+        else if (tab === 'deals') { document.getElementById('panelDeals').classList.add('active'); document.querySelector('.nav-item:nth-child(2)').classList.add('active'); renderDeals(); }
+    }
 }
 function showUI() {
     document.getElementById('loginBtn').style.display = 'none';
@@ -351,9 +373,7 @@ function shareBot() {
     if (isTelegram && tg) {
         tg.openTelegramLink(`https://t.me/share/url?text=${encodeURIComponent('🎮 Продай скины CS2 быстро и выгодно!\n' + refLink)}`);
     } else {
-        navigator.clipboard.writeText(refLink).then(() => {
-            showCopyModal('Реферальная ссылка скопирована!', refLink);
-        });
+        navigator.clipboard.writeText(refLink).then(() => { showCopyModal('Реферальная ссылка скопирована!', refLink); });
     }
 }
 function showCopyModal(title, text) {
@@ -377,10 +397,7 @@ function applyFilters() {
     if (query) result = result.filter(g => g.name.toLowerCase().includes(query));
     if (currentSort === 'cheap') result.sort((a, b) => (a.price || 0) - (b.price || 0));
     else if (currentSort === 'expensive') result.sort((a, b) => (b.price || 0) - (a.price || 0));
-    result.forEach(g => {
-        const existing = filteredSkins.find(f => f.name === g.name);
-        if (existing) g.selectedQty = existing.selectedQty;
-    });
+    result.forEach(g => { const existing = filteredSkins.find(f => f.name === g.name); if (existing) g.selectedQty = existing.selectedQty; });
     filteredSkins = result;
     renderInventory();
 }
@@ -435,10 +452,7 @@ function renderInventory() {
     if (displaySkins.length === 0) document.getElementById('skinsList').innerHTML = '<div class="empty">Нет скинов дороже 10 ₽</div>';
     updateSellButton();
 }
-function changeQty(name, delta) {
-    const g = filteredSkins.find(f => f.name === name);
-    if (g) { g.selectedQty = Math.max(0, Math.min(g.assetIds.length, g.selectedQty + delta)); renderInventory(); }
-}
+function changeQty(name, delta) { const g = filteredSkins.find(f => f.name === name); if (g) { g.selectedQty = Math.max(0, Math.min(g.assetIds.length, g.selectedQty + delta)); renderInventory(); } }
 function getSelectedItems() { const r = []; filteredSkins.forEach(g => { if (g.selectedQty > 0 && g.price !== null && g.price > 10) for (let j=0; j<g.selectedQty; j++) r.push({ assetId: g.assetIds[j], name: g.name, price: g.price }); }); return r; }
 function updateSellButton() { const s = getSelectedItems(); document.getElementById('sellCount').textContent = s.length; document.getElementById('sellBtn').disabled = s.length === 0; }
 
@@ -469,8 +483,7 @@ function showBankInput(method, bank) {
     showPaymentModal(`<h3>${title} — ${bank === 'Другой' ? 'Другой банк' : bank}</h3><p style="color:var(--muted);font-size:11px;margin-bottom:8px;">Только для РФ</p>${bank === 'Другой' ? '<input type="text" id="bankName" placeholder="Название банка" style="margin-bottom:6px;">' : ''}<input type="text" id="bankDetail" placeholder="${label}" maxlength="${maxLen}" inputmode="numeric" pattern="[0-9]*"><div class="btn-row"><button class="btn-secondary" onclick="chooseBank('${method}')">⬅ Назад</button><button class="btn-primary" onclick="submitBank('${method}','${bank}')">Далее</button></div>`);
 }
 function submitBank(method, bank) {
-    let bankName = bank;
-    if (bank === 'Другой') { bankName = document.getElementById('bankName')?.value?.trim(); if (!bankName) { showErrorModal('Введи название банка'); return; } }
+    let bankName = bank; if (bank === 'Другой') { bankName = document.getElementById('bankName')?.value?.trim(); if (!bankName) { showErrorModal('Введи название банка'); return; } }
     const detail = document.getElementById('bankDetail')?.value?.trim(); if (!detail) { showErrorModal('Введи реквизиты'); return; }
     const maxLen = method === 'sbp' ? 11 : 16;
     if (!new RegExp(`^\\d{${maxLen}}$`).test(detail)) { showErrorModal(`Должно быть ровно ${maxLen} цифр`); return; }
@@ -495,17 +508,11 @@ function confirmDeal(fullPayment) {
     const message = `💰 Сумма: ${d.total} ₽${usd}\n💳 ${fullPayment}\n⏳ Обработка: 8 дней\n\nНажимая «Продать», я соглашаюсь с Правилами сервиса.`;
     if (isTelegram && tg) {
         tg.showPopup({ title: 'Подтверждение продажи', message: message, buttons: [{id: 'ok', type: 'ok', text: '✅ Продать'}, {type: 'cancel', text: '❌ Отмена'}] }, (btn) => {
-            if (btn === 'ok') {
-                saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
-                sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) });
-                document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = 'var(--green)';
-            }
+            if (btn === 'ok') { saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId }); sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) }); document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = 'var(--green)'; }
         });
     } else {
         showConfirmModal(message + '\n\nНажмите «Продать» для подтверждения.', function() {
-            saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
-            sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) });
-            document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = 'var(--green)';
+            saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId }); sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) }); document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = 'var(--green)';
         });
     }
 }
