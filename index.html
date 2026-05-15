@@ -294,6 +294,7 @@ function toggleTheme() {
 
 function sendDataToBot(data) {
     const payload = JSON.stringify(data);
+    console.log('📤 sendDataToBot:', payload);
     if (isTelegram && tg) {
         tg.sendData(payload);
     } else {
@@ -301,7 +302,7 @@ function sendDataToBot(data) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: payload
-        }).catch(e => console.error('Send error:', e));
+        }).then(r => r.json()).then(d => console.log('✅ Fetch response:', d)).catch(e => console.error('❌ Fetch error:', e));
     }
 }
 
