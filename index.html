@@ -72,8 +72,6 @@
             }
             .header { grid-column: 1 / -1; }
             #toolbarTop { grid-column: 1 / -1; }
-            #panelSell { display: block !important; }
-            #panelDeals { display: none; }
             .bottom-nav { display: flex; position: static; max-width: 100%; background: transparent; box-shadow: none; padding: 0; gap: 8px; }
             .bottom-nav .nav-item { padding: 10px 20px; font-size: 14px; }
             .skin-item { width: 100%; margin: 8px 0; }
@@ -81,6 +79,8 @@
             .btn-sell-all { position: static; margin-top: 20px; }
             .inv-summary, .rate-info, .user-info { grid-column: 1 / -1; }
             #marketStats { grid-column: 1 / -1; }
+            #panelSell { }
+            #panelDeals { }
         }
         .panel { }
         @media (max-width: 767px) {
@@ -88,8 +88,13 @@
             .panel.active { display: block; }
             .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; padding: 12px 20px; z-index: 100; }
             .toolbar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-            .toolbar .btn { font-size: 11px; padding: 8px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .toolbar .btn-sell-all-qty { font-size: 10px; padding: 6px 4px; }
+            .toolbar .btn { font-size: 11px; padding: 10px 6px; white-space: nowrap; }
+            .toolbar .btn-sell-all-qty { font-size: 11px; padding: 10px 6px; }
+            .toolbar #logoutBtn { grid-column: 1; grid-row: 1; }
+            .toolbar #refreshBtn { grid-column: 2; grid-row: 1; }
+            .toolbar #shareBtn { grid-column: 3; grid-row: 1; }
+            .toolbar #sellAllQtyBtn { grid-column: 1; grid-row: 2; }
+            .toolbar #clearBtn { grid-column: 2; grid-row: 2; }
         }
         .header {
             text-align: center; padding: 32px 0;
@@ -298,15 +303,9 @@ let tg = null;
 if (isTelegram) {
     tg = window.Telegram.WebApp;
     tg.expand();
-    // Цвет верхней шторки зависит от темы
-    const themeParams = tg.themeParams;
-    if (themeParams && themeParams.bg_color) {
-        tg.setHeaderColor(themeParams.bg_color);
-        tg.setBackgroundColor(themeParams.bg_color);
-    } else {
-        tg.setHeaderColor('#f8f9fc');
-        tg.setBackgroundColor('#f8f9fc');
-    }
+    // Всегда светлая тема при загрузке
+    tg.setHeaderColor('#f8f9fc');
+    tg.setBackgroundColor('#f8f9fc');
 }
 
 let steamId = null;
@@ -342,7 +341,6 @@ function toggleTheme() {
     document.body.classList.toggle('dark-theme', darkTheme);
     document.body.classList.toggle('light-theme', !darkTheme);
     localStorage.setItem('gm_theme', darkTheme ? 'dark' : 'light');
-    // Обновляем цвет верхней шторки Telegram
     if (isTelegram && tg) {
         if (darkTheme) {
             tg.setHeaderColor('#1a1a2e');
@@ -360,7 +358,9 @@ function sendDataToBot(data) {
     else { fetch(`${API}/api/sell`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(e => console.error('❌ Fetch error:', e)); }
 }
 
-renderDeals();
+(async function() {
+    await renderDeals();
+})();
 
 // БЛОК: JS-AUTH
 function showLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
@@ -376,8 +376,23 @@ function closeLegal(t) { document.getElementById('legal-'+t).classList.remove('o
 function switchTab(tab) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    if (tab === 'sell') { document.getElementById('panelSell').classList.add('active'); document.querySelector('.nav-item:nth-child(1)').classList.add('active'); }
-    else if (tab === 'deals') { document.getElementById('panelDeals').classList.add('active'); document.querySelector('.nav-item:nth-child(2)').classList.add('active'); document.getElementById('dealFilter').style.display = 'flex'; renderDeals(); }
+    if (tab === 'sell') {
+        document.getElementById('panelSell').classList.add('active');
+        document.getElementById('panelDeals').classList.remove('active');
+        document.querySelector('.nav-item:nth-child(1)').classList.add('active');
+        // На ПК принудительно показываем продажу, скрываем сделки
+        document.getElementById('panelSell').style.display = 'block';
+        document.getElementById('panelDeals').style.display = 'none';
+    } else if (tab === 'deals') {
+        document.getElementById('panelDeals').classList.add('active');
+        document.getElementById('panelSell').classList.remove('active');
+        document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+        // На ПК принудительно показываем сделки, скрываем продажу
+        document.getElementById('panelDeals').style.display = 'block';
+        document.getElementById('panelSell').style.display = 'none';
+        document.getElementById('dealFilter').style.display = 'flex';
+        renderDeals();
+    }
 }
 function showUI() {
     document.getElementById('loginBtn').style.display = 'none';
@@ -386,6 +401,7 @@ function showUI() {
     document.getElementById('searchBox').style.display = 'flex'; document.getElementById('sortBtns').style.display = 'flex';
     document.getElementById('marketStats').style.display = 'block';
     updateMarketStats();
+    renderDeals();
 }
 function hideUI() {
     document.getElementById('loginBtn').style.display = 'inline-block';
@@ -456,16 +472,40 @@ function showConfirmModal(message, callback) { window._confirmCallback = callbac
 function confirmDeal(fullPayment) { const d = window._pd; if (!d) return; let usd = ''; if (fullPayment.startsWith('💲')) { const rate = parseFloat(localStorage.getItem('gm_rate') || '76'); usd = ` (≈ $${(parseFloat(d.total)/rate).toFixed(2)})`; } closePaymentModal(); const message = `💰 Сумма: ${d.total} ₽${usd}\n💳 ${fullPayment}\n⏳ Обработка: 8 дней\n\nНажимая «Продать», я соглашаюсь с Правилами сервиса.`; if (isTelegram && tg) { tg.showPopup({ title: 'Подтверждение продажи', message: message, buttons: [{id: 'ok', type: 'ok', text: '✅ Продать'}, {type: 'cancel', text: '❌ Отмена'}] }, (btn) => { if (btn === 'ok') { saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId }); sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) }); document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = 'var(--green)'; } }); } else { showConfirmModal(message + '\n\nНажмите «Продать» для подтверждения.', function() { saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId }); sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) }); document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '✅ Заявка отправлена!'; document.getElementById('status').style.color = 'var(--green)'; }); } }
 
 // БЛОК: JS-DEALS
-function getDeals() { try { return JSON.parse(localStorage.getItem('gm_deals') || '[]'); } catch(e) { return []; } }
-function saveDeal(deal) { const deals = getDeals(); deals.unshift(deal); localStorage.setItem('gm_deals', JSON.stringify(deals)); }
+async function getDeals() {
+    if (steamId) {
+        try {
+            const r = await fetch(`${API}/api/deals?steamid=${steamId}`);
+            const d = await r.json();
+            if (d.success) return d.deals;
+        } catch(e) { console.error('❌ getDeals error:', e); }
+    }
+    return [];
+}
+
+async function saveDeal(deal) {
+    // Сохраняем на сервер
+    try {
+        await fetch(`${API}/api/deals`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(deal)
+        });
+    } catch(e) { console.error('❌ saveDeal error:', e); }
+    // И локально для быстрого отображения
+    const deals = await getDeals();
+    renderDeals();
+}
+
 function getPayDate(iso) { const d = new Date(iso); const ten = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 10, 0, 0); if (d < ten) ten.setDate(ten.getDate() - 1); ten.setDate(ten.getDate() + 8); return ten; }
 function getTimeLeft(pay) { const diff = pay.getTime() - Date.now(); if (diff <= 0) return '✅ Выплачено'; return `⏳ ${Math.floor(diff/86400000)} дн. ${Math.floor((diff%86400000)/3600000)} ч.`; }
 function isDealActive(pay) { return pay.getTime() - Date.now() > 0; }
 function formatDate(d) { return d.toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric' }); }
 function toggleDealDetail(id) { const e = document.getElementById('deal-detail-'+id); if (e) e.classList.toggle('open'); }
 function getStats() { const deals = getDeals(); return { totalSum: deals.reduce((s,d) => s+d.total, 0), totalCount: deals.length }; }
-function renderDeals() {
-    const deals = getDeals(); const container = document.getElementById('dealsList');
+async function renderDeals() {
+    const deals = await getDeals();
+    const container = document.getElementById('dealsList');
     let filteredDeals = deals;
     if (dealFilter === 'active') filteredDeals = deals.filter(d => isDealActive(getPayDate(d.date)));
     else if (dealFilter === 'done') filteredDeals = deals.filter(d => !isDealActive(getPayDate(d.date)));
