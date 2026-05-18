@@ -319,37 +319,12 @@ if (isTelegram) {
     tg.expand();
     tg.ready();
     
-    // Функция принудительного осветления
-    function enforceLightTheme() {
-        tg.setHeaderColor('#ffffff');
-        tg.setBackgroundColor('#ffffff');
-        tg.setBottomBarColor('#ffffff');
-        
-        document.documentElement.style.setProperty('background-color', '#ffffff', 'important');
-        document.documentElement.style.background = '#ffffff';
-        document.body.style.setProperty('background-color', '#ffffff', 'important');
-        document.body.style.background = '#ffffff';
-        
-        // Переопределяем стили для всех возможных обёрток Telegram
-        const allElements = document.querySelectorAll('*');
-        allElements.forEach(el => {
-            const bg = getComputedStyle(el).backgroundColor;
-            if (bg === 'rgb(26, 26, 46)' || bg === 'rgb(33, 33, 33)' || bg === 'rgb(30, 30, 30)') {
-                el.style.setProperty('background-color', '#ffffff', 'important');
-                el.style.background = '#ffffff';
-            }
-        });
-    }
+    tg.setHeaderColor('#ffffff');
+    tg.setBackgroundColor('#ffffff');
+    tg.setBottomBarColor('#ffffff');
     
-    enforceLightTheme();
-    
-    // Постоянно проверяем и исправляем фон
-    setInterval(enforceLightTheme, 100);
-    
-    // Блокируем смену темы от Telegram
-    tg.onEvent('themeChanged', () => {
-        enforceLightTheme();
-    });
+    document.body.style.setProperty('background-color', '#ffffff', 'important');
+    document.body.style.background = '#ffffff';
 }
 
 let steamId = null;
@@ -404,21 +379,18 @@ function toggleTheme() {
     darkTheme = !darkTheme;
     document.body.classList.toggle('dark-theme', darkTheme);
     localStorage.setItem('gm_theme', darkTheme ? 'dark' : 'light');
+    
     if (darkTheme) {
-        document.documentElement.style.setProperty('background', '#1a1a2e', 'important');
-        document.documentElement.style.setProperty('background-color', '#1a1a2e', 'important');
-        document.body.style.setProperty('background', '#1a1a2e', 'important');
         document.body.style.setProperty('background-color', '#1a1a2e', 'important');
+        document.body.style.background = '#1a1a2e';
         if (isTelegram && tg) {
             tg.setHeaderColor('#1a1a2e');
             tg.setBackgroundColor('#1a1a2e');
             tg.setBottomBarColor('#1a1a2e');
         }
     } else {
-        document.documentElement.style.setProperty('background', '#ffffff', 'important');
-        document.documentElement.style.setProperty('background-color', '#ffffff', 'important');
-        document.body.style.setProperty('background', '#ffffff', 'important');
         document.body.style.setProperty('background-color', '#ffffff', 'important');
+        document.body.style.background = '#ffffff';
         if (isTelegram && tg) {
             tg.setHeaderColor('#ffffff');
             tg.setBackgroundColor('#ffffff');
@@ -528,7 +500,7 @@ async function loadInventory() {
     document.getElementById('status').style.display = 'block';
     document.getElementById('status').innerHTML = `<div style="text-align:center;padding:24px;"><div class="skin-spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;"></div><div style="color:var(--muted);font-size:16px;">Загружаем инвентарь...</div></div>`;
     try {
-        const r = await fetch(`${API}/api/inventory?steamid=${steamId}&_=${Date.now()}`, { headers: H }); const d = await r.json();
+        const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H }); const d = await r.json();
         if (d.success && d.assets) {
             const descMap = {}; if (d.descriptions) { d.descriptions.forEach(dd => { const key = `${dd.classid}_${dd.instanceid}`; const tags = dd.tags || []; descMap[key] = { name: dd.market_hash_name, icon: `https://steamcommunity-a.akamaihd.net/economy/image/${dd.icon_url}`, rarity: tags.find(t => t.category === 'Rarity')?.localized_tag_name || '', wear: tags.find(t => t.category === 'Exterior')?.localized_tag_name || '', type: tags.find(t => t.category === 'Type')?.localized_tag_name || '', isST: dd.market_hash_name.includes('StatTrak') }; }); }
             const groupMap = {}; d.assets.forEach(a => { const key = `${a.classid}_${a.instanceid}`; const skinData = descMap[key] || {}; if (skinData.type === 'Charm') return; const name = skinData.name || `Скин #${a.assetid}`; if (!groupMap[name]) groupMap[name] = { ...skinData, assetIds: [], price: null, selectedQty: 0 }; groupMap[name].assetIds.push(a.assetid); });
