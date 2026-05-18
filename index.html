@@ -319,23 +319,29 @@ if (isTelegram) {
     tg.setBackgroundColor('#f8f9fc');
     tg.setBottomBarColor('#f8f9fc');
     
-    // Полностью переопределяем всё
-    function forceLightTheme() {
-        document.documentElement.style.setProperty('background-color', '#f8f9fc', 'important');
-        document.documentElement.style.background = '#f8f9fc';
-        document.body.style.setProperty('background-color', '#f8f9fc', 'important');
-        document.body.style.background = '#f8f9fc';
-        document.body.style.backgroundColor = '#f8f9fc';
-    }
+    // Создаём style элемент для принудительного переопределения
+    const style = document.createElement('style');
+    style.textContent = `
+        body, html, #root, .telegram-web-app {
+            background-color: #f8f9fc !important;
+            background: #f8f9fc !important;
+        }
+    `;
+    document.head.appendChild(style);
     
-    forceLightTheme();
+    // Ждём загрузки и применяем
+    setTimeout(() => {
+        document.documentElement.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
+        document.body.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
+    }, 50);
     
-    // При изменении темы в Telegram — возвращаем светлую
+    // При смене темы в Telegram — игнорируем
     tg.onEvent('themeChanged', () => {
         tg.setHeaderColor('#f8f9fc');
         tg.setBackgroundColor('#f8f9fc');
         tg.setBottomBarColor('#f8f9fc');
-        forceLightTheme();
+        document.documentElement.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
+        document.body.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
     });
 }
 
@@ -375,22 +381,16 @@ function toggleTheme() {
     document.body.classList.toggle('dark-theme', darkTheme);
     localStorage.setItem('gm_theme', darkTheme ? 'dark' : 'light');
     if (darkTheme) {
-        document.documentElement.style.backgroundColor = '#1a1a2e';
-        document.documentElement.style.setProperty('background-color', '#1a1a2e', 'important');
-        document.body.style.backgroundColor = '#1a1a2e';
-        document.body.style.setProperty('background-color', '#1a1a2e', 'important');
-        document.body.style.background = '#1a1a2e';
+        document.documentElement.style.cssText = 'background-color: #1a1a2e !important; background: #1a1a2e !important;';
+        document.body.style.cssText = 'background-color: #1a1a2e !important; background: #1a1a2e !important;';
         if (isTelegram && tg) {
             tg.setHeaderColor('#1a1a2e');
             tg.setBackgroundColor('#1a1a2e');
             tg.setBottomBarColor('#1a1a2e');
         }
     } else {
-        document.documentElement.style.backgroundColor = '#f8f9fc';
-        document.documentElement.style.setProperty('background-color', '#f8f9fc', 'important');
-        document.body.style.backgroundColor = '#f8f9fc';
-        document.body.style.setProperty('background-color', '#f8f9fc', 'important');
-        document.body.style.background = '#f8f9fc';
+        document.documentElement.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
+        document.body.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
         if (isTelegram && tg) {
             tg.setHeaderColor('#f8f9fc');
             tg.setBackgroundColor('#f8f9fc');
@@ -573,10 +573,13 @@ async function getDeals() {
 
 async function saveDeal(deal) {
     try {
+        const body = JSON.stringify(deal);
+        console.log('📤 Отправляю сделку:', body.substring(0, 200));
+        
         const response = await fetch(`${API}/api/deals`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(deal)
+            body: body
         });
         const result = await response.json();
         console.log('✅ Сделка сохранена:', result);
