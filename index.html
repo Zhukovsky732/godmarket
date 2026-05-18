@@ -7,7 +7,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="ngrok-skip-browser-warning" content="true">
 
-    <!-- БЛОК: CSS -->
     <style>
         :root {
             --bg: #ffffff; --card: #ffffff; --accent: #6c5ce7;
@@ -54,6 +53,10 @@
         .light-theme .footer { border-color: #dfe6e9; }
         .dark-theme .footer { border-color: #1e3799; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #ffffff !important;
@@ -69,6 +72,32 @@
         }
         .currency-switch { display: flex; gap: 8px; justify-content: center; }
         .currency-switch button { padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
+        @media (max-width: 767px) {
+            html {
+                background: #ffffff !important;
+                background-color: #ffffff !important;
+            }
+            body {
+                background: #ffffff !important;
+                background-color: #ffffff !important;
+            }
+            body.dark-theme {
+                background: #1a1a2e !important;
+                background-color: #1a1a2e !important;
+            }
+            .panel { display: none; }
+            .panel.active { display: block; }
+            .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; padding: 12px 20px; z-index: 100; }
+            .toolbar { display: grid !important; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; gap: 6px; }
+            .toolbar .btn { font-size: 11px; padding: 10px 6px; white-space: nowrap; }
+            .toolbar .btn-sell-all-qty { font-size: 11px; padding: 10px 6px; }
+            .toolbar #loginBtn { grid-column: 1 / -1; }
+            .toolbar #logoutBtn { grid-column: 1 / 3; grid-row: 1; }
+            .toolbar #refreshBtn { grid-column: 3 / 5; grid-row: 1; }
+            .toolbar #shareBtn { grid-column: 5 / 7; grid-row: 1; }
+            .toolbar #sellAllQtyBtn { grid-column: 1 / 4; grid-row: 2; }
+            .toolbar #clearBtn { grid-column: 4 / 7; grid-row: 2; }
+        }
         @media (min-width: 768px) {
             body {
                 padding: 32px 40px 40px 40px;
@@ -91,20 +120,6 @@
             #panelDeals { }
         }
         .panel { }
-        @media (max-width: 767px) {
-            .panel { display: none; }
-            .panel.active { display: block; }
-            .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; padding: 12px 20px; z-index: 100; }
-            .toolbar { display: grid !important; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; gap: 6px; }
-            .toolbar .btn { font-size: 11px; padding: 10px 6px; white-space: nowrap; }
-            .toolbar .btn-sell-all-qty { font-size: 11px; padding: 10px 6px; }
-            .toolbar #loginBtn { grid-column: 1 / -1; }
-            .toolbar #logoutBtn { grid-column: 1 / 3; grid-row: 1; }
-            .toolbar #refreshBtn { grid-column: 3 / 5; grid-row: 1; }
-            .toolbar #shareBtn { grid-column: 5 / 7; grid-row: 1; }
-            .toolbar #sellAllQtyBtn { grid-column: 1 / 4; grid-row: 2; }
-            .toolbar #clearBtn { grid-column: 4 / 7; grid-row: 2; }
-        }
         .header {
             text-align: center; padding: 32px 0;
             background: linear-gradient(135deg, var(--accent), #a29bfe);
@@ -209,23 +224,19 @@
 </head>
 <body>
 
-<!-- БЛОК: HEADER -->
 <div class="header">
     <div class="logo">GodMarket</div>
     <div class="subtitle">Мгновенный выкуп скинов CS2</div>
 </div>
 
-<!-- БЛОК: USER-INFO -->
 <div class="user-info" id="userInfo"></div>
 <div class="inv-summary" id="invSummary"></div>
 
-<!-- БЛОК: CURRENCY-SWITCH -->
 <div class="currency-switch" id="currencySwitch" style="display:none; text-align:center; margin-bottom:14px;">
     <button class="sort-btn active" id="btnRub" onclick="setCurrency('₽')">₽ Рубли</button>
     <button class="sort-btn" id="btnUsd" onclick="setCurrency('$')">$ Доллары</button>
 </div>
 
-<!-- БЛОК: TOOLBAR -->
 <div class="toolbar" id="toolbarTop">
     <button class="btn btn-steam" id="loginBtn" onclick="showLoginModal()">🔐 Steam</button>
     <button class="btn btn-tool" id="logoutBtn" style="display:none;" onclick="logout()">🚪 Выйти</button>
@@ -235,7 +246,6 @@
     <button class="btn btn-sell-all-qty" id="clearBtn" style="display:none; background:#b2bec3; color:white;" onclick="clearCart()">🗑️ Очистить</button>
 </div>
 
-<!-- БЛОК: PANEL-SELL -->
 <div class="panel active" id="panelSell">
     <div class="search-box" id="searchBox" style="display:none;">
         <input type="text" id="searchInput" placeholder="🔍 Поиск скина..." oninput="applyFilters()">
@@ -254,7 +264,6 @@
     <div id="status" class="status">🔐 Войди через Steam</div>
 </div>
 
-<!-- БЛОК: PANEL-DEALS -->
 <div class="panel" id="panelDeals">
     <div class="deal-filter" id="dealFilter" style="display:none;">
         <button class="active" onclick="setDealFilter('all', this)">Все</button>
@@ -264,7 +273,6 @@
     <div id="dealsList"></div>
 </div>
 
-<!-- БЛОК: FOOTER -->
 <div class="footer">
     <a onclick="openLegal('terms')">Условия</a> ·
     <a onclick="openLegal('privacy')">Конфиденциальность</a> ·
@@ -276,13 +284,11 @@
     </div>
 </div>
 
-<!-- БЛОК: BOTTOM-NAV -->
 <div class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('sell')"><span class="nav-icon">🛒</span> Продажа</div>
     <div class="nav-item" onclick="switchTab('deals')"><span class="nav-icon">📋</span> Сделки</div>
 </div>
 
-<!-- БЛОК: MODAL-LOGIN -->
 <div class="modal-overlay" id="loginModal" style="display:none;">
     <div class="modal-box" style="text-align:center;">
         <h3>🔐 Вход через Steam</h3>
@@ -293,22 +299,17 @@
     </div>
 </div>
 
-<!-- БЛОК: MODAL-PAYMENT -->
 <div class="modal-overlay" id="paymentModal" style="display:none;">
     <div class="modal-box" id="paymentContent"></div>
 </div>
 
-<!-- БЛОК: LEGAL-TERMS -->
 <div class="legal-modal" id="legal-terms"><div class="legal-content"><h2>📄 Условия использования GodMarket</h2><p><i>14 мая 2026 г.</i></p><h3>1. Общие положения</h3><p>1.1. Сервис GodMarket осуществляет выкуп виртуальных предметов (скинов) для игры Counter-Strike 2 у Пользователей.</p><p>1.2. Используя Сервис, вы принимаете Условия.</p><p>1.3. Администратор вправе изменить Условия.</p><p>1.4. Сервис использует Steam API, но не партнёр Valve.</p><p>1.5. Все цены в рублях. Минимальная сумма выкупа — 10 ₽.</p><h3>2. Кто может использовать</h3><p>2.1. Совершеннолетние (18+).</p><p>2.2. Предметы должны принадлежать Пользователю.</p><h3>3. Вход через Steam</h3><p>3.1. Вход через учётную запись Steam.</p><h3>4. Процесс сделки</h3><p>4.1. Цена формируется на основе рыночных данных.</p><p>4.2. Сервис вправе отказать в выкупе.</p><p>4.3. Выплата — 8 дней. +20 дней. После 30 дней — компенсация.</p><h3>5. Способы оплаты</h3><p>5.1. СБП, Карта (РФ), USDT (BEP20/TON).</p><h3>6. Ответственность</h3><p>6.1. Сервис не отвечает за задержки Steam, банков.</p><h3>7. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('terms')">Закрыть</button></div></div>
 
-<!-- БЛОК: LEGAL-PRIVACY -->
 <div class="legal-modal" id="legal-privacy"><div class="legal-content"><h2>🔒 Политика конфиденциальности</h2><p><i>14 мая 2026 г.</i></p><h3>1. Данные</h3><p>Steam ID, реквизиты, история сделок, IP.</p><h3>2. Использование</h3><p>Для выполнения сделки.</p><h3>3. Хранение</h3><p>Данные на устройстве (localStorage).</p><h3>4. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('privacy')">Закрыть</button></div></div>
 
-<!-- БЛОК: LEGAL-REFUND -->
 <div class="legal-modal" id="legal-refund"><div class="legal-content"><h2>↩️ Возврат и отмена</h2><p><i>14 мая 2026 г.</i></p><h3>1. Сроки</h3><p>8 дней — стандарт. +20 дней. 30 дней — компенсация.</p><h3>2. Chargeback</h3><p>Блокировка + компенсация.</p><h3>3. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('refund')">Закрыть</button></div></div>
 
 <script>
-// БЛОК: JS-CONFIG
 const API = 'https://attendant-esophagus-expand.ngrok-free.dev';
 const H = { 'ngrok-skip-browser-warning': 'true' };
 
@@ -318,13 +319,9 @@ if (isTelegram) {
     tg = window.Telegram.WebApp;
     tg.expand();
     tg.ready();
-    
     tg.setHeaderColor('#ffffff');
     tg.setBackgroundColor('#ffffff');
     tg.setBottomBarColor('#ffffff');
-    
-    document.body.style.setProperty('background-color', '#ffffff', 'important');
-    document.body.style.background = '#ffffff';
 }
 
 let steamId = null;
@@ -379,19 +376,12 @@ function toggleTheme() {
     darkTheme = !darkTheme;
     document.body.classList.toggle('dark-theme', darkTheme);
     localStorage.setItem('gm_theme', darkTheme ? 'dark' : 'light');
-    
-    if (darkTheme) {
-        document.body.style.setProperty('background-color', '#1a1a2e', 'important');
-        document.body.style.background = '#1a1a2e';
-        if (isTelegram && tg) {
+    if (isTelegram && tg) {
+        if (darkTheme) {
             tg.setHeaderColor('#1a1a2e');
             tg.setBackgroundColor('#1a1a2e');
             tg.setBottomBarColor('#1a1a2e');
-        }
-    } else {
-        document.body.style.setProperty('background-color', '#ffffff', 'important');
-        document.body.style.background = '#ffffff';
-        if (isTelegram && tg) {
+        } else {
             tg.setHeaderColor('#ffffff');
             tg.setBackgroundColor('#ffffff');
             tg.setBottomBarColor('#ffffff');
@@ -405,13 +395,11 @@ function sendDataToBot(data) {
     else { fetch(`${API}/api/sell`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(e => console.error('❌ Fetch error:', e)); }
 }
 
-// БЛОК: JS-AUTH
 function showLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
 function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
 function loginViaSteam() { closeLoginModal(); window.open(API + '/api/steam/login', '_blank'); }
 function logout() { localStorage.removeItem('gm_steamid'); steamId = null; groupedSkins = []; filteredSkins = []; priceCache = {}; hideUI(); document.getElementById('status').style.display = 'block'; document.getElementById('status').innerHTML = '🔐 Войди через Steam'; }
 
-// БЛОК: JS-UI
 function showPaymentModal(html) { document.getElementById('paymentContent').innerHTML = html; document.getElementById('paymentModal').style.display = 'flex'; }
 function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; }
 function openLegal(t) { document.getElementById('legal-'+t).classList.add('open'); }
@@ -450,12 +438,7 @@ function hideUI() {
     ['logoutBtn','refreshBtn','shareBtn','sellAllQtyBtn','clearBtn','userInfo','invSummary','marketStats','searchBox','sortBtns','currencySwitch'].forEach(id => document.getElementById(id).style.display = 'none');
     document.getElementById('inventory').style.display = 'none';
 }
-function refresh() { 
-    priceCache = {}; 
-    groupedSkins = [];
-    filteredSkins = [];
-    loadInventory(); 
-}
+function refresh() { priceCache = {}; groupedSkins = []; filteredSkins = []; loadInventory(); }
 function shareBot() {
     const refLink = `https://t.me/godmarket_bot?start=ref_${steamId}`;
     if (isTelegram && tg) { tg.openTelegramLink(`https://t.me/share/url?text=${encodeURIComponent('🎮 Продай скины CS2 быстро и выгодно!\n' + refLink)}`); }
@@ -473,23 +456,16 @@ function setDealFilter(filter, btn) {
     renderDeals();
 }
 
-// БЛОК: JS-INVENTORY
 async function fetchRate() {
     try {
         const r = await fetch(`${API}/api/rate`);
         const d = await r.json();
-        if (d.rate) {
-            usdRate = d.rate;
-            localStorage.setItem('gm_rate', usdRate);
-        }
+        if (d.rate) { usdRate = d.rate; localStorage.setItem('gm_rate', usdRate); }
     } catch(e) {
         try {
             const r = await fetch(`${API}/api/price?name=AK-47`, { headers: H });
             const d = await r.json();
-            if (d.rate) {
-                usdRate = d.rate;
-                localStorage.setItem('gm_rate', usdRate);
-            }
+            if (d.rate) { usdRate = d.rate; localStorage.setItem('gm_rate', usdRate); }
         } catch(e2) {}
     }
 }
@@ -501,7 +477,7 @@ async function loadInventory() {
     document.getElementById('status').innerHTML = `<div style="text-align:center;padding:24px;"><div class="skin-spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;"></div><div style="color:var(--muted);font-size:16px;">Загружаем инвентарь...</div></div>`;
     try {
         const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H }); const d = await r.json();
-        if (d.success && d.assets) {
+        if (d.assets && d.assets.length > 0) {
             const descMap = {}; if (d.descriptions) { d.descriptions.forEach(dd => { const key = `${dd.classid}_${dd.instanceid}`; const tags = dd.tags || []; descMap[key] = { name: dd.market_hash_name, icon: `https://steamcommunity-a.akamaihd.net/economy/image/${dd.icon_url}`, rarity: tags.find(t => t.category === 'Rarity')?.localized_tag_name || '', wear: tags.find(t => t.category === 'Exterior')?.localized_tag_name || '', type: tags.find(t => t.category === 'Type')?.localized_tag_name || '', isST: dd.market_hash_name.includes('StatTrak') }; }); }
             const groupMap = {}; d.assets.forEach(a => { const key = `${a.classid}_${a.instanceid}`; const skinData = descMap[key] || {}; if (skinData.type === 'Charm') return; const name = skinData.name || `Скин #${a.assetid}`; if (!groupMap[name]) groupMap[name] = { ...skinData, assetIds: [], price: null, selectedQty: 0 }; groupMap[name].assetIds.push(a.assetid); });
             groupedSkins = Object.values(groupMap);
@@ -509,7 +485,7 @@ async function loadInventory() {
             for (const g of groupedSkins) { g.price = await fetchPrice(g.name); }
             applyFilters(); updateInvSummary(); document.getElementById('status').style.display = 'none';
         } else { document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт'; }
-    } catch(e) { document.getElementById('status').innerHTML = '❌ Ошибка загрузки'; }
+    } catch(e) { console.error('Inventory error:', e); document.getElementById('status').innerHTML = '❌ Ошибка загрузки: ' + e.message; }
 }
 function updateInvSummary() { const totalValue = groupedSkins.reduce((s, g) => s + (g.price || 0) * g.assetIds.length, 0); const totalItems = groupedSkins.reduce((s, g) => s + g.assetIds.length, 0); document.getElementById('invSummary').style.display = 'block'; document.getElementById('invSummary').innerHTML = `📦 ${totalItems} скинов · 💰 ~${totalValue.toFixed(0)} ₽`; }
 async function updateMarketStats() {
@@ -535,7 +511,6 @@ function changeQty(name, delta) { const g = filteredSkins.find(f => f.name === n
 function getSelectedItems() { const r = []; filteredSkins.forEach(g => { if (g.selectedQty > 0 && g.price !== null && g.price > 10) for (let j=0; j<g.selectedQty; j++) r.push({ assetId: g.assetIds[j], name: g.name, price: g.price }); }); return r; }
 function updateSellButton() { const s = getSelectedItems(); document.getElementById('sellCount').textContent = s.length; document.getElementById('sellBtn').disabled = s.length === 0; }
 
-// БЛОК: JS-SELL
 function sellSelected() {
     const sel = getSelectedItems();
     if (sel.length === 0) return;
@@ -549,7 +524,6 @@ function sellSelected() {
     window._pd = { skins: sel, total: totalRub, currency: currentCurrency };
 }
 
-// БЛОК: JS-PAYMENT
 function chooseBank(method) { const banks = ['Сбербанк','Т-Банк','ВТБ','Альфа-Банк','Райффайзен','Другой']; showPaymentModal(`<h3>🏦 Выберите банк</h3>${banks.map(b => `<button onclick="showBankInput('${method}','${b}')" style="display:block;width:100%;padding:12px;margin:5px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">${b}</button>`).join('')}<button onclick="sellSelected()" style="display:block;width:100%;padding:12px;margin:5px 0;background:#b2bec3;color:white;border:none;border-radius:12px;font-size:16px;cursor:pointer;">⬅ Назад</button>`); }
 function showBankInput(method, bank) { const label = method === 'sbp' ? 'номер телефона (11 цифр)' : 'номер карты (16 цифр)'; const maxLen = method === 'sbp' ? 11 : 16; const title = method === 'sbp' ? '📱 СБП' : '💳 Карта'; showPaymentModal(`<h3>${title} — ${bank === 'Другой' ? 'Другой банк' : bank}</h3><p style="color:var(--muted);font-size:13px;margin-bottom:10px;">Только для РФ</p>${bank === 'Другой' ? '<input type="text" id="bankName" placeholder="Название банка" style="margin-bottom:8px;">' : ''}<input type="text" id="bankDetail" placeholder="${label}" maxlength="${maxLen}" inputmode="numeric" pattern="[0-9]*"><div class="btn-row"><button class="btn-secondary" onclick="chooseBank('${method}')">⬅ Назад</button><button class="btn-primary" onclick="submitBank('${method}','${bank}')">Далее</button></div>`); }
 function submitBank(method, bank) { let bankName = bank; if (bank === 'Другой') { bankName = document.getElementById('bankName')?.value?.trim(); if (!bankName) { showErrorModal('Введи название банка'); return; } } const detail = document.getElementById('bankDetail')?.value?.trim(); if (!detail) { showErrorModal('Введи реквизиты'); return; } const maxLen = method === 'sbp' ? 11 : 16; if (!new RegExp(`^\\d{${maxLen}}$`).test(detail)) { showErrorModal(`Должно быть ровно ${maxLen} цифр`); return; } confirmDeal(`${method === 'sbp' ? '📱 СБП' : '💳 Карта'} (${bankName}): ${detail}`); }
@@ -610,7 +584,6 @@ function confirmDeal(fullPayment) {
     }
 }
 
-// БЛОК: JS-DEALS
 async function getDeals() {
     if (!steamId) return [];
     try {
@@ -625,19 +598,11 @@ async function saveDeal(deal) {
     try {
         const body = JSON.stringify(deal);
         console.log('📤 Отправляю сделку:', body.substring(0, 200));
-        
-        const response = await fetch(`${API}/api/deals`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: body
-        });
+        const response = await fetch(`${API}/api/deals`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body });
         const result = await response.json();
         console.log('✅ Сделка сохранена:', result);
         return result;
-    } catch(e) { 
-        console.error('❌ saveDeal error:', e); 
-        return null;
-    }
+    } catch(e) { console.error('❌ saveDeal error:', e); return null; }
 }
 
 function getPayDate(iso) { const d = new Date(iso); const ten = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 10, 0, 0); if (d < ten) ten.setDate(ten.getDate() - 1); ten.setDate(ten.getDate() + 8); return ten; }
