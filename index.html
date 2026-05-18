@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light only">
     <title>GodMarket</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="ngrok-skip-browser-warning" content="true">
@@ -56,6 +57,7 @@
         html {
             background: #ffffff !important;
             background-color: #ffffff !important;
+            color-scheme: light only;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -65,6 +67,7 @@
             padding: 20px 20px 100px 20px;
             width: 100vw;
             min-height: 100vh;
+            color-scheme: light only;
         }
         body.dark-theme {
             background: #1a1a2e !important;
@@ -73,13 +76,10 @@
         .currency-switch { display: flex; gap: 8px; justify-content: center; }
         .currency-switch button { padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
         @media (max-width: 767px) {
-            html {
+            html, body {
                 background: #ffffff !important;
                 background-color: #ffffff !important;
-            }
-            body {
-                background: #ffffff !important;
-                background-color: #ffffff !important;
+                color-scheme: light only;
             }
             body.dark-theme {
                 background: #1a1a2e !important;
@@ -304,9 +304,7 @@
 </div>
 
 <div class="legal-modal" id="legal-terms"><div class="legal-content"><h2>📄 Условия использования GodMarket</h2><p><i>14 мая 2026 г.</i></p><h3>1. Общие положения</h3><p>1.1. Сервис GodMarket осуществляет выкуп виртуальных предметов (скинов) для игры Counter-Strike 2 у Пользователей.</p><p>1.2. Используя Сервис, вы принимаете Условия.</p><p>1.3. Администратор вправе изменить Условия.</p><p>1.4. Сервис использует Steam API, но не партнёр Valve.</p><p>1.5. Все цены в рублях. Минимальная сумма выкупа — 10 ₽.</p><h3>2. Кто может использовать</h3><p>2.1. Совершеннолетние (18+).</p><p>2.2. Предметы должны принадлежать Пользователю.</p><h3>3. Вход через Steam</h3><p>3.1. Вход через учётную запись Steam.</p><h3>4. Процесс сделки</h3><p>4.1. Цена формируется на основе рыночных данных.</p><p>4.2. Сервис вправе отказать в выкупе.</p><p>4.3. Выплата — 8 дней. +20 дней. После 30 дней — компенсация.</p><h3>5. Способы оплаты</h3><p>5.1. СБП, Карта (РФ), USDT (BEP20/TON).</p><h3>6. Ответственность</h3><p>6.1. Сервис не отвечает за задержки Steam, банков.</p><h3>7. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('terms')">Закрыть</button></div></div>
-
 <div class="legal-modal" id="legal-privacy"><div class="legal-content"><h2>🔒 Политика конфиденциальности</h2><p><i>14 мая 2026 г.</i></p><h3>1. Данные</h3><p>Steam ID, реквизиты, история сделок, IP.</p><h3>2. Использование</h3><p>Для выполнения сделки.</p><h3>3. Хранение</h3><p>Данные на устройстве (localStorage).</p><h3>4. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('privacy')">Закрыть</button></div></div>
-
 <div class="legal-modal" id="legal-refund"><div class="legal-content"><h2>↩️ Возврат и отмена</h2><p><i>14 мая 2026 г.</i></p><h3>1. Сроки</h3><p>8 дней — стандарт. +20 дней. 30 дней — компенсация.</p><h3>2. Chargeback</h3><p>Блокировка + компенсация.</p><h3>3. Контакты</h3><p>godmarketsupport@gmail.com</p><button class="legal-close" onclick="closeLegal('refund')">Закрыть</button></div></div>
 
 <script>
@@ -457,36 +455,63 @@ function setDealFilter(filter, btn) {
 }
 
 async function fetchRate() {
-    try {
-        const r = await fetch(`${API}/api/rate`);
-        const d = await r.json();
-        if (d.rate) { usdRate = d.rate; localStorage.setItem('gm_rate', usdRate); }
-    } catch(e) {
-        try {
-            const r = await fetch(`${API}/api/price?name=AK-47`, { headers: H });
-            const d = await r.json();
-            if (d.rate) { usdRate = d.rate; localStorage.setItem('gm_rate', usdRate); }
-        } catch(e2) {}
-    }
+    try { const r = await fetch(`${API}/api/rate`); const d = await r.json(); if (d.rate) { usdRate = d.rate; localStorage.setItem('gm_rate', usdRate); } } catch(e) {}
 }
 
 function applyFilters() { const query = (document.getElementById('searchInput')?.value || '').toLowerCase(); let result = [...groupedSkins]; if (query) result = result.filter(g => g.name.toLowerCase().includes(query)); if (currentSort === 'cheap') result.sort((a, b) => (a.price || 0) - (b.price || 0)); else if (currentSort === 'expensive') result.sort((a, b) => (b.price || 0) - (a.price || 0)); result.forEach(g => { const existing = filteredSkins.find(f => f.name === g.name); if (existing) g.selectedQty = existing.selectedQty; }); filteredSkins = result; renderInventory(); }
 async function fetchPrice(name) { if (priceCache[name]) return priceCache[name]; try { const r = await fetch(`${API}/api/price?name=${encodeURIComponent(name)}`, { headers: H }); const d = await r.json(); if (d.success) { priceCache[name] = d.buy_price; return d.buy_price; } } catch(e) {} return null; }
+
 async function loadInventory() {
     document.getElementById('status').style.display = 'block';
     document.getElementById('status').innerHTML = `<div style="text-align:center;padding:24px;"><div class="skin-spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;"></div><div style="color:var(--muted);font-size:16px;">Загружаем инвентарь...</div></div>`;
     try {
-        const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H }); const d = await r.json();
-        if (d.assets && d.assets.length > 0) {
-            const descMap = {}; if (d.descriptions) { d.descriptions.forEach(dd => { const key = `${dd.classid}_${dd.instanceid}`; const tags = dd.tags || []; descMap[key] = { name: dd.market_hash_name, icon: `https://steamcommunity-a.akamaihd.net/economy/image/${dd.icon_url}`, rarity: tags.find(t => t.category === 'Rarity')?.localized_tag_name || '', wear: tags.find(t => t.category === 'Exterior')?.localized_tag_name || '', type: tags.find(t => t.category === 'Type')?.localized_tag_name || '', isST: dd.market_hash_name.includes('StatTrak') }; }); }
-            const groupMap = {}; d.assets.forEach(a => { const key = `${a.classid}_${a.instanceid}`; const skinData = descMap[key] || {}; if (skinData.type === 'Charm') return; const name = skinData.name || `Скин #${a.assetid}`; if (!groupMap[name]) groupMap[name] = { ...skinData, assetIds: [], price: null, selectedQty: 0 }; groupMap[name].assetIds.push(a.assetid); });
+        const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H });
+        const d = await r.json();
+        
+        const assets = d.assets || (d.data && d.data.assets) || [];
+        const descriptions = d.descriptions || (d.data && d.data.descriptions) || [];
+        
+        if (assets.length > 0) {
+            const descMap = {};
+            if (descriptions.length > 0) {
+                descriptions.forEach(dd => {
+                    const key = `${dd.classid}_${dd.instanceid}`;
+                    const tags = dd.tags || [];
+                    descMap[key] = {
+                        name: dd.market_hash_name,
+                        icon: `https://steamcommunity-a.akamaihd.net/economy/image/${dd.icon_url}`,
+                        rarity: tags.find(t => t.category === 'Rarity')?.localized_tag_name || '',
+                        wear: tags.find(t => t.category === 'Exterior')?.localized_tag_name || '',
+                        type: tags.find(t => t.category === 'Type')?.localized_tag_name || '',
+                        isST: dd.market_hash_name.includes('StatTrak')
+                    };
+                });
+            }
+            
+            const groupMap = {};
+            assets.forEach(a => {
+                const key = `${a.classid}_${a.instanceid}`;
+                const skinData = descMap[key] || {};
+                if (skinData.type === 'Charm') return;
+                const name = skinData.name || `Скин #${a.assetid}`;
+                if (!groupMap[name]) groupMap[name] = { ...skinData, assetIds: [], price: null, selectedQty: 0 };
+                groupMap[name].assetIds.push(a.assetid);
+            });
+            
             groupedSkins = Object.values(groupMap);
             document.getElementById('status').innerHTML = `<div style="text-align:center;padding:24px;"><div class="skin-spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;"></div><div style="color:var(--muted);font-size:16px;">Загружаем цены...</div></div>`;
+            
             for (const g of groupedSkins) { g.price = await fetchPrice(g.name); }
             applyFilters(); updateInvSummary(); document.getElementById('status').style.display = 'none';
-        } else { document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт'; }
-    } catch(e) { console.error('Inventory error:', e); document.getElementById('status').innerHTML = '❌ Ошибка загрузки: ' + e.message; }
+        } else {
+            document.getElementById('status').innerHTML = '❌ Инвентарь пуст или скрыт';
+        }
+    } catch(e) {
+        console.error('Inventory error:', e);
+        document.getElementById('status').innerHTML = '❌ Ошибка загрузки';
+    }
 }
+
 function updateInvSummary() { const totalValue = groupedSkins.reduce((s, g) => s + (g.price || 0) * g.assetIds.length, 0); const totalItems = groupedSkins.reduce((s, g) => s + g.assetIds.length, 0); document.getElementById('invSummary').style.display = 'block'; document.getElementById('invSummary').innerHTML = `📦 ${totalItems} скинов · 💰 ~${totalValue.toFixed(0)} ₽`; }
 async function updateMarketStats() {
     const deals = await getDeals();
@@ -551,19 +576,11 @@ function confirmDeal(fullPayment) {
     const message = `💰 Сумма: ${totalDisplay}${usd}\n💳 ${fullPayment}\n⏳ Обработка: 8 дней\n\nНажимая «Продать», я соглашаюсь с Правилами сервиса.`;
     
     if (isTelegram && tg) {
-        tg.showPopup({
-            title: 'Подтверждение продажи',
-            message: message,
-            buttons: [
-                {id: 'ok', type: 'ok', text: '✅ Продать'},
-                {type: 'cancel', text: '❌ Отмена'}
-            ]
-        }, async (btn) => {
+        tg.showPopup({ title: 'Подтверждение продажи', message: message, buttons: [{id: 'ok', type: 'ok', text: '✅ Продать'}, {type: 'cancel', text: '❌ Отмена'}] }, async (btn) => {
             if (btn === 'ok') {
                 await saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: finalTotal, paymentMethod: fullPayment, steamId, currency: currency });
                 await new Promise(resolve => setTimeout(resolve, 500));
-                await updateMarketStats();
-                await renderDeals();
+                await updateMarketStats(); await renderDeals();
                 sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: finalTotal, currency: currency });
                 document.getElementById('status').style.display = 'block';
                 document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
@@ -574,8 +591,7 @@ function confirmDeal(fullPayment) {
         showConfirmModal(message + '\n\nНажмите «Продать» для подтверждения.', async function() {
             await saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: finalTotal, paymentMethod: fullPayment, steamId, currency: currency });
             await new Promise(resolve => setTimeout(resolve, 500));
-            await updateMarketStats();
-            await renderDeals();
+            await updateMarketStats(); await renderDeals();
             sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: finalTotal, currency: currency });
             document.getElementById('status').style.display = 'block';
             document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
@@ -584,27 +600,8 @@ function confirmDeal(fullPayment) {
     }
 }
 
-async function getDeals() {
-    if (!steamId) return [];
-    try {
-        const r = await fetch(`${API}/api/deals?steamid=${steamId}`);
-        const d = await r.json();
-        if (d.success) return d.deals;
-    } catch(e) { console.error('❌ getDeals error:', e); }
-    return [];
-}
-
-async function saveDeal(deal) {
-    try {
-        const body = JSON.stringify(deal);
-        console.log('📤 Отправляю сделку:', body.substring(0, 200));
-        const response = await fetch(`${API}/api/deals`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body });
-        const result = await response.json();
-        console.log('✅ Сделка сохранена:', result);
-        return result;
-    } catch(e) { console.error('❌ saveDeal error:', e); return null; }
-}
-
+async function getDeals() { if (!steamId) return []; try { const r = await fetch(`${API}/api/deals?steamid=${steamId}`); const d = await r.json(); if (d.success) return d.deals; } catch(e) {} return []; }
+async function saveDeal(deal) { try { const body = JSON.stringify(deal); const response = await fetch(`${API}/api/deals`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body }); return await response.json(); } catch(e) { return null; } }
 function getPayDate(iso) { const d = new Date(iso); const ten = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 10, 0, 0); if (d < ten) ten.setDate(ten.getDate() - 1); ten.setDate(ten.getDate() + 8); return ten; }
 function getTimeLeft(pay) { const diff = pay.getTime() - Date.now(); if (diff <= 0) return '✅ Выплачено'; return `⏳ ${Math.floor(diff/86400000)} дн. ${Math.floor((diff%86400000)/3600000)} ч.`; }
 function isDealActive(pay) { return pay.getTime() - Date.now() > 0; }
@@ -617,21 +614,14 @@ async function renderDeals() {
     let filteredDeals = deals;
     if (dealFilter === 'active') filteredDeals = deals.filter(d => isDealActive(getPayDate(d.date)));
     else if (dealFilter === 'done') filteredDeals = deals.filter(d => !isDealActive(getPayDate(d.date)));
-
     if (steamId) {
         const userDeals = filteredDeals.filter(d => d.steamId === steamId);
         if (userDeals.length === 0) { container.innerHTML = '<div class="empty">Нет сделок по выбранному фильтру</div>'; return; }
         let html = '<div style="font-size:15px;color:var(--green);margin-bottom:10px;">📋 Твои сделки</div>';
         html += userDeals.map(d => {
-            const pay = getPayDate(d.date);
-            const active = isDealActive(pay);
+            const pay = getPayDate(d.date); const active = isDealActive(pay);
             const totalDisplay = d.currency === '$' ? `$${d.total.toFixed(2)}` : `${d.total.toFixed(2)} ₽`;
-            return `<div class="deal-card ${active ? '' : 'inactive'}" onclick="toggleDealDetail(${d.id})">
-                <div class="deal-header"><span class="deal-date">${formatDate(new Date(d.date))}</span><span class="deal-status ${active ? 'active' : 'done'}">${active ? 'Активна' : 'Завершена'}</span></div>
-                <div class="deal-sum">${totalDisplay}</div>
-                <div class="deal-skins">${d.skins.length} скинов · ${getTimeLeft(pay)}</div>
-                <div class="deal-detail" id="deal-detail-${d.id}"><p><b>Скины:</b> ${d.skins.map(s=>s.name).join(', ')}</p><p><b>Реквизиты:</b> ${d.paymentMethod}</p><p><b>Выплатить до:</b> ${formatDate(pay)}</p></div>
-            </div>`;
+            return `<div class="deal-card ${active ? '' : 'inactive'}" onclick="toggleDealDetail(${d.id})"><div class="deal-header"><span class="deal-date">${formatDate(new Date(d.date))}</span><span class="deal-status ${active ? 'active' : 'done'}">${active ? 'Активна' : 'Завершена'}</span></div><div class="deal-sum">${totalDisplay}</div><div class="deal-skins">${d.skins.length} скинов · ${getTimeLeft(pay)}</div><div class="deal-detail" id="deal-detail-${d.id}"><p><b>Скины:</b> ${d.skins.map(s=>s.name).join(', ')}</p><p><b>Реквизиты:</b> ${d.paymentMethod}</p><p><b>Выплатить до:</b> ${formatDate(pay)}</p></div></div>`;
         }).join('');
         container.innerHTML = html;
     } else { container.innerHTML = '<div class="empty">🔐 Войди через Steam, чтобы увидеть свои сделки</div>'; }
