@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#ffffff">
     <title>GodMarket</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="ngrok-skip-browser-warning" content="true">
@@ -86,7 +85,7 @@
             .skin-item { width: 100%; margin: 8px 0; }
             #skinsList { display: block; }
             .btn-sell-all { position: static; margin-top: 20px; }
-            .inv-summary, .rate-info, .user-info { grid-column: 1 / -1; }
+            .inv-summary, .user-info { grid-column: 1 / -1; }
             #marketStats { grid-column: 1 / -1; }
             #panelSell { }
             #panelDeals { }
@@ -115,7 +114,6 @@
         .subtitle { opacity: 0.85; font-size: 16px; margin-top: 4px; }
         .user-info { text-align: center; color: var(--green); font-size: 14px; margin-bottom: 8px; background: rgba(0,184,148,0.1); padding: 8px; border-radius: 10px; display: none; }
         .inv-summary { text-align: center; color: var(--green); font-size: 15px; margin-bottom: 10px; display: none; }
-        .rate-info { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 14px; display: none; }
         .toolbar { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
         .btn { padding: 12px 18px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; text-align: center; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .btn:hover { transform: translateY(-1px); }
@@ -220,7 +218,6 @@
 <!-- БЛОК: USER-INFO -->
 <div class="user-info" id="userInfo"></div>
 <div class="inv-summary" id="invSummary"></div>
-<div class="rate-info" id="rateInfo"></div>
 
 <!-- БЛОК: CURRENCY-SWITCH -->
 <div class="currency-switch" id="currencySwitch" style="display:none; text-align:center; margin-bottom:14px;">
@@ -322,26 +319,36 @@ if (isTelegram) {
     tg.expand();
     tg.ready();
     
-    tg.setHeaderColor('#ffffff');
-    tg.setBackgroundColor('#ffffff');
-    tg.setBottomBarColor('#ffffff');
+    // Функция принудительного осветления
+    function enforceLightTheme() {
+        tg.setHeaderColor('#ffffff');
+        tg.setBackgroundColor('#ffffff');
+        tg.setBottomBarColor('#ffffff');
+        
+        document.documentElement.style.setProperty('background-color', '#ffffff', 'important');
+        document.documentElement.style.background = '#ffffff';
+        document.body.style.setProperty('background-color', '#ffffff', 'important');
+        document.body.style.background = '#ffffff';
+        
+        // Переопределяем стили для всех возможных обёрток Telegram
+        const allElements = document.querySelectorAll('*');
+        allElements.forEach(el => {
+            const bg = getComputedStyle(el).backgroundColor;
+            if (bg === 'rgb(26, 26, 46)' || bg === 'rgb(33, 33, 33)' || bg === 'rgb(30, 30, 30)') {
+                el.style.setProperty('background-color', '#ffffff', 'important');
+                el.style.background = '#ffffff';
+            }
+        });
+    }
     
-    document.documentElement.style.setProperty('background', '#ffffff', 'important');
-    document.documentElement.style.setProperty('background-color', '#ffffff', 'important');
-    document.body.style.setProperty('background', '#ffffff', 'important');
-    document.body.style.setProperty('background-color', '#ffffff', 'important');
+    enforceLightTheme();
     
+    // Постоянно проверяем и исправляем фон
+    setInterval(enforceLightTheme, 100);
+    
+    // Блокируем смену темы от Telegram
     tg.onEvent('themeChanged', () => {
-        const savedTheme = localStorage.getItem('gm_theme');
-        if (savedTheme === 'dark') {
-            tg.setHeaderColor('#1a1a2e');
-            tg.setBackgroundColor('#1a1a2e');
-            tg.setBottomBarColor('#1a1a2e');
-        } else {
-            tg.setHeaderColor('#ffffff');
-            tg.setBackgroundColor('#ffffff');
-            tg.setBottomBarColor('#ffffff');
-        }
+        enforceLightTheme();
     });
 }
 
@@ -381,8 +388,8 @@ if (savedTheme === 'dark') {
 const savedCurrency = localStorage.getItem('gm_currency');
 if (savedCurrency === '$') {
     currentCurrency = '$';
-    document.getElementById('btnRub').classList.remove('active');
-    document.getElementById('btnUsd').classList.add('active');
+    document.getElementById('btnRub')?.classList.remove('active');
+    document.getElementById('btnUsd')?.classList.add('active');
 }
 
 function setCurrency(currency) {
@@ -471,7 +478,12 @@ function hideUI() {
     ['logoutBtn','refreshBtn','shareBtn','sellAllQtyBtn','clearBtn','userInfo','invSummary','marketStats','searchBox','sortBtns','currencySwitch'].forEach(id => document.getElementById(id).style.display = 'none');
     document.getElementById('inventory').style.display = 'none';
 }
-function refresh() { priceCache = {}; loadInventory(); }
+function refresh() { 
+    priceCache = {}; 
+    groupedSkins = [];
+    filteredSkins = [];
+    loadInventory(); 
+}
 function shareBot() {
     const refLink = `https://t.me/godmarket_bot?start=ref_${steamId}`;
     if (isTelegram && tg) { tg.openTelegramLink(`https://t.me/share/url?text=${encodeURIComponent('🎮 Продай скины CS2 быстро и выгодно!\n' + refLink)}`); }
@@ -497,19 +509,14 @@ async function fetchRate() {
         if (d.rate) {
             usdRate = d.rate;
             localStorage.setItem('gm_rate', usdRate);
-            document.getElementById('rateInfo').style.display = 'block';
-            document.getElementById('rateInfo').innerHTML = '💱 ' + usdRate.toFixed(2) + ' ₽/$ (ЦБ +4%)';
         }
     } catch(e) {
-        // Фолбэк через price
         try {
             const r = await fetch(`${API}/api/price?name=AK-47`, { headers: H });
             const d = await r.json();
             if (d.rate) {
                 usdRate = d.rate;
                 localStorage.setItem('gm_rate', usdRate);
-                document.getElementById('rateInfo').style.display = 'block';
-                document.getElementById('rateInfo').innerHTML = '💱 ' + usdRate.toFixed(2) + ' ₽/$';
             }
         } catch(e2) {}
     }
@@ -521,7 +528,7 @@ async function loadInventory() {
     document.getElementById('status').style.display = 'block';
     document.getElementById('status').innerHTML = `<div style="text-align:center;padding:24px;"><div class="skin-spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;"></div><div style="color:var(--muted);font-size:16px;">Загружаем инвентарь...</div></div>`;
     try {
-        const r = await fetch(`${API}/api/inventory?steamid=${steamId}`, { headers: H }); const d = await r.json();
+        const r = await fetch(`${API}/api/inventory?steamid=${steamId}&_=${Date.now()}`, { headers: H }); const d = await r.json();
         if (d.success && d.assets) {
             const descMap = {}; if (d.descriptions) { d.descriptions.forEach(dd => { const key = `${dd.classid}_${dd.instanceid}`; const tags = dd.tags || []; descMap[key] = { name: dd.market_hash_name, icon: `https://steamcommunity-a.akamaihd.net/economy/image/${dd.icon_url}`, rarity: tags.find(t => t.category === 'Rarity')?.localized_tag_name || '', wear: tags.find(t => t.category === 'Exterior')?.localized_tag_name || '', type: tags.find(t => t.category === 'Type')?.localized_tag_name || '', isST: dd.market_hash_name.includes('StatTrak') }; }); }
             const groupMap = {}; d.assets.forEach(a => { const key = `${a.classid}_${a.instanceid}`; const skinData = descMap[key] || {}; if (skinData.type === 'Charm') return; const name = skinData.name || `Скин #${a.assetid}`; if (!groupMap[name]) groupMap[name] = { ...skinData, assetIds: [], price: null, selectedQty: 0 }; groupMap[name].assetIds.push(a.assetid); });
