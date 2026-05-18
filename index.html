@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f8f9fc">
+    <meta name="theme-color" content="#ffffff">
     <title>GodMarket</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="ngrok-skip-browser-warning" content="true">
@@ -11,14 +11,14 @@
     <!-- БЛОК: CSS -->
     <style>
         :root {
-            --bg: #f8f9fc; --card: #ffffff; --accent: #6c5ce7;
+            --bg: #ffffff; --card: #ffffff; --accent: #6c5ce7;
             --green: #00b894; --text: #2d3436; --muted: #636e72;
             --rarity-blue: #74b9ff; --rarity-purple: #a29bfe;
             --rarity-pink: #fd79a8; --rarity-red: #e17055;
             --rarity-gold: #fdcb6e;
             --shadow: 0 2px 12px rgba(0,0,0,0.06);
         }
-        .light-theme { --bg: #f8f9fc; --card: #fff; --text: #2d3436; --muted: #636e72; --green: #00b894; }
+        .light-theme { --bg: #ffffff; --card: #fff; --text: #2d3436; --muted: #636e72; --green: #00b894; }
         .dark-theme { --bg: #1a1a2e; --card: #16213e; --text: #dfe6e9; --muted: #b2bec3; --green: #55efc4; --shadow: 0 2px 12px rgba(0,0,0,0.3); }
         .light-theme .skin-our, .light-theme .qty-value, .light-theme .inv-summary,
         .light-theme .deal-sum, .light-theme .user-info { color: var(--green); }
@@ -57,8 +57,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f8f9fc !important;
-            background-color: #f8f9fc !important;
+            background: #ffffff !important;
+            background-color: #ffffff !important;
             color: var(--text);
             padding: 20px 20px 100px 20px;
             width: 100vw;
@@ -68,6 +68,8 @@
             background: #1a1a2e !important;
             background-color: #1a1a2e !important;
         }
+        .currency-switch { display: flex; gap: 8px; justify-content: center; }
+        .currency-switch button { padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
         @media (min-width: 768px) {
             body {
                 padding: 32px 40px 40px 40px;
@@ -220,6 +222,12 @@
 <div class="inv-summary" id="invSummary"></div>
 <div class="rate-info" id="rateInfo"></div>
 
+<!-- БЛОК: CURRENCY-SWITCH -->
+<div class="currency-switch" id="currencySwitch" style="display:none; text-align:center; margin-bottom:14px;">
+    <button class="sort-btn active" id="btnRub" onclick="setCurrency('₽')">₽ Рубли</button>
+    <button class="sort-btn" id="btnUsd" onclick="setCurrency('$')">$ Доллары</button>
+</div>
+
 <!-- БЛОК: TOOLBAR -->
 <div class="toolbar" id="toolbarTop">
     <button class="btn btn-steam" id="loginBtn" onclick="showLoginModal()">🔐 Steam</button>
@@ -314,34 +322,26 @@ if (isTelegram) {
     tg.expand();
     tg.ready();
     
-    // Принудительно светлая тема
-    tg.setHeaderColor('#f8f9fc');
-    tg.setBackgroundColor('#f8f9fc');
-    tg.setBottomBarColor('#f8f9fc');
+    tg.setHeaderColor('#ffffff');
+    tg.setBackgroundColor('#ffffff');
+    tg.setBottomBarColor('#ffffff');
     
-    // Создаём style элемент для принудительного переопределения
-    const style = document.createElement('style');
-    style.textContent = `
-        body, html, #root, .telegram-web-app {
-            background-color: #f8f9fc !important;
-            background: #f8f9fc !important;
-        }
-    `;
-    document.head.appendChild(style);
+    document.documentElement.style.setProperty('background', '#ffffff', 'important');
+    document.documentElement.style.setProperty('background-color', '#ffffff', 'important');
+    document.body.style.setProperty('background', '#ffffff', 'important');
+    document.body.style.setProperty('background-color', '#ffffff', 'important');
     
-    // Ждём загрузки и применяем
-    setTimeout(() => {
-        document.documentElement.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
-        document.body.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
-    }, 50);
-    
-    // При смене темы в Telegram — игнорируем
     tg.onEvent('themeChanged', () => {
-        tg.setHeaderColor('#f8f9fc');
-        tg.setBackgroundColor('#f8f9fc');
-        tg.setBottomBarColor('#f8f9fc');
-        document.documentElement.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
-        document.body.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
+        const savedTheme = localStorage.getItem('gm_theme');
+        if (savedTheme === 'dark') {
+            tg.setHeaderColor('#1a1a2e');
+            tg.setBackgroundColor('#1a1a2e');
+            tg.setBottomBarColor('#1a1a2e');
+        } else {
+            tg.setHeaderColor('#ffffff');
+            tg.setBackgroundColor('#ffffff');
+            tg.setBottomBarColor('#ffffff');
+        }
     });
 }
 
@@ -352,6 +352,8 @@ let priceCache = {};
 let currentSort = 'default';
 let dealFilter = 'all';
 let darkTheme = false;
+let currentCurrency = '₽';
+let usdRate = 80;
 
 const urlParams = new URLSearchParams(window.location.search);
 const oauthSteamId = urlParams.get('steamid');
@@ -376,25 +378,44 @@ if (savedTheme === 'dark') {
     document.body.classList.remove('dark-theme');
 }
 
+const savedCurrency = localStorage.getItem('gm_currency');
+if (savedCurrency === '$') {
+    currentCurrency = '$';
+    document.getElementById('btnRub').classList.remove('active');
+    document.getElementById('btnUsd').classList.add('active');
+}
+
+function setCurrency(currency) {
+    currentCurrency = currency;
+    document.getElementById('btnRub').classList.toggle('active', currency === '₽');
+    document.getElementById('btnUsd').classList.toggle('active', currency === '$');
+    localStorage.setItem('gm_currency', currency);
+    renderInventory();
+}
+
 function toggleTheme() {
     darkTheme = !darkTheme;
     document.body.classList.toggle('dark-theme', darkTheme);
     localStorage.setItem('gm_theme', darkTheme ? 'dark' : 'light');
     if (darkTheme) {
-        document.documentElement.style.cssText = 'background-color: #1a1a2e !important; background: #1a1a2e !important;';
-        document.body.style.cssText = 'background-color: #1a1a2e !important; background: #1a1a2e !important;';
+        document.documentElement.style.setProperty('background', '#1a1a2e', 'important');
+        document.documentElement.style.setProperty('background-color', '#1a1a2e', 'important');
+        document.body.style.setProperty('background', '#1a1a2e', 'important');
+        document.body.style.setProperty('background-color', '#1a1a2e', 'important');
         if (isTelegram && tg) {
             tg.setHeaderColor('#1a1a2e');
             tg.setBackgroundColor('#1a1a2e');
             tg.setBottomBarColor('#1a1a2e');
         }
     } else {
-        document.documentElement.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
-        document.body.style.cssText = 'background-color: #f8f9fc !important; background: #f8f9fc !important;';
+        document.documentElement.style.setProperty('background', '#ffffff', 'important');
+        document.documentElement.style.setProperty('background-color', '#ffffff', 'important');
+        document.body.style.setProperty('background', '#ffffff', 'important');
+        document.body.style.setProperty('background-color', '#ffffff', 'important');
         if (isTelegram && tg) {
-            tg.setHeaderColor('#f8f9fc');
-            tg.setBackgroundColor('#f8f9fc');
-            tg.setBottomBarColor('#f8f9fc');
+            tg.setHeaderColor('#ffffff');
+            tg.setBackgroundColor('#ffffff');
+            tg.setBottomBarColor('#ffffff');
         }
     }
 }
@@ -441,12 +462,13 @@ function showUI() {
     document.getElementById('userInfo').style.display = 'block'; document.getElementById('userInfo').innerHTML = '🟢 ' + steamId;
     document.getElementById('searchBox').style.display = 'flex'; document.getElementById('sortBtns').style.display = 'flex';
     document.getElementById('marketStats').style.display = 'block';
+    document.getElementById('currencySwitch').style.display = 'flex';
     updateMarketStats();
     renderDeals();
 }
 function hideUI() {
     document.getElementById('loginBtn').style.display = 'inline-block';
-    ['logoutBtn','refreshBtn','shareBtn','sellAllQtyBtn','clearBtn','userInfo','invSummary','marketStats','searchBox','sortBtns'].forEach(id => document.getElementById(id).style.display = 'none');
+    ['logoutBtn','refreshBtn','shareBtn','sellAllQtyBtn','clearBtn','userInfo','invSummary','marketStats','searchBox','sortBtns','currencySwitch'].forEach(id => document.getElementById(id).style.display = 'none');
     document.getElementById('inventory').style.display = 'none';
 }
 function refresh() { priceCache = {}; loadInventory(); }
@@ -468,7 +490,31 @@ function setDealFilter(filter, btn) {
 }
 
 // БЛОК: JS-INVENTORY
-async function fetchRate() { try { const r = await fetch(`${API}/api/price?name=AK-47`, { headers: H }); const d = await r.json(); if (d.rate) { localStorage.setItem('gm_rate', d.rate); document.getElementById('rateInfo').style.display = 'block'; document.getElementById('rateInfo').innerHTML = '💱 ' + d.rate.toFixed(2) + ' ₽/$'; } } catch(e) {} }
+async function fetchRate() {
+    try {
+        const r = await fetch(`${API}/api/rate`);
+        const d = await r.json();
+        if (d.rate) {
+            usdRate = d.rate;
+            localStorage.setItem('gm_rate', usdRate);
+            document.getElementById('rateInfo').style.display = 'block';
+            document.getElementById('rateInfo').innerHTML = '💱 ' + usdRate.toFixed(2) + ' ₽/$ (ЦБ +4%)';
+        }
+    } catch(e) {
+        // Фолбэк через price
+        try {
+            const r = await fetch(`${API}/api/price?name=AK-47`, { headers: H });
+            const d = await r.json();
+            if (d.rate) {
+                usdRate = d.rate;
+                localStorage.setItem('gm_rate', usdRate);
+                document.getElementById('rateInfo').style.display = 'block';
+                document.getElementById('rateInfo').innerHTML = '💱 ' + usdRate.toFixed(2) + ' ₽/$';
+            }
+        } catch(e2) {}
+    }
+}
+
 function applyFilters() { const query = (document.getElementById('searchInput')?.value || '').toLowerCase(); let result = [...groupedSkins]; if (query) result = result.filter(g => g.name.toLowerCase().includes(query)); if (currentSort === 'cheap') result.sort((a, b) => (a.price || 0) - (b.price || 0)); else if (currentSort === 'expensive') result.sort((a, b) => (b.price || 0) - (a.price || 0)); result.forEach(g => { const existing = filteredSkins.find(f => f.name === g.name); if (existing) g.selectedQty = existing.selectedQty; }); filteredSkins = result; renderInventory(); }
 async function fetchPrice(name) { if (priceCache[name]) return priceCache[name]; try { const r = await fetch(`${API}/api/price?name=${encodeURIComponent(name)}`, { headers: H }); const d = await r.json(); if (d.success) { priceCache[name] = d.buy_price; return d.buy_price; } } catch(e) {} return null; }
 async function loadInventory() {
@@ -497,7 +543,12 @@ function getRarityClass(rarity) { if (/Covert|Red/.test(rarity)) return 'rarity-
 function renderInventory() {
     document.getElementById('inventory').style.display = 'block';
     const displaySkins = filteredSkins.filter(g => g.price && g.price > 10);
-    document.getElementById('skinsList').innerHTML = displaySkins.map((g, i) => { const rarityClass = getRarityClass(g.rarity); return `<div class="skin-item ${rarityClass}">${g.icon ? `<img src="${g.icon}" class="skin-icon" onerror="this.style.display='none'">` : ''}<div class="skin-info"><div class="skin-name">${g.name}</div><div class="skin-meta"><span class="skin-count">${g.assetIds.length} шт.</span>${g.isST ? '<span class="badge badge-st">ST</span>' : ''}${g.wear ? `<span class="badge badge-wear">${g.wear}</span>` : ''}</div><div class="qty-selector"><button class="qty-btn" onclick="changeQty('${g.name}', -1)" ${g.selectedQty <= 0 ? 'disabled' : ''}>−</button><span class="qty-value">${g.selectedQty}</span><button class="qty-btn" onclick="changeQty('${g.name}', 1)" ${g.selectedQty >= g.assetIds.length ? 'disabled' : ''}>+</button></div></div><div style="text-align: right;"><div class="skin-our">${g.price.toFixed(2) + ' ₽'}</div>${g.selectedQty > 0 ? `<div style="color: var(--green); font-size: 13px;">=${(g.price * g.selectedQty).toFixed(2)} ₽</div>` : ''}</div></div>`; }).join('');
+    document.getElementById('skinsList').innerHTML = displaySkins.map((g, i) => {
+        const rarityClass = getRarityClass(g.rarity);
+        const displayPrice = currentCurrency === '$' ? (g.price / usdRate).toFixed(2) + ' $' : g.price.toFixed(2) + ' ₽';
+        const selectedDisplay = g.selectedQty > 0 ? (currentCurrency === '$' ? '=' + ((g.price * g.selectedQty) / usdRate).toFixed(2) + ' $' : '=' + (g.price * g.selectedQty).toFixed(2) + ' ₽') : '';
+        return `<div class="skin-item ${rarityClass}">${g.icon ? `<img src="${g.icon}" class="skin-icon" onerror="this.style.display='none'">` : ''}<div class="skin-info"><div class="skin-name">${g.name}</div><div class="skin-meta"><span class="skin-count">${g.assetIds.length} шт.</span>${g.isST ? '<span class="badge badge-st">ST</span>' : ''}${g.wear ? `<span class="badge badge-wear">${g.wear}</span>` : ''}</div><div class="qty-selector"><button class="qty-btn" onclick="changeQty('${g.name}', -1)" ${g.selectedQty <= 0 ? 'disabled' : ''}>−</button><span class="qty-value">${g.selectedQty}</span><button class="qty-btn" onclick="changeQty('${g.name}', 1)" ${g.selectedQty >= g.assetIds.length ? 'disabled' : ''}>+</button></div></div><div style="text-align: right;"><div class="skin-our">${displayPrice}</div>${selectedDisplay ? `<div style="color: var(--green); font-size: 13px;">${selectedDisplay}</div>` : ''}</div></div>`;
+    }).join('');
     if (displaySkins.length === 0) document.getElementById('skinsList').innerHTML = '<div class="empty">Нет скинов дороже 10 ₽</div>';
     updateSellButton();
 }
@@ -506,25 +557,45 @@ function getSelectedItems() { const r = []; filteredSkins.forEach(g => { if (g.s
 function updateSellButton() { const s = getSelectedItems(); document.getElementById('sellCount').textContent = s.length; document.getElementById('sellBtn').disabled = s.length === 0; }
 
 // БЛОК: JS-SELL
-function sellSelected() { const sel = getSelectedItems(); if (sel.length === 0) return; const total = sel.reduce((s, x) => s + x.price, 0).toFixed(2); const grp = {}; sel.forEach(s => { if (!grp[s.name]) grp[s.name] = { name: s.name, count: 0, price: s.price }; grp[s.name].count++; }); const summary = Object.values(grp).map(g => `${g.name} ×${g.count}`).join('<br>'); showPaymentModal(`<h3>💰 Выберите метод выплаты</h3><p style="font-size:14px;color:var(--muted);margin-bottom:6px;">Скины:<br>${summary}</p><p style="font-size:18px;font-weight:700;color:var(--green);margin-bottom:20px;">Сумма: ${total} ₽</p><p style="font-size:13px;color:var(--accent);margin-bottom:16px;">⚠️ Выплата — через 8 дней.</p><button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">📱 СБП</button><button onclick="chooseBank('card')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💳 Карта</button><button onclick="showCryptoInput('usdt-bep20')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💲 USDT (BEP20)</button><button onclick="showCryptoInput('usdt-ton')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💲 USDT (TON)</button><button onclick="closePaymentModal()" style="display:block;width:100%;padding:14px;margin:6px 0;background:#b2bec3;color:white;border:none;border-radius:12px;font-size:16px;cursor:pointer;">❌ Отмена</button>`); window._pd = { skins: sel, total }; }
+function sellSelected() {
+    const sel = getSelectedItems();
+    if (sel.length === 0) return;
+    const totalRub = sel.reduce((s, x) => s + x.price, 0);
+    const totalDisplay = currentCurrency === '$' ? (totalRub / usdRate).toFixed(2) + ' $' : totalRub.toFixed(2) + ' ₽';
+    const grp = {};
+    sel.forEach(s => { if (!grp[s.name]) grp[s.name] = { name: s.name, count: 0, price: s.price }; grp[s.name].count++; });
+    const summary = Object.values(grp).map(g => `${g.name} ×${g.count}`).join('<br>');
+    
+    showPaymentModal(`<h3>💰 Выберите метод выплаты</h3><p style="font-size:14px;color:var(--muted);margin-bottom:6px;">Скины:<br>${summary}</p><p style="font-size:18px;font-weight:700;color:var(--green);margin-bottom:20px;">Сумма: ${totalDisplay}</p><p style="font-size:13px;color:var(--accent);margin-bottom:16px;">⚠️ Выплата — через 8 дней.</p><button onclick="chooseBank('sbp')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">📱 СБП</button><button onclick="chooseBank('card')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💳 Карта</button><button onclick="showCryptoInput('usdt-bep20')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💲 USDT (BEP20)</button><button onclick="showCryptoInput('usdt-ton')" style="display:block;width:100%;padding:14px;margin:6px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">💲 USDT (TON)</button><button onclick="closePaymentModal()" style="display:block;width:100%;padding:14px;margin:6px 0;background:#b2bec3;color:white;border:none;border-radius:12px;font-size:16px;cursor:pointer;">❌ Отмена</button>`);
+    window._pd = { skins: sel, total: totalRub, currency: currentCurrency };
+}
 
 // БЛОК: JS-PAYMENT
 function chooseBank(method) { const banks = ['Сбербанк','Т-Банк','ВТБ','Альфа-Банк','Райффайзен','Другой']; showPaymentModal(`<h3>🏦 Выберите банк</h3>${banks.map(b => `<button onclick="showBankInput('${method}','${b}')" style="display:block;width:100%;padding:12px;margin:5px 0;background:#0c2461;color:#dfe6e9;border:none;border-radius:12px;font-size:16px;cursor:pointer;">${b}</button>`).join('')}<button onclick="sellSelected()" style="display:block;width:100%;padding:12px;margin:5px 0;background:#b2bec3;color:white;border:none;border-radius:12px;font-size:16px;cursor:pointer;">⬅ Назад</button>`); }
 function showBankInput(method, bank) { const label = method === 'sbp' ? 'номер телефона (11 цифр)' : 'номер карты (16 цифр)'; const maxLen = method === 'sbp' ? 11 : 16; const title = method === 'sbp' ? '📱 СБП' : '💳 Карта'; showPaymentModal(`<h3>${title} — ${bank === 'Другой' ? 'Другой банк' : bank}</h3><p style="color:var(--muted);font-size:13px;margin-bottom:10px;">Только для РФ</p>${bank === 'Другой' ? '<input type="text" id="bankName" placeholder="Название банка" style="margin-bottom:8px;">' : ''}<input type="text" id="bankDetail" placeholder="${label}" maxlength="${maxLen}" inputmode="numeric" pattern="[0-9]*"><div class="btn-row"><button class="btn-secondary" onclick="chooseBank('${method}')">⬅ Назад</button><button class="btn-primary" onclick="submitBank('${method}','${bank}')">Далее</button></div>`); }
 function submitBank(method, bank) { let bankName = bank; if (bank === 'Другой') { bankName = document.getElementById('bankName')?.value?.trim(); if (!bankName) { showErrorModal('Введи название банка'); return; } } const detail = document.getElementById('bankDetail')?.value?.trim(); if (!detail) { showErrorModal('Введи реквизиты'); return; } const maxLen = method === 'sbp' ? 11 : 16; if (!new RegExp(`^\\d{${maxLen}}$`).test(detail)) { showErrorModal(`Должно быть ровно ${maxLen} цифр`); return; } confirmDeal(`${method === 'sbp' ? '📱 СБП' : '💳 Карта'} (${bankName}): ${detail}`); }
-function showCryptoInput(method) { const label = method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'; const fee = method === 'usdt-ton' ? '<p style="color:var(--muted);font-size:13px;">Может взиматься комиссия сети</p>' : ''; showPaymentModal(`<h3>💲 ${label}</h3>${fee}<input type="text" id="cryptoAddr" placeholder="Адрес кошелька"><div class="btn-row"><button class="btn-secondary" onclick="sellSelected()">⬅ Назад</button><button class="btn-primary" onclick="submitCrypto('${method}')">Далее</button></div>`); }
+function showCryptoInput(method) { const label = method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'; const usdAmount = (window._pd.total / usdRate).toFixed(2); const fee = method === 'usdt-ton' ? '<p style="color:var(--muted);font-size:13px;">Может взиматься комиссия сети</p>' : ''; showPaymentModal(`<h3>💲 ${label}</h3><p style="font-size:18px;font-weight:700;color:var(--green);margin-bottom:10px;">Сумма: $${usdAmount}</p>${fee}<input type="text" id="cryptoAddr" placeholder="Адрес кошелька"><div class="btn-row"><button class="btn-secondary" onclick="sellSelected()">⬅ Назад</button><button class="btn-primary" onclick="submitCrypto('${method}')">Далее</button></div>`); }
 function submitCrypto(method) { const addr = document.getElementById('cryptoAddr')?.value?.trim(); if (!addr) { showErrorModal('Введи адрес кошелька'); return; } confirmDeal(`💲 ${method === 'usdt-bep20' ? 'USDT (BEP20)' : 'USDT (TON)'}: ${addr}`); }
 function showConfirmModal(message, callback) { window._confirmCallback = callback; showPaymentModal(`<h3>Подтверждение продажи</h3><p style="color:var(--muted);font-size:15px;white-space:pre-line;">${message}</p><div class="btn-row"><button class="btn-secondary" onclick="closePaymentModal()">❌ Отмена</button><button class="btn-primary" onclick="closePaymentModal(); if(window._confirmCallback) window._confirmCallback();">✅ Продать</button></div>`); }
 function confirmDeal(fullPayment) {
     const d = window._pd;
     if (!d) return;
     let usd = '';
+    let finalTotal = d.total;
+    let currency = d.currency || '₽';
+    
     if (fullPayment.startsWith('💲')) {
-        const rate = parseFloat(localStorage.getItem('gm_rate') || '76');
-        usd = ` (≈ $${(parseFloat(d.total)/rate).toFixed(2)})`;
+        const rate = usdRate || 80;
+        const usdAmount = d.total / rate;
+        usd = ` ($${usdAmount.toFixed(2)})`;
+        finalTotal = parseFloat(usdAmount.toFixed(2));
+        currency = '$';
     }
+    
     closePaymentModal();
-    const message = `💰 Сумма: ${d.total} ₽${usd}\n💳 ${fullPayment}\n⏳ Обработка: 8 дней\n\nНажимая «Продать», я соглашаюсь с Правилами сервиса.`;
+    
+    const totalDisplay = currency === '$' ? `$${finalTotal.toFixed(2)}` : `${finalTotal.toFixed(2)} ₽`;
+    const message = `💰 Сумма: ${totalDisplay}${usd}\n💳 ${fullPayment}\n⏳ Обработка: 8 дней\n\nНажимая «Продать», я соглашаюсь с Правилами сервиса.`;
     
     if (isTelegram && tg) {
         tg.showPopup({
@@ -536,11 +607,11 @@ function confirmDeal(fullPayment) {
             ]
         }, async (btn) => {
             if (btn === 'ok') {
-                await saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
+                await saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: finalTotal, paymentMethod: fullPayment, steamId, currency: currency });
                 await new Promise(resolve => setTimeout(resolve, 500));
                 await updateMarketStats();
                 await renderDeals();
-                sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) });
+                sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: finalTotal, currency: currency });
                 document.getElementById('status').style.display = 'block';
                 document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
                 document.getElementById('status').style.color = 'var(--green)';
@@ -548,11 +619,11 @@ function confirmDeal(fullPayment) {
         });
     } else {
         showConfirmModal(message + '\n\nНажмите «Продать» для подтверждения.', async function() {
-            await saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: parseFloat(d.total), paymentMethod: fullPayment, steamId });
+            await saveDeal({ id: Date.now(), date: new Date().toISOString(), skins: d.skins, total: finalTotal, paymentMethod: fullPayment, steamId, currency: currency });
             await new Promise(resolve => setTimeout(resolve, 500));
             await updateMarketStats();
             await renderDeals();
-            sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: parseFloat(d.total) });
+            sendDataToBot({ action: 'sell', steamId, skins: d.skins, paymentMethod: fullPayment, total: finalTotal, currency: currency });
             document.getElementById('status').style.display = 'block';
             document.getElementById('status').innerHTML = '✅ Заявка отправлена!';
             document.getElementById('status').style.color = 'var(--green)';
@@ -610,9 +681,10 @@ async function renderDeals() {
         html += userDeals.map(d => {
             const pay = getPayDate(d.date);
             const active = isDealActive(pay);
+            const totalDisplay = d.currency === '$' ? `$${d.total.toFixed(2)}` : `${d.total.toFixed(2)} ₽`;
             return `<div class="deal-card ${active ? '' : 'inactive'}" onclick="toggleDealDetail(${d.id})">
                 <div class="deal-header"><span class="deal-date">${formatDate(new Date(d.date))}</span><span class="deal-status ${active ? 'active' : 'done'}">${active ? 'Активна' : 'Завершена'}</span></div>
-                <div class="deal-sum">${d.total.toFixed(2)} ₽</div>
+                <div class="deal-sum">${totalDisplay}</div>
                 <div class="deal-skins">${d.skins.length} скинов · ${getTimeLeft(pay)}</div>
                 <div class="deal-detail" id="deal-detail-${d.id}"><p><b>Скины:</b> ${d.skins.map(s=>s.name).join(', ')}</p><p><b>Реквизиты:</b> ${d.paymentMethod}</p><p><b>Выплатить до:</b> ${formatDate(pay)}</p></div>
             </div>`;
